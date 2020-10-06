@@ -9,6 +9,8 @@ bin/
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace
+*.o
+*.out
 
 # Local History for Visual Studio Code
 .history/
