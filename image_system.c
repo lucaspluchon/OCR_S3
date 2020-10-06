@@ -47,5 +47,7 @@ void ApplyCorrection(SDL_Surface* image)
 
         }
     }
+
+    SDL_UnlockSurface(image);
 }
 

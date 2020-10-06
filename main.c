@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 
     SDL_Surface* image = LoadImage(path);
 
-	SDL_Window * window = SDL_CreateWindow("SDL2 Displaying Image", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, image->w, image->h, 0);
+	SDL_Window* window = SDL_CreateWindow("SDL2 Displaying Image", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, image->w, image->h, 0);
 
 	ApplyCorrection(image);
 
@@ -22,8 +22,5 @@ int main(int argc, char *argv[])
 
 
 }
-
-
-
 
 
