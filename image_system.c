@@ -37,14 +37,28 @@ void ApplyCorrection(SDL_Surface* image)
 {
     SDL_LockSurface(image);
 
+    int averageGray = 0;
+
     for (int x = 0; x < image->w; x++)
     {
         for (int y = 0; y < image->h; y++)
         {
             Uint32 color = SDL_GetPixel32(image,x,y);
-            color = Threshold_Pixel(GrayScale_Pixel(color),120);
+            color = GrayScale_Pixel(color);
+            averageGray += color;
             SDL_PutPixel32(image,x,y,color);
+        }
+    }
 
+    averageGray /= image->w * image->h;
+
+    for (int x = 0; x < image->w; x++)
+    {
+        for (int y = 0; y < image->h; y++)
+        {
+            Uint32 color = SDL_GetPixel32(image,x,y);
+            color = Threshold_Pixel(color,averageGray);
+            SDL_PutPixel32(image,x,y,color);
         }
     }
 
