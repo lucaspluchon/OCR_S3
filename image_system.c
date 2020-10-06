@@ -45,13 +45,14 @@ void ApplyCorrection(SDL_Surface* image)
         {
             Uint32 color = SDL_GetPixel32(image,x,y);
             color = GrayScale_Pixel(color);
-            averageGray += color;
+            averageGray += getR(color);
             SDL_PutPixel32(image,x,y,color);
         }
     }
 
     averageGray /= image->w * image->h;
 
+    
     for (int x = 0; x < image->w; x++)
     {
         for (int y = 0; y < image->h; y++)
