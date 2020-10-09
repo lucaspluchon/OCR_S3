@@ -18,7 +18,7 @@ void PauseSDL()
 
 void DisplayError(char* message)
 {
-    printf(message);
+    printf("%s",message);
     exit(1);
 }
 
