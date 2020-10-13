@@ -1,7 +1,7 @@
 CC = @gcc
 CFLAGS = -Wall -Wextra -pedantic-errors
 
-SRC = builtin.c color_system.c image_system.c main.c
+SRC = useful/builtin.c image_system/color_system.c image_system/image_system.c main.c
 
 LINKERFLAGS = -lSDL2main -lSDL2 -lSDL2_image
 

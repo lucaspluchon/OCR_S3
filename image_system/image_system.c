@@ -50,7 +50,7 @@ void ApplyCorrection(SDL_Surface* image)
         }
     }
 
-    averageGray /= image->w * image->h;*
+    averageGray /= image->w * image->h;
 
     for (int x = 0; x < image->w; x++)
     {
