@@ -1,4 +1,4 @@
-#include "include_ocr.h"
+#include "../include_ocr.h"
 
 
 //Get RGB colors from an Uint32 color
@@ -95,24 +95,24 @@ void Convolution_Pixel(SDL_Surface* image,int matrix[3][3], int x, int y, double
     if (y - 1 >= 0)
     {
         color = SDL_GetPixel32(image,x,y-1);
-        r += getR(color) * matrix[0][1]* factor;
-        g += getG(color) * matrix[0][1]* factor;
-        b += getB(color) * matrix[0][1]* factor;
+        r += getR(color) * matrix[1][0]* factor;
+        g += getG(color) * matrix[1][0]* factor;
+        b += getB(color) * matrix[1][0]* factor;
     }
     if (x + 1 < image->w && y - 1 >= 0)
     {
         color = SDL_GetPixel32(image,x+1,y-1);
-        r += getR(color) * matrix[0][2]* factor;
-        g += getG(color) * matrix[0][2]* factor;
-        b += getB(color) * matrix[0][2]* factor;
+        r += getR(color) * matrix[2][0]* factor;
+        g += getG(color) * matrix[2][0]* factor;
+        b += getB(color) * matrix[2][0]* factor;
     }
 
     if (x - 1 >= 0)
     {
         color = SDL_GetPixel32(image,x-1,y);
-        r += getR(color) * matrix[1][0]* factor;
-        g += getG(color) * matrix[1][0]* factor;
-        b += getB(color) * matrix[1][0]* factor;
+        r += getR(color) * matrix[0][1]* factor;
+        g += getG(color) * matrix[0][1]* factor;
+        b += getB(color) * matrix[0][1]* factor;
     }
 
     color = SDL_GetPixel32(image,x,y);
@@ -123,24 +123,24 @@ void Convolution_Pixel(SDL_Surface* image,int matrix[3][3], int x, int y, double
     if (x + 1 < image->w)
     {
         color = SDL_GetPixel32(image,x+1,y);
-        r += getR(color) * matrix[1][2]* factor;
-        g += getG(color) * matrix[1][2]* factor;
-        b += getB(color) * matrix[1][2]* factor;
+        r += getR(color) * matrix[2][1]* factor;
+        g += getG(color) * matrix[2][1]* factor;
+        b += getB(color) * matrix[2][1]* factor;
     }
 
     if (x - 1 >= 0 && y + 1 < image->h)
     {
         color = SDL_GetPixel32(image,x-1,y+1);
-        r += getR(color) * matrix[2][0]* factor;
-        g += getG(color) * matrix[2][0]* factor;
-        b += getB(color) * matrix[2][0]* factor;
+        r += getR(color) * matrix[0][2]* factor;
+        g += getG(color) * matrix[0][2]* factor;
+        b += getB(color) * matrix[0][2]* factor;
     }
     if (y + 1 < image->h)
     {
         color = SDL_GetPixel32(image,x,y+1);
-        r += getR(color) * matrix[2][1]* factor;
-        g += getG(color) * matrix[2][1]* factor;
-        b += getB(color) * matrix[2][1]* factor;
+        r += getR(color) * matrix[1][2]* factor;
+        g += getG(color) * matrix[1][2]* factor;
+        b += getB(color) * matrix[1][2]* factor;
     }
     if (x + 1 < image->w && y + 1 < image->h)
     {

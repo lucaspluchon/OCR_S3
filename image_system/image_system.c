@@ -1,4 +1,4 @@
-#include "include_ocr.h"
+#include "../include_ocr.h"
 
 //Show image in a SDL window
 void ShowImage(SDL_Surface * image, SDL_Window* window)
@@ -50,9 +50,8 @@ void ApplyCorrection(SDL_Surface* image)
         }
     }
 
-    averageGray /= image->w * image->h;
+    averageGray /= image->w * image->h;*
 
-    
     for (int x = 0; x < image->w; x++)
     {
         for (int y = 0; y < image->h; y++)
@@ -62,6 +61,7 @@ void ApplyCorrection(SDL_Surface* image)
             SDL_PutPixel32(image,x,y,color);
         }
     }
+
 
     SDL_UnlockSurface(image);
 }

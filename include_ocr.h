@@ -8,8 +8,8 @@
 #include <string.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "builtin.h"
-#include "color_system.h"
-#include "image_system.h"
+#include "useful/builtin.h"
+#include "image_system/image_system.h"
+#include "image_system/color_system.h"
 
 #endif // INCLUDE_OCR_H_INCLUDED
