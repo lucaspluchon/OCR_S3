@@ -21,7 +21,7 @@ clear :
 	@rm -f a.out
 	@echo "Cleared"
 
-	
+
 list :
 	@echo "All c files"
 	@echo *.c
