@@ -18,10 +18,7 @@ exec:
 
 clear :
 	@rm -f *.o
+	@rm -f $(OBJ)
 	@rm -f a.out
 	@echo "Cleared"
 
-
-list :
-	@echo "All c files"
-	@echo *.c
