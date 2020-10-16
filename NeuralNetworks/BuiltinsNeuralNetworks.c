@@ -14,7 +14,7 @@ double sigmoid(double x)
 
 double randd() 
 {
-  return (double)rand() / (RAND_MAX + 1.0);
+  return (((double)rand() / (RAND_MAX)) * 2) - 1;
 }
 
 // double dot(double * a[], double * b[])
@@ -43,4 +43,11 @@ int lengthl(double l[])
     printf("%zu", sizeof(l[0]));
     printf("size %zu", s);
     return s;
+}
+
+void printNetworks(double *h[6], double *z[8])
+{
+    printf("Inputs : x = %f\ny = %f", *h[2], *h[4]);
+    printf("\nh = {\n\tactivation = %f\n\tbias = %f\n\tweight to x = %f\n\tweight to y = %f\n}\n", *h[0], *h[1], *h[3], *h[5]);
+    printf("\nz = {\n\tactivation = %f\n\tbias = %f\n\tweight to x = %f\n\tweight to h = %f\n\tweight to y = %f\n}\n", *z[0], *z[1], *z[3], *z[5], *z[7]);
 }
