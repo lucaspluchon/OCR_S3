@@ -47,9 +47,9 @@ int Pixel_absRGB(double c)
     return (int) c;
 }
 
-bool Pixel_Exist(SDL_Image* image, int x, int y)
+bool Pixel_Exist(SDL_Surface* image, int x, int y)
 {
-    if (x < 0 or x >= image->w or y < 0 or y >= image->h)
+    if (x < 0 || x >= image->w || y < 0 || y >= image->h)
         return false;
     return true;
 }
@@ -109,7 +109,7 @@ Uint32 Pixel_Convolution(SDL_Surface* image,int matrix[3][3], int x, int y, doub
         }
     }
 
-    return Pixel_RGBto32(255,Pixel_absRGB(r),Pixel_absRGB(g),Pixel_absRGB(b));
+    return Pixel_RGBto32(255,Pixel_absRGB(r),Pixel_absRGB(r),Pixel_absRGB(r));
 }
 
 /*Uint32 Pixel_Median(SDL_Surface* image, int x, int y)
