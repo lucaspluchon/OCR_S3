@@ -2,11 +2,12 @@
 
 void Image_GrayScale(SDL_Surface* image)
 {
+    Uint32 color = 0
     for (int x = 0; x < image->w; x++)
     {
         for (int y = 0; y < image->h; y++)
         {
-            Uint32 color = SDL_GetPixel32(image,x,y);
+            color = SDL_GetPixel32(image,x,y);
             color = Pixel_Grayscale(color);
             SDL_PutPixel32(image,x,y,color);
         }
@@ -70,13 +71,13 @@ void ApplyCorrection(SDL_Surface* image)
                         {1,2,1},
                         {2,4,2},
                         {1,2,1},
-                    };
+                    };*
 
     int sharpen[3][3] = {
                         {0,-1,0},
                         {-1,5,-1},
                         {0,-1,0},
-                     };
+                     };*
 
     SDL_LockSurface(image);
 

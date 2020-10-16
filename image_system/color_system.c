@@ -109,19 +109,3 @@ Uint32 Pixel_Convolution(SDL_Surface* image,int matrix[3][3], int x, int y, doub
 
     return Pixel_RGBto32(255,Pixel_absRGB(r),Pixel_absRGB(r),Pixel_absRGB(r));
 }
-
-/*Uint32 Pixel_Median(SDL_Surface* image, int x, int y)
-{
-    int size = 0;
-    for (int i = y - 1; i <= y + 1; i++)
-    {
-
-        for (int j = x - 1; i <= x + 1; j++)
-        {
-
-            if (Pixel_Exist(image,j,i))
-            {
-                size++;
-            }
-        }
-}*/
