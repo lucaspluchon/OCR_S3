@@ -94,19 +94,17 @@ Uint32 Pixel_Convolution(SDL_Surface* image,int matrix[3][3], int x, int y, doub
 
     for (int i = y - 1; i <= y + 1; i++)
     {
-        k++;
-        l = 0;
-
-        for (int j = x - 1; i <= x + 1; j++)
+        for (int j = x - 1; j <= x + 1; j++)
         {
-            l++;
-
             if (Pixel_Exist(image,j,i))
             {
                 color = SDL_GetPixel32(image,j,i);
                 r += Pixel_GetR(color) * matrix[k][l]* factor;
             }
+            l++;
         }
+        k++;
+        l = 0;
     }
 
     return Pixel_RGBto32(255,Pixel_absRGB(r),Pixel_absRGB(r),Pixel_absRGB(r));
