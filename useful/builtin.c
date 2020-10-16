@@ -32,7 +32,7 @@ bool FileExist(char* path)
     return true;
 }
 
-void ConsoleReadString(char *var, char* message, int size)
+void Console_ReadString(char *var, char* message, int size)
 {
     printf("%s",message);
     char *start = NULL;
