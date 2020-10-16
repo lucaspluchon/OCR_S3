@@ -10,9 +10,8 @@
 void NeuraleNetwork() ;
 double update(double *n[], int size);
 double delta(double error, double out);
-double deltaHiden(double out, double outi, double dk, double w);
 void upadateTree(double *h[6], double *z[8]);
-void learn(double x, double y, double activationH, double activationZ, double fWeight[3], double iWeight[2], double excpect, double hb, double hz);
+void learn(double x, double y, double activationH, double activationZ, double fWeight[3], double iWeight[2], double excpect, double *hb, double *hz, double res[7]);
 
 int main()
 {
@@ -27,9 +26,9 @@ void NeuraleNetwork()
     double iWeight[2] = {0.5, 0.5};
     double fWeight[3] = {0.5, 0.5, 0.5};
     double activationH = 0;
-    double bh = 1;
+    double bh = 0.5;
     double activationZ = 0;
-    double bz = 1;
+    double bz = 0.5;
 
 
     double *h[6] = {&activationH, &bh, &x, &iWeight[0], &y, &iWeight[1]};
@@ -44,22 +43,38 @@ void NeuraleNetwork()
         y = 0;
         excpect = 1;
         upadateTree(h, z);
-        learn(x, y, activationH, activationZ, fWeight, iWeight, excpect, bh, bz);
+        double res1[7];
+        learn(x, y, activationH, activationZ, fWeight, iWeight, excpect, &bh, &bz, res1);
         x = 1;
         y = 1;
         excpect = 0;
         upadateTree(h, z);
-        learn(x, y, activationH, activationZ, fWeight, iWeight, excpect, bh, bz);
-        x = 0;
-        y = 1;
-        excpect = 1;
-        upadateTree(h, z);
-        learn(x, y, activationH, activationZ, fWeight, iWeight, excpect, bh, bz);
+        double res2[7];
+        learn(x, y, activationH, activationZ, fWeight, iWeight, excpect, &bh, &bz, res2);
         x = 0;
         y = 0;
         excpect = 0;
         upadateTree(h, z);
-        learn(x, y, activationH, activationZ, fWeight, iWeight, excpect, bh, bz);
+        double res4[7];
+        learn(x, y, activationH, activationZ, fWeight, iWeight, excpect, &bh, &bz, res4);
+        x = 0;
+        y = 1;
+        excpect = 1;
+        upadateTree(h, z);
+        double res3[7];
+        learn(x, y, activationH, activationZ, fWeight, iWeight, excpect, &bh, &bz, res3);
+        for (int i = 0; i < 3; i++)
+        {
+            fWeight[i] += res1[i] + res2[i] + res3[i] + res4[i];
+        }
+        for (int i = 0; i < 2; i++)
+        {
+            iWeight[i] += res1[i + 4] + res2[i + 4] + res3[i + 4] + res4[i + 4];
+        }
+        bh += res1[6] + res2[6] + res3[6] + res4[6];
+
+        bz += res1[3] + res2[3] + res3[3] + res4[3];
+
     }
 
 
@@ -83,12 +98,12 @@ double delta(double error, double out)
     return error * out * v;
 }
 
-double deltaHiden(double out, double outi, double dk, double w)
-{
-    double v = 1;
-    double d = sigmoideDerivate(out) * dk * w;
-    return v * d * outi;
-}
+// double deltaHiden(double out, double outi, double dk, double w)
+// {
+//     double v = 1;
+//     double d = sigmoideDerivate(out) * dk * w;
+//     return v * d * outi;
+// }
 
 
 double update(double *n[], int size)
@@ -110,27 +125,28 @@ void upadateTree(double *h[6], double *z[8])
     *z[0] = update(z, 8);
 }
 
-void learn(double x, double y, double activationH, double activationZ, double fWeight[3], double iWeight[2], double excpect, double hb, double hz)
+void learn(double x, double y, double activationH, double activationZ, double fWeight[3], double iWeight[2], double excpect, double *hb, double *hz, double res[7])
 {
-//#3
+    //#3
     double error = (excpect - activationZ) * sigmoideDerivate(activationZ);
+    double hError = sigmoideDerivate(activationH) * error * fWeight[1];
 
     //#4
-
     // double deltaF0 = delta(error, x);
     // double deltaF1 = delta(error, activationH);
     // double deltaF2 = delta(error, y);
 
-    fWeight[0] += delta(error, x);
-    fWeight[1] += delta(error, activationH);
-    fWeight[2] += delta(error, y);
+    res[0] = delta(error, x);
+    res[1] = delta(error, activationH);
+    res[2] = delta(error, y);
     // double deltaBH = deltaHiden(1, activationZ, error, hz);
 
-    hz += deltaHiden(1, activationZ, error, hz);
+    res[3] = delta(error, 1);
 
-    iWeight[0] += deltaHiden(activationH, x, error, iWeight[0]);
-    iWeight[1] += deltaHiden(activationH, y, error, iWeight[1]);
-    hb += deltaHiden(1, activationH, error, hb);
+    res[4] = delta(hError, x);
+    res[5] = delta(hError, y);
+    res[6] = delta(hError, 1);
+
 
     // fWeight[0] += deltaF0;
     // fWeight[1] += deltaF1;
