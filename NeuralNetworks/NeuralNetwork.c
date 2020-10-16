@@ -23,12 +23,12 @@ void NeuraleNetwork()
     double excpect = 1;
     double x = 1;
     double y = 0;
-    double iWeight[2] = {0.5, 0.5};
-    double fWeight[3] = {0.5, 0.5, 0.5};
+    double iWeight[2] = {randd(), randd()};
+    double fWeight[3] = {randd(), randd(), randd()};
     double activationH = 0;
-    double bh = 0.5;
+    double bh = randd();
     double activationZ = 0;
-    double bz = 0.5;
+    double bz = randd();
 
 
     double *h[6] = {&activationH, &bh, &x, &iWeight[0], &y, &iWeight[1]};
@@ -37,7 +37,7 @@ void NeuraleNetwork()
     printNetworks(h, z);
 
 
-    for (int i = 0; i < 10000; i++)
+    for (int i = 0; i < 1000; i++)
     {
         x = 1;
         y = 0;
@@ -52,17 +52,17 @@ void NeuraleNetwork()
         double res2[7];
         learn(x, y, activationH, activationZ, fWeight, iWeight, excpect, &bh, &bz, res2);
         x = 0;
-        y = 0;
-        excpect = 0;
-        upadateTree(h, z);
-        double res4[7];
-        learn(x, y, activationH, activationZ, fWeight, iWeight, excpect, &bh, &bz, res4);
-        x = 0;
         y = 1;
         excpect = 1;
         upadateTree(h, z);
         double res3[7];
         learn(x, y, activationH, activationZ, fWeight, iWeight, excpect, &bh, &bz, res3);
+        x = 0;
+        y = 0;
+        excpect = 0;
+        upadateTree(h, z);
+        double res4[7];
+        learn(x, y, activationH, activationZ, fWeight, iWeight, excpect, &bh, &bz, res4);
         for (int i = 0; i < 3; i++)
         {
             fWeight[i] += res1[i] + res2[i] + res3[i] + res4[i];
@@ -79,22 +79,27 @@ void NeuraleNetwork()
 
 
     printNetworks(h, z);
+    x = 1;
+    y = 1;
     upadateTree(h, z);
     printf("Res for 1, 1 = %f\n", activationZ);
     x = 0;
+    y = 1;
     upadateTree(h, z);
     printf("Res for 0, 1 = %f\n", activationZ);
+    x = 0;
     y = 0;
     upadateTree(h, z);
     printf("Res for 0, 0 = %f\n", activationZ);
     x = 1;
+    y = 0;
     upadateTree(h, z);
     printf("Res for 1, 0 = %f\n", activationZ);
 }
 
 double delta(double error, double out)
 {
-    double v = 1;
+    double v = 2;
     return error * out * v;
 }
 
