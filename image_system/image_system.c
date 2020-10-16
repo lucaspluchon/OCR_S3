@@ -1,7 +1,7 @@
 #include "../include_ocr.h"
 
 //Show image in a SDL window
-void ShowImage(SDL_Surface * image, SDL_Window* window)
+void Image_Show(SDL_Surface * image, SDL_Window* window)
 {
 	SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
 	SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, image);
@@ -9,7 +9,7 @@ void ShowImage(SDL_Surface * image, SDL_Window* window)
 	SDL_RenderPresent(renderer);
 }
 
-SDL_Surface* LoadImage(char* path)
+SDL_Surface* Image_Load(char* path)
 {
     if (!FileExist(path))
     {
@@ -17,6 +17,11 @@ SDL_Surface* LoadImage(char* path)
     }
 
     return SDL_LoadBMP(path);
+}
+
+SDL_Surface* Image_Copy(SDL_Surface* image)
+{
+    return SDL_ConvertSurface(image, image->format, SDL_SWSURFACE);
 }
 
 void SDL_PutPixel32(SDL_Surface *surface, int x, int y, Uint32 pixel)
@@ -31,38 +36,4 @@ Uint32 SDL_GetPixel32(SDL_Surface *surface, int x, int y)
     return *(Uint32*)p;
 }
 
-
-//Apply all the useful correction to the image for the neural network
-void ApplyCorrection(SDL_Surface* image)
-{
-    SDL_LockSurface(image);
-
-    int averageGray = 0;
-
-    for (int x = 0; x < image->w; x++)
-    {
-        for (int y = 0; y < image->h; y++)
-        {
-            Uint32 color = SDL_GetPixel32(image,x,y);
-            color = GrayScale_Pixel(color);
-            averageGray += getR(color);
-            SDL_PutPixel32(image,x,y,color);
-        }
-    }
-
-    averageGray /= image->w * image->h;
-
-    for (int x = 0; x < image->w; x++)
-    {
-        for (int y = 0; y < image->h; y++)
-        {
-            Uint32 color = SDL_GetPixel32(image,x,y);
-            color = Threshold_Pixel(color,averageGray);
-            SDL_PutPixel32(image,x,y,color);
-        }
-    }
-
-
-    SDL_UnlockSurface(image);
-}
 

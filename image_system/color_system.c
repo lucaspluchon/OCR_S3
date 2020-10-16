@@ -2,23 +2,23 @@
 
 
 //Get RGB colors from an Uint32 color
-uint8_t getR(Uint32 c)
+uint8_t Pixel_GetR(Uint32 c)
 {
-    return c >> 16;
+    return  c >> 16;
 }
 
-uint8_t getG(Uint32 c)
+uint8_t Pixel_GetG(Uint32 c)
 {
     return c >> 8;
 }
 
-uint8_t getB(Uint32 c)
+uint8_t Pixel_GetB(Uint32 c)
 {
     return c;
 }
 
 //Return UInt32 color from RGBA color
-Uint32 ColorToUInt(int a, int r, int g, int b)
+Uint32 Pixel_RGBto32(int a, int r, int g, int b)
 {
   Uint32 c;
   c = a;
@@ -32,7 +32,7 @@ Uint32 ColorToUInt(int a, int r, int g, int b)
 }
 
 //Clamp the RGB at 255 and 0
-int absRGB(double c)
+int Pixel_absRGB(double c)
 {
     if (c > 255)
     {
@@ -47,109 +47,83 @@ int absRGB(double c)
     return (int) c;
 }
 
-Uint32 GrayScale_Pixel(Uint32 color)
+bool Pixel_Exist(SDL_Image* image, int x, int y)
 {
-    int r = (int) getR(color);
-    int g = (int) getG(color);
-    int b = (int) getB(color);
-    int gray = (r + g + b) / 3;
-    return ColorToUInt(255,gray,gray,gray);
+    if (x < 0 or x >= image->w or y < 0 or y >= image->h)
+        return false;
+    return true;
 }
 
-Uint32 Contrast_Pixel(Uint32 color, int delta)
+Uint32 Pixel_Grayscale(Uint32 color)
 {
-    int r = (int) getR(color);
-    int g = (int) getG(color);
-    int b = (int) getB(color);
+    int r = Pixel_GetR(color);
+    int g = Pixel_GetG(color);
+    int b = Pixel_GetB(color);
+    int gray = (r + g + b) / 3;
+    return Pixel_RGBto32(255,gray,gray,gray);
+}
+
+Uint32 Pixel_Constrast(Uint32 color, int delta)
+{
+    int r = Pixel_GetR(color);
+    int g = Pixel_GetG(color);
+    int b = Pixel_GetB(color);
     double factor = (259 * (delta + 255))/(255 * (259 - delta));
-    r = absRGB(factor * (r - 128) + 128);
-    g = absRGB(factor * (g - 128) + 128);
-    b = absRGB(factor * (b - 128) + 128);
-    return ColorToUInt(255,r,g,b);
+    r = Pixel_absRGB(factor * (r - 128) + 128);
+    g = Pixel_absRGB(factor * (g - 128) + 128);
+    b = Pixel_absRGB(factor * (b - 128) + 128);
+    return Pixel_RGBto32(255,r,g,b);
 }
 
 //Need to be apply on a gray scale color
-Uint32 Threshold_Pixel(Uint32 color, int n)
+Uint32 Pixel_Treshold(Uint32 color, int n)
 {
-    int r = (int) getR(color);
+    int r = Pixel_GetR(color);
     if (r > n)
-        return ColorToUInt(255,255,255,255);
+        return Pixel_RGBto32(255,255,255,255);
     else
-        return ColorToUInt(255,0,0,0);
+        return Pixel_RGBto32(255,0,0,0);
 }
 
-void Convolution_Pixel(SDL_Surface* image,int matrix[3][3], int x, int y, double factor)
+Uint32 Pixel_Convolution(SDL_Surface* image,int matrix[3][3], int x, int y, double factor)
 {
     Uint32 color = 0;
     double r = 0;
-    double g = 0;
-    double b = 0;
+    int k = 0;
+    int l = 0;
 
-    if (x - 1 >= 0 && y - 1 >= 0)
+    for (int i = y - 1; i <= y + 1; i++)
     {
-        color = SDL_GetPixel32(image,x-1,y-1);
-        r += getR(color) * matrix[0][0]* factor;
-        g += getG(color) * matrix[0][0]* factor;
-        b += getB(color) * matrix[0][0]* factor;
-    }
-    if (y - 1 >= 0)
-    {
-        color = SDL_GetPixel32(image,x,y-1);
-        r += getR(color) * matrix[1][0]* factor;
-        g += getG(color) * matrix[1][0]* factor;
-        b += getB(color) * matrix[1][0]* factor;
-    }
-    if (x + 1 < image->w && y - 1 >= 0)
-    {
-        color = SDL_GetPixel32(image,x+1,y-1);
-        r += getR(color) * matrix[2][0]* factor;
-        g += getG(color) * matrix[2][0]* factor;
-        b += getB(color) * matrix[2][0]* factor;
+        k++;
+        l = 0;
+
+        for (int j = x - 1; i <= x + 1; j++)
+        {
+            l++;
+
+            if (Pixel_Exist(image,j,i))
+            {
+                color = SDL_GetPixel32(image,j,i);
+                r += Pixel_GetR(color) * matrix[k][l]* factor;
+            }
+        }
     }
 
-    if (x - 1 >= 0)
-    {
-        color = SDL_GetPixel32(image,x-1,y);
-        r += getR(color) * matrix[0][1]* factor;
-        g += getG(color) * matrix[0][1]* factor;
-        b += getB(color) * matrix[0][1]* factor;
-    }
-
-    color = SDL_GetPixel32(image,x,y);
-    r += getR(color) * matrix[1][1]* factor;
-    g += getG(color) * matrix[1][1]* factor;
-    b += getB(color) * matrix[1][1]* factor;
-
-    if (x + 1 < image->w)
-    {
-        color = SDL_GetPixel32(image,x+1,y);
-        r += getR(color) * matrix[2][1]* factor;
-        g += getG(color) * matrix[2][1]* factor;
-        b += getB(color) * matrix[2][1]* factor;
-    }
-
-    if (x - 1 >= 0 && y + 1 < image->h)
-    {
-        color = SDL_GetPixel32(image,x-1,y+1);
-        r += getR(color) * matrix[0][2]* factor;
-        g += getG(color) * matrix[0][2]* factor;
-        b += getB(color) * matrix[0][2]* factor;
-    }
-    if (y + 1 < image->h)
-    {
-        color = SDL_GetPixel32(image,x,y+1);
-        r += getR(color) * matrix[1][2]* factor;
-        g += getG(color) * matrix[1][2]* factor;
-        b += getB(color) * matrix[1][2]* factor;
-    }
-    if (x + 1 < image->w && y + 1 < image->h)
-    {
-        color = SDL_GetPixel32(image,x+1,y+1);
-        r += getR(color) * matrix[2][2]* factor;
-        g += getG(color) * matrix[2][2]* factor;
-        b += getB(color) * matrix[2][2]* factor;
-    }
-
-    SDL_PutPixel32(image,x,y,ColorToUInt(255,absRGB(r),absRGB(g),absRGB(b)));
+    return Pixel_RGBto32(255,Pixel_absRGB(r),Pixel_absRGB(g),Pixel_absRGB(b));
 }
 
+/*Uint32 Pixel_Median(SDL_Surface* image, int x, int y)
+{
+    int size = 0;
+    for (int i = y - 1; i <= y + 1; i++)
+    {
+
+        for (int j = x - 1; i <= x + 1; j++)
+        {
+
+            if (Pixel_Exist(image,j,i))
+            {
+                size++;
+            }
+        }
+}*/

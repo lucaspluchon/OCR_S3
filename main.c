@@ -8,13 +8,13 @@ int main(int argc, char *argv[])
 
     SDL_Init(SDL_INIT_VIDEO);
 
-    SDL_Surface* image = LoadImage(path);
+    SDL_Surface* image = Image_Load(path);
 
 	SDL_Window* window = SDL_CreateWindow("SDL2 Displaying Image", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, image->w, image->h, 0);
 
 	ApplyCorrection(image);
 
-	ShowImage(image ,window);
+	Image_Show(image ,window);
 
 	PauseSDL();
 
