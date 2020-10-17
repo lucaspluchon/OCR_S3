@@ -6,5 +6,6 @@ double sigmoid(double x);
 double randd();
 int lengthl(double * l[]);
 void printNetworks(double *h[6], double *z[8]);
+void printRes(double res, double x, double y);
 
 #endif
