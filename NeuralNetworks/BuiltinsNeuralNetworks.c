@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include<stdio.h>
 #include<time.h>
+#include"BuiltinsNeuralNetworks.h"
 
 double sigmoideDerivate(double x) 
 {
@@ -20,14 +21,7 @@ double randd()
 
 
 
-int lengthl(double l[])
-{
 
-    size_t s = sizeof(*l) / sizeof(l[0]);
-    printf("%zu", sizeof(l[0]));
-    printf("size %zu", s);
-    return s;
-}
 
 void printNetworks(double *h[6], double *z[8])
 {
@@ -46,4 +40,17 @@ void printRes(double res, double x, double y)
         percent = 100 - percent;
     }
     printf("Result for (%d, %d) : %d  (confidence %.2f%%)  %lf\n", (int)x, (int)y, cleanRes, percent, res);
+}
+
+
+void printNode(Node *node, char name)
+{
+    printf("Node %c\n", name);
+    printf("    activation = %f\n", *(node->activation));
+    printf("    bias = %f\n", node->bias);
+    for (size_t i = 0; i < node->neuronsLen; i += 2)
+    {
+        printf("    activation = %f", *(node->neurons[i]));
+        printf("    weight = %f\n", *(node->neurons[i + 1]));
+    }
 }

@@ -16,9 +16,9 @@ exec:
 	@gcc $(OBJ) $(CFLAGS) $(LINKERFLAGS)
 	@echo "a.out generated"
 
-clear :
+clean :
 	@rm -f *.o
 	@rm -f $(OBJ)
 	@rm -f a.out
-	@echo "Cleared"
+	@echo "Cleaned"
 
