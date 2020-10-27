@@ -51,6 +51,7 @@ void Image_Convolution(SDL_Surface* image, int matrix[3][3], double factor)
     }
 
     SDL_UnlockSurface(image_temp);
+    SDL_FreeSurface(image_temp);
 }
 
 void Image_Median(SDL_Surface* image)
@@ -70,6 +71,7 @@ void Image_Median(SDL_Surface* image)
     }
 
     SDL_UnlockSurface(image_temp);
+    SDL_FreeSurface(image_temp);
 }
 
 //Apply all the useful correction to the image before bloc detection

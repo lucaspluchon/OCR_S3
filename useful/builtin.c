@@ -18,6 +18,8 @@ void PauseSDL()
                 continuer = 0;
         }
     }
+    SDL_QuitSubSystem(SDL_INIT_VIDEO);
+    SDL_Quit();
 }
 
 void DisplayError(char* message)
