@@ -48,7 +48,11 @@ void ImageDemo()
         Detect_Block(image,image_rlsa,renderer,true,char_block,size);
 
     SDL_RenderPresent(renderer);
+    free(char_block);
     SDL_FreeSurface(image);
     SDL_FreeSurface(image_rlsa);
+    SDL_DestroyRenderer(renderer);
     PauseSDL();
+    SDL_QuitSubSystem(SDL_INIT_VIDEO);
+    SDL_Quit();
 }
