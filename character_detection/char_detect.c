@@ -1,9 +1,18 @@
-#include "include_ocr.h"
-#include "image_system/image_system.h"
-#include "image_system/color_system.h"
+#include <stdbool.h>
+#include <SDL2/SDL.h>
+#include "../image_system/image_system.h"
+#include "../image_system/color_system.h"
+#include "../useful/builtin.h"
 #include "char_detect.h"
 
-SDL_Surface* DetectBlock(SDL_Surface* image, int n)
+//------------------------------------------------------------------------
+//---- BLOCS, LINES AND CHARS DETECTION SYSTEM
+//------------------------------------------------------------------------
+
+//------------------------------------------------------------------------
+//---- RLSA ALGORITHM TO PERMIT THE BLOCK DETECTION
+//------------------------------------------------------------------------
+SDL_Surface* Detect_RLSA_Block(SDL_Surface* image, int n)
 {
     SDL_Surface* image_temp = Image_Copy(image);
     SDL_LockSurface(image);
@@ -11,7 +20,7 @@ SDL_Surface* DetectBlock(SDL_Surface* image, int n)
 
     int c = 0;
     int c2 = 0;
-    int breaking = false;
+    bool breaking = false;
 
     for (int x = 0; x < image->w; x++)
     {
@@ -28,7 +37,8 @@ SDL_Surface* DetectBlock(SDL_Surface* image, int n)
                         c2 = Pixel_GetR(SDL_GetPixel32(image,x2,y2));
                         if (c2 == 0)
                         {
-                            SDL_PutPixel32(image_temp,x,y,Pixel_RGBto32(255,0,0,0));
+                            SDL_PutPixel32(image_temp,x,y,Pixel_RGBto32(255,0,0
+                                                                        ,0));
                             breaking = true;
                             break;
                         }
@@ -47,14 +57,27 @@ SDL_Surface* DetectBlock(SDL_Surface* image, int n)
     return image_temp;
 }
 
-//Counting functions
+//------------------------------------------------------------------------
+//---- COUTING FUNCTIONS TO MAKE THE ARRAY WHICH CONTAIN THE CHARACTERS
+//------------------------------------------------------------------------
 
-void Count_VerticalBlock(SDL_Surface* image, SDL_Surface* image_copy, PixelBlock block, bool detected_whitebefore, int* nbBlock, int* nbLine, int* nbChar)
+//Hat function for Count_VerticalBlock
+void Count_Block(SDL_Surface* image, SDL_Surface* image_copy, array_size* size)
+{
+    PixelBlock block = {{0,0},{image->w-1,0},{0,image->h-1},
+                        {image->w-1,image->h-1}};
+
+    Count_VerticalBlock(image, image_copy, block, true, size);
+}
+
+void Count_VerticalBlock(SDL_Surface* image, SDL_Surface* image_copy,
+                         PixelBlock block, bool detected_whitebefore,
+                         array_size* size)
 {
     bool detected_black = false;
-    int c = 0;
     bool inDetection = false;
     bool detected_white = false;
+    int c = 0;
     PixelBlock block_temp = block;
 
     for (int x = block.left_top.x; x <= block.right_top.x; x++)
@@ -84,22 +107,25 @@ void Count_VerticalBlock(SDL_Surface* image, SDL_Surface* image_copy, PixelBlock
             block_temp.right_top.x = x;
             block_temp.right_bottom.x = x;
             if (detected_white == true || detected_whitebefore == true)
-                Count_HorizontalBlock(image, image_copy, block_temp, detected_white, nbBlock, nbLine, nbChar);
+                Count_HorizontalBlock(image, image_copy, block_temp,
+                                      detected_white, size);
             else
             {
-                Count_Line(image,block_temp, nbLine, nbChar);
-                *nbBlock += 1;
+                Count_Line(image,block_temp, size);
+                size->nb_block += 1;
             }
         }
     }
 }
 
-void Count_HorizontalBlock(SDL_Surface* image, SDL_Surface* image_copy, PixelBlock block, bool detected_whitebefore, int* nbBlock, int* nbLine, int* nbChar)
+void Count_HorizontalBlock(SDL_Surface* image, SDL_Surface* image_copy,
+                           PixelBlock block, bool detected_whitebefore,
+                           array_size* size)
 {
     bool detected_black = false;
-    int c = 0;
     bool inDetection = false;
     bool detected_white = false;
+    int c = 0;
     PixelBlock block_temp = block;
 
     for (int y = block.left_top.y; y <= block.left_bottom.y; y++)
@@ -129,24 +155,25 @@ void Count_HorizontalBlock(SDL_Surface* image, SDL_Surface* image_copy, PixelBlo
             block_temp.left_bottom.y = y;
             block_temp.right_bottom.y = y;
             if (detected_white == true || detected_whitebefore == true)
-                Count_VerticalBlock(image, image_copy, block_temp, detected_white, nbBlock, nbLine, nbChar);
+                Count_VerticalBlock(image, image_copy, block_temp,
+                                    detected_white, size);
             else
             {
-                Count_Line(image,block_temp, nbLine, nbChar);
-                *nbBlock += 1;
+                Count_Line(image,block_temp, size);
+                size->nb_block += 1;
             }
 
         }
     }
 }
 
-void Count_Line(SDL_Surface* image, PixelBlock block, int* nbLine, int* nbChar)
+void Count_Line(SDL_Surface* image, PixelBlock block, array_size* size)
 {
     bool detected_black = false;
-    int c = 0;
     bool inDetection = false;
+    size_t nbLine_temp = 0;
+    int c = 0;
     PixelBlock block_temp = block;
-    int nbLine_temp = 0;
 
     for (int y = block.left_top.y; y <= block.left_bottom.y; y++)
     {
@@ -154,7 +181,11 @@ void Count_Line(SDL_Surface* image, PixelBlock block, int* nbLine, int* nbChar)
         for (int x = block.left_top.x; x <= block.right_top.x; x++)
         {
             c = Pixel_GetR(SDL_GetPixel32(image,x,y));
-            detected_black = detected_black || (c == 0);
+            if (c == 0)
+            {
+                detected_black = true;
+                break;
+            }
         }
 
         if (detected_black)
@@ -173,19 +204,19 @@ void Count_Line(SDL_Surface* image, PixelBlock block, int* nbLine, int* nbChar)
             block_temp.left_bottom.y = y;
             block_temp.right_bottom.y = y;
             nbLine_temp++;
-            Count_Char(image,block_temp,nbChar);
+            Count_Char(image,block_temp,size);
         }
     }
 
-    *nbLine = max_int(*nbLine,nbLine_temp);
+    size->nb_line = max_size(size->nb_line,nbLine_temp);
 }
 
-void Count_Char(SDL_Surface* image, PixelBlock block, int* nbChar)
+void Count_Char(SDL_Surface* image, PixelBlock block, array_size* size)
 {
     bool detected_black = false;
-    int c = 0;
     bool inDetection = false;
-    int nbChar_temp = 0;
+    size_t nbChar_temp = 0;
+    int c = 0;
 
     for (int x = block.left_top.x; x <= block.right_top.x; x++)
     {
@@ -193,7 +224,11 @@ void Count_Char(SDL_Surface* image, PixelBlock block, int* nbChar)
         for (int y = block.left_top.y; y <= block.left_bottom.y; y++)
         {
             c = Pixel_GetR(SDL_GetPixel32(image,x,y));
-            detected_black = detected_black || (c == 0);
+            if (c == 0)
+            {
+                detected_black = true;
+                break;
+            }
         }
 
         if (detected_black)
@@ -205,18 +240,39 @@ void Count_Char(SDL_Surface* image, PixelBlock block, int* nbChar)
             nbChar_temp++;
         }
     }
-    *nbChar = max_int(*nbChar,nbChar_temp);
+    size->nb_char = max_size(size->nb_char,nbChar_temp);
 }
 
-//Put all the char in a list
-void Dectect_VerticalBlock(SDL_Surface* image, SDL_Surface* image_copy, SDL_Renderer* renderer, bool DrawLine, PixelBlock block, bool detected_whitebefore)
+//------------------------------------------------------------------------
+//---- DETECT CHARACTERS AND PUT IN THE ARRAY
+//------------------------------------------------------------------------
+
+//Hat function for Detect_VerticalBlock
+void Detect_Block(SDL_Surface* image, SDL_Surface* image_rlsa,
+                  SDL_Renderer* renderer, bool DrawLine, PixelBlock char_block[],
+                  array_size size)
+{
+    PixelBlock block = {{0,0},{image->w-1,0},{0,image->h-1},
+                        {image->w-1,image->h-1}};
+
+    array_size pos = {0,0,0};
+    Detect_VerticalBlock(image, image_rlsa, renderer, DrawLine, block, true,
+                         char_block, size, pos);
+
+}
+
+void Detect_VerticalBlock(SDL_Surface* image, SDL_Surface* image_rlsa,
+                           SDL_Renderer* renderer, bool DrawLine,
+                           PixelBlock block, bool detected_whitebefore,
+                           PixelBlock char_block[], array_size size,
+                           array_size pos)
 {
     bool detected_black = false;
-    int c = 0;
-    bool inDetection = false;
     bool detected_white = false;
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    bool inDetection = false;
+    int c = 0;
     PixelBlock block_temp = block;
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 
     for (int x = block.left_top.x; x <= block.right_top.x; x++)
     {
@@ -224,7 +280,7 @@ void Dectect_VerticalBlock(SDL_Surface* image, SDL_Surface* image_copy, SDL_Rend
         detected_white = false;
         for (int y = block.left_top.y; y <= block.left_bottom.y; y++)
         {
-            c = Pixel_GetR(SDL_GetPixel32(image_copy,x,y));
+            c = Pixel_GetR(SDL_GetPixel32(image_rlsa,x,y));
             detected_black = detected_black || (c == 0);
             detected_white = detected_white && (c == 255);
         }
@@ -238,7 +294,10 @@ void Dectect_VerticalBlock(SDL_Surface* image, SDL_Surface* image_copy, SDL_Rend
                 if (DrawLine)
                 {
                     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-                    SDL_RenderDrawLine(renderer, block_temp.left_top.x, block_temp.left_top.y, block_temp.left_bottom.x, block_temp.left_bottom.y);
+                    SDL_RenderDrawLine(renderer, block_temp.left_top.x,
+                                       block_temp.left_top.y,
+                                       block_temp.left_bottom.x,
+                                       block_temp.left_bottom.y);
                 }
             }
             inDetection = true;
@@ -252,22 +311,35 @@ void Dectect_VerticalBlock(SDL_Surface* image, SDL_Surface* image_copy, SDL_Rend
             if (DrawLine)
             {
                 SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-                SDL_RenderDrawLine(renderer, block_temp.right_top.x, block_temp.right_top.y, block_temp.right_bottom.x, block_temp.right_bottom.y);
+                SDL_RenderDrawLine(renderer, block_temp.right_top.x,
+                                   block_temp.right_top.y,
+                                   block_temp.right_bottom.x,
+                                   block_temp.right_bottom.y);
             }
             if (detected_white == true || detected_whitebefore == true)
-                Dectect_HorizontalBlock(image, image_copy, renderer, DrawLine, block_temp, detected_white);
+                Detect_HorizontalBlock(image, image_rlsa, renderer, DrawLine,
+                                        block_temp, detected_white,
+                                        char_block, size, pos);
             else
-                Dectect_Line(image,renderer,DrawLine,block_temp);
+            {
+                Detect_Line(image,renderer,DrawLine,block_temp,
+                            char_block, size, pos);
+                pos.nb_block++;
+            }
         }
     }
 }
 
-void Dectect_HorizontalBlock(SDL_Surface* image, SDL_Surface* image_copy, SDL_Renderer* renderer, bool DrawLine, PixelBlock block, bool detected_whitebefore)
+void Detect_HorizontalBlock(SDL_Surface* image, SDL_Surface* image_rlsa,
+                           SDL_Renderer* renderer, bool DrawLine,
+                           PixelBlock block, bool detected_whitebefore,
+                           PixelBlock char_block[], array_size size,
+                           array_size pos)
 {
     bool detected_black = false;
-    int c = 0;
-    bool inDetection = false;
     bool detected_white = false;
+    bool inDetection = false;
+    int c = 0;
     PixelBlock block_temp = block;
 
     for (int y = block.left_top.y; y <= block.left_bottom.y; y++)
@@ -276,7 +348,7 @@ void Dectect_HorizontalBlock(SDL_Surface* image, SDL_Surface* image_copy, SDL_Re
         detected_white = false;
         for (int x = block.left_top.x; x <= block.right_top.x; x++)
         {
-            c = Pixel_GetR(SDL_GetPixel32(image_copy,x,y));
+            c = Pixel_GetR(SDL_GetPixel32(image_rlsa,x,y));
             detected_black = detected_black || (c == 0);
             detected_white = detected_white && (c == 255);
         }
@@ -290,7 +362,10 @@ void Dectect_HorizontalBlock(SDL_Surface* image, SDL_Surface* image_copy, SDL_Re
                 if (DrawLine)
                 {
                     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-                    SDL_RenderDrawLine(renderer, block_temp.left_top.x, block_temp.left_top.y, block_temp.right_top.x, block_temp.right_top.y);
+                    SDL_RenderDrawLine(renderer, block_temp.left_top.x,
+                                       block_temp.left_top.y,
+                                       block_temp.right_top.x,
+                                       block_temp.right_top.y);
                 }
             }
             inDetection = true;
@@ -304,22 +379,33 @@ void Dectect_HorizontalBlock(SDL_Surface* image, SDL_Surface* image_copy, SDL_Re
             if (DrawLine)
             {
                 SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-                SDL_RenderDrawLine(renderer, block_temp.left_bottom.x, block_temp.left_bottom.y, block_temp.right_bottom.x, block_temp.right_bottom.y);
+                SDL_RenderDrawLine(renderer, block_temp.left_bottom.x,
+                                   block_temp.left_bottom.y,
+                                   block_temp.right_bottom.x,
+                                   block_temp.right_bottom.y);
             }
             if (detected_white == true || detected_whitebefore == true)
-                Dectect_VerticalBlock(image, image_copy, renderer, DrawLine, block_temp, detected_white);
+                Detect_VerticalBlock(image, image_rlsa, renderer, DrawLine,
+                                        block_temp, detected_white,
+                                        char_block, size, pos);
             else
-                Dectect_Line(image,renderer,DrawLine,block_temp);
+            {
+                Detect_Line(image,renderer,DrawLine,block_temp,
+                            char_block, size, pos);
+                pos.nb_block++;
+            }
 
         }
     }
 }
 
-void Dectect_Line(SDL_Surface* image, SDL_Renderer* renderer, bool DrawLine, PixelBlock block)
+void Detect_Line(SDL_Surface* image, SDL_Renderer* renderer, bool DrawLine,
+                  PixelBlock block, PixelBlock char_block[], array_size size,
+                  array_size pos)
 {
     bool detected_black = false;
-    int c = 0;
     bool inDetection = false;
+    int c = 0;
     PixelBlock block_temp = block;
 
     for (int y = block.left_top.y; y <= block.left_bottom.y; y++)
@@ -328,7 +414,11 @@ void Dectect_Line(SDL_Surface* image, SDL_Renderer* renderer, bool DrawLine, Pix
         for (int x = block.left_top.x; x <= block.right_top.x; x++)
         {
             c = Pixel_GetR(SDL_GetPixel32(image,x,y));
-            detected_black = detected_black || (c == 0);
+            if (c == 0)
+            {
+                detected_black = true;
+                break;
+            }
         }
 
         if (detected_black)
@@ -340,7 +430,10 @@ void Dectect_Line(SDL_Surface* image, SDL_Renderer* renderer, bool DrawLine, Pix
                 if (DrawLine)
                 {
                     SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-                    SDL_RenderDrawLine(renderer, block_temp.left_top.x, block_temp.left_top.y, block_temp.right_top.x, block_temp.right_top.y);
+                    SDL_RenderDrawLine(renderer, block_temp.left_top.x,
+                                       block_temp.left_top.y,
+                                       block_temp.right_top.x,
+                                       block_temp.right_top.y);
                 }
             }
             inDetection = true;
@@ -354,19 +447,25 @@ void Dectect_Line(SDL_Surface* image, SDL_Renderer* renderer, bool DrawLine, Pix
             if (DrawLine)
             {
                 SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-                SDL_RenderDrawLine(renderer, block_temp.left_bottom.x, block_temp.left_bottom.y, block_temp.right_bottom.x, block_temp.right_bottom.y);
+                SDL_RenderDrawLine(renderer, block_temp.left_bottom.x,
+                                   block_temp.left_bottom.y,
+                                   block_temp.right_bottom.x,
+                                   block_temp.right_bottom.y);
             }
-            Dectect_Char(image,renderer,DrawLine,block_temp);
+            Detect_Char(image,renderer,DrawLine,block_temp,char_block,size,pos);
+            pos.nb_line++;
         }
     }
 
 }
 
-void Dectect_Char(SDL_Surface* image, SDL_Renderer* renderer, bool DrawLine, PixelBlock block)
+void Detect_Char(SDL_Surface* image, SDL_Renderer* renderer, bool DrawLine,
+                  PixelBlock block, PixelBlock char_block[], array_size size,
+                  array_size pos)
 {
     bool detected_black = false;
-    int c = 0;
     bool inDetection = false;
+    int c = 0;
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
     PixelBlock block_temp = block;
 
@@ -376,7 +475,11 @@ void Dectect_Char(SDL_Surface* image, SDL_Renderer* renderer, bool DrawLine, Pix
         for (int y = block.left_top.y; y <= block.left_bottom.y; y++)
         {
             c = Pixel_GetR(SDL_GetPixel32(image,x,y));
-            detected_black = detected_black || (c == 0);
+            if (c == 0)
+            {
+                detected_black = true;
+                break;
+            }
         }
 
         if (detected_black)
@@ -388,7 +491,10 @@ void Dectect_Char(SDL_Surface* image, SDL_Renderer* renderer, bool DrawLine, Pix
                 if (DrawLine)
                 {
                     SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
-                    SDL_RenderDrawLine(renderer, block_temp.left_top.x, block_temp.left_top.y, block_temp.left_bottom.x, block_temp.left_bottom.y);
+                    SDL_RenderDrawLine(renderer, block_temp.left_top.x,
+                                       block_temp.left_top.y,
+                                       block_temp.left_bottom.x,
+                                       block_temp.left_bottom.y);
                 }
             }
             inDetection = true;
@@ -402,8 +508,13 @@ void Dectect_Char(SDL_Surface* image, SDL_Renderer* renderer, bool DrawLine, Pix
             if (DrawLine)
             {
                 SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
-                SDL_RenderDrawLine(renderer, block_temp.right_top.x, block_temp.right_top.y, block_temp.right_bottom.x, block_temp.right_bottom.y);
+                SDL_RenderDrawLine(renderer, block_temp.right_top.x,
+                                   block_temp.right_top.y,
+                                   block_temp.right_bottom.x,
+                                   block_temp.right_bottom.y);
             }
+            char_block[offset(pos.nb_block,pos.nb_line,pos.nb_char,size)] = block_temp;
+            pos.nb_char++;
         }
     }
 }

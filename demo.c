@@ -1,39 +1,54 @@
-#include "include_ocr.h"
-#include "char_detect.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include "character_detection/char_detect.h"
+#include "useful/builtin.h"
+#include "image_system/image_system.h"
+#include "image_system/image_manipulation.h"
 
 void ImageDemo()
 {
     char path[99] = {0};
-    int nbBlock = 0;
-    int nbLine = 0;
-    int nbChar = 0;
+    char rlsa[2] = {0};
+    array_size size = {0,0,0};
+    //int size = 0;
     Console_ReadString(path,"\nImage path : ", 99);
+    Console_ReadString(rlsa,"Show RLSA (y or n) : ", 2);
 
+    //------------------------------------------------------------------------
+    //---- SDL INIT
+    //------------------------------------------------------------------------
     SDL_Init(SDL_INIT_VIDEO);
-
     SDL_Surface* image = Image_Load(path);
-
-    SDL_Window* window = SDL_CreateWindow("SDL2 Displaying Image", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, image->w, image->h, 0);
-
-    ApplyCorrection(image);
-    SDL_Surface* image_block = DetectBlock(image,7);
-
-    //Generate Renderer
+    SDL_Window* window = SDL_CreateWindow("SDL2 Displaying Image",
+                                          SDL_WINDOWPOS_UNDEFINED,
+                                          SDL_WINDOWPOS_UNDEFINED,
+                                          image->w, image->h, 0);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
-    Image_ToRenderer(image,window,renderer);
-
-    PixelBlock block = {{0,0},{image->w-1,0},{0,image->h-1},{image->w-1,image->h-1}};
-    Count_VerticalBlock(image,image_block,block,true,&nbBlock,&nbLine,&nbChar);
-
-    //int size = nbBlock * nbLine * nbChar;
-    //PixelBlock char_block[size];
-    //Init_ArrayPixel(char_block,size);
-
-    Dectect_VerticalBlock(image,image_block,renderer,true,block,true);
 
 
+    //------------------------------------------------------------------------
+    //---- PREPARE TO CHAR DETECTION
+    //------------------------------------------------------------------------
+    ApplyCorrection(image);
+    SDL_Surface* image_rlsa = Detect_RLSA_Block(image,7);
+    if (strcmp(rlsa,"y"))
+        Image_ToRenderer(image,window,renderer);
+    else
+        Image_ToRenderer(image_rlsa,window,renderer);
+
+    //------------------------------------------------------------------------
+    //---- BLOC DETECTION
+    //------------------------------------------------------------------------
+    Count_Block(image, image_rlsa, &size);
+
+    PixelBlock* char_block = Init_CharBlock(size);
+
+    if (strcmp(rlsa,"y"))
+        Detect_Block(image,image_rlsa,renderer,true,char_block,size);
 
     SDL_RenderPresent(renderer);
-
+    SDL_FreeSurface(image);
+    SDL_FreeSurface(image_rlsa);
     PauseSDL();
 }

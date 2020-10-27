@@ -1,4 +1,8 @@
-#include "../include_ocr.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include "../character_detection/char_detect.h"
 
 void PauseSDL()
 {
@@ -32,7 +36,7 @@ bool FileExist(char* path)
     return true;
 }
 
-void Console_ReadString(char *var, char* message, int size)
+void Console_ReadString(char *var, char* message, size_t size)
 {
     printf("%s",message);
     char *start = NULL;
@@ -56,12 +60,12 @@ void swap(int* a, int* b)
 }
 
 //Useful function for Quicksort
-int partition (int arr[], int low, int high)
+int partition (int arr[], size_t low, size_t high)
 {
     int pivot = arr[high];
-    int i = (low - 1);
+    size_t i = (low - 1);
 
-    for (int j = low; j <= high- 1; j++)
+    for (size_t j = low; j <= high- 1; j++)
     {
         if (arr[j] < pivot)
         {
@@ -73,25 +77,51 @@ int partition (int arr[], int low, int high)
     return (i + 1);
 }
 
-void quickSort(int arr[], int low, int high)
+void quickSort(int arr[], size_t low, size_t high)
 {
 
     if (low < high)
     {
-        int pi = partition(arr, low, high);
+        size_t pi = partition(arr, low, high);
 
         quickSort(arr, low, pi - 1);
         quickSort(arr, pi + 1, high);
     }
 }
 
-int CalculMedian(int arr[],int size)
+size_t CalculMedian(int arr[],size_t size)
 {
     quickSort(arr, 0, size-1);
-    int i = size / 2;
+    size_t i = size / 2;
     if (size % 2 == 0)
     {
         return (arr[i] + arr[i + 1]) / 2;
     }
     return arr[i+1];
+}
+
+size_t max_size(size_t a, size_t b)
+{
+    if (a >= b)
+        return a;
+    return b;
+}
+
+PixelBlock* Init_CharBlock(array_size size)
+{
+    size_t size_array = size.nb_block * size.nb_char * size.nb_line;
+    PixelBlock* a = malloc(size_array*sizeof(PixelBlock));
+
+    for (size_t i = 0; i < size_array; i++)
+    {
+        PixelBlock block = {{-1,-1},{-1,-1},{-1,-1},{-1,-1}};
+        a[i] = block;
+    }
+
+    return a;
+}
+
+size_t offset(size_t block, size_t line, size_t chr, array_size size)
+{
+    return (chr * size.nb_block * size.nb_line) + (line * size.nb_block) + block;
 }

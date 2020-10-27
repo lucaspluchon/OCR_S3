@@ -1,4 +1,10 @@
-#include "../include_ocr.h"
+#include <SDL2/SDL.h>
+#include "image_system.h"
+#include "color_system.h"
+
+//------------------------------------------------------------------------
+//---- OPERATION FUNCTIONS ON IMAGE
+//------------------------------------------------------------------------
 
 void Image_GrayScale(SDL_Surface* image)
 {
@@ -12,23 +18,6 @@ void Image_GrayScale(SDL_Surface* image)
             SDL_PutPixel32(image,x,y,color);
         }
     }
-}
-
-int Image_AverageGray(SDL_Surface* image)
-{
-    int averageGray = 0;
-    Uint32 color = 0;
-
-    for (int x = 0; x < image->w; x++)
-    {
-        for (int y = 0; y < image->h; y++)
-        {
-            color = SDL_GetPixel32(image,x,y);
-            averageGray += Pixel_GetR(color);
-        }
-    }
-
-    return averageGray / (image->w * image->h);
 }
 
 void Image_Threshold(SDL_Surface* image, int threshold)
@@ -83,7 +72,7 @@ void Image_Median(SDL_Surface* image)
     SDL_UnlockSurface(image_temp);
 }
 
-//Apply all the useful correction to the image for the neural network
+//Apply all the useful correction to the image before bloc detection
 void ApplyCorrection(SDL_Surface* image)
 {
     int blur[3][3] = {
@@ -102,15 +91,10 @@ void ApplyCorrection(SDL_Surface* image)
 
     Image_GrayScale(image);
 
-    //int averageGray = Image_AverageGray(image);
-    Image_Threshold(image,120);
-
-    Image_Median(image);
-
     Image_Convolution(image,blur,0.0625);
     Image_Convolution(image,sharpen,1);
 
-
+    Image_Threshold(image,125);
 
     SDL_UnlockSurface(image);
 }

@@ -1,5 +1,7 @@
-#include "include_ocr.h"
-
+#include <stdio.h>
+#include <string.h>
+#include "demo.h"
+#include "useful/builtin.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,21 +13,7 @@ int main(int argc, char *argv[])
 
     if (!strcmp(choice,"0"))
     {
-        char path[99] = {0};
-        Console_ReadString(path,"\nImage path : ", 99);
-
-        SDL_Init(SDL_INIT_VIDEO);
-
-        SDL_Surface* image = Image_Load(path);
-
-        SDL_Window* window = SDL_CreateWindow("SDL2 Displaying Image", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, image->w, image->h, 0);
-
-        ApplyCorrection(image);
-
-        Image_Show(image ,window);
-
-        PauseSDL();
-
+        ImageDemo();
     }
 
 	return 0;

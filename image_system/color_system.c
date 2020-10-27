@@ -1,6 +1,8 @@
-#include "../include_ocr.h"
-
-
+#include "SDL2/SDL.h"
+#include "stdbool.h"
+#include "image_system.h"
+#include <stdlib.h>
+#include "../useful/builtin.h"
 //Get RGB colors from an Uint32 color
 uint8_t Pixel_GetR(Uint32 c)
 {
