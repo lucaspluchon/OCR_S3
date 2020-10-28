@@ -26,7 +26,6 @@ struct NetworkData
 double sigmoideDerivate(double x) ;
 double sigmoid(double x);
 double randd();
-void printNetworks(double *h[6], double *z[8]);
 void printRes(double res, double x, double y);
 void printNode(Node *node, char name);
 void printNetwork(Node *h, Node *z, NetworkData *data);
