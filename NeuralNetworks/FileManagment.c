@@ -1,18 +1,34 @@
+#include"BuiltinsNeuralNetworks.h"
+
 #include<stdio.h>
 #include<stdlib.h>
 
 
-void writeFile(double weight)
+
+
+int writeData(NetworkData *data)
 {
     FILE *fp;
-
     fp = fopen("value", "w");
-    fprintf(fp, ((string) weight));
-
+    if (fp != NULL)
+    {
+        fwrite(data, sizeof(*data), 1, fp);
+        fclose(fp);
+        return 0;
+    }
+    return 1;
 }
 
-int main()
+
+int readData(NetworkData *data)
 {
-    double weight = -1.4523545;
-    writeFile(weight);
+    FILE *fp;
+    fp = fopen("value", "r");
+    if (fp != NULL)
+    {
+        fread(data, sizeof(*data), 1, fp);
+        fclose(fp);
+        return 0;
+    }
+    return 1;
 }

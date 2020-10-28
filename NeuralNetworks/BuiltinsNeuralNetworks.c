@@ -23,13 +23,6 @@ double randd()
 
 
 
-void printNetworks(double *h[6], double *z[8])
-{
-    printf("Inputs : x = %f\ny = %f", *h[2], *h[4]);
-    printf("\nh = {\n\tactivation = %f\n\tbias = %f\n\tweight to x = %f\n\tweight to y = %f\n}\n", *h[0], *h[1], *h[3], *h[5]);
-    printf("\nz = {\n\tactivation = %f\n\tbias = %f\n\tweight to x = %f\n\tweight to h = %f\n\tweight to y = %f\n}\n", *z[0], *z[1], *z[3], *z[5], *z[7]);
-}
-
 void printRes(double res, double x, double y)
 {
     int cleanRes = 1;
@@ -75,7 +68,8 @@ double updateNode(Node *node)
     {
         res += *(node->neurons[i]) * *(node->neurons[i + 1]);
     }
-    return sigmoid(res);
+    res = sigmoid(res);
+    return res;
 }
 
 void updateTreeNode(Node *h, Node *z)
