@@ -3,8 +3,8 @@
 
 double delta(double error, double out);
 
-// void learnBackTree(Node *h, Node *z, NetworkData *data, double res[7], double v);
+void learnBackTree(Node *h, Node *z, NetworkData *data, double res[7], double v);
 
-// void learnAverage(Node *h, Node *z, NetworkData *data, double v, size_t iter);
+void learnAverage(Node *h, Node *z, NetworkData *data, double v, size_t iter);
 
 #endif

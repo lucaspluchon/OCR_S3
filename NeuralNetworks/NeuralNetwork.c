@@ -18,11 +18,11 @@ void entry()
 {
     NetworkData data = 
     {
-        .x = 40,
-        .y = 41,
+        .x = 1,
+        .y = 0,
         .excpect = 1,
-        .activations = {42, 43},
-        .weights = {44, 45, 46, 47, 48}
+        .activations = {0, 0},
+        .weights = {randd(), randd(), randd(), randd(), randd()}
     };
 
     Node *h;
@@ -52,13 +52,36 @@ void entry()
 
     z->neurons[0] = &data.x;
     z->neurons[1] = &data.weights[2];
-    z->neurons[2] = &data.activations[1];
+    z->neurons[2] = &data.activations[0];
     z->neurons[3] = &data.weights[3];
     z->neurons[4] = &data.y;
     z->neurons[5] = &data.weights[4];
 
-    printNode(h, 'h');
-    printNode(z, 'z');
+    printNetwork(h, z, &data);
+    learnAverage(h, z, &data, 2, 250);
+
+    printNetwork(h, z, &data);
+    data.x = 1;
+    data.y = 1;
+    updateTreeNode(h, z);
+    printRes(*(z->activation), 1, 1);
+    data.x = 0;
+    data.y = 0;
+    updateTreeNode(h, z);
+    printRes(*(z->activation), 0, 0);
+    data.x = 1;
+    data.y = 0;
+    updateTreeNode(h, z);
+    printRes(*(z->activation), 1, 0);
+    data.x = 0;
+    data.y = 1;
+    updateTreeNode(h, z);
+    printRes(*(z->activation), 0, 1);
+
+    free(h->neurons);
+    free(z->neurons);
+    free(h);
+    free(z);
 }
 
 // void NeuraleNetwork() 

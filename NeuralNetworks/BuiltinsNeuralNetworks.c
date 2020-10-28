@@ -54,3 +54,32 @@ void printNode(Node *node, char name)
         printf("    weight = %f\n", *(node->neurons[i + 1]));
     }
 }
+
+void printNetwork(Node *h, Node *z, NetworkData *data)
+{
+    printf("\n====neural network====\n");
+    printf("x = %f\n", data->x);
+    printf("y = %f\n", data->y);
+    printf("excpect = %f\n", data->excpect);
+    printf("Nodes : \n");
+    printNode(h, 'h');
+    printNode(z, 'z');
+    printf("======\n");
+}
+
+
+double updateNode(Node *node)
+{
+    double res = node->bias;
+    for(size_t i = 0; i < node->neuronsLen; i += 2)
+    {
+        res += *(node->neurons[i]) * *(node->neurons[i + 1]);
+    }
+    return sigmoid(res);
+}
+
+void updateTreeNode(Node *h, Node *z)
+{
+    *(h->activation) = updateNode(h);
+    *(z->activation) = updateNode(z);
+}
