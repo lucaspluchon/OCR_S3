@@ -8,7 +8,7 @@ typedef struct Node Node;
 struct Node
 {
     double * activation;
-    double bias;
+    double *bias;
     size_t neuronsLen;
     double **neurons;
 };
@@ -20,6 +20,7 @@ struct NetworkData
     double y;
     double activations[2];
     double weights[5];
+    double bias[2];
 };
 
 

@@ -78,9 +78,9 @@ void learnAverage(Node *h, Node *z, NetworkData *data, double v, size_t iter)
         {
             data->weights[k] += res[k + 4];
         }
-        h->bias += res[6];
+        *(h->bias) += res[6];
 
-        z->bias += res[3];
+        *(z->bias) += res[3];
 
     }
 }

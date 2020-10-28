@@ -7,10 +7,10 @@
 
 void entry();
 
-int main()
-{
-    entry();
-}
+// int main()
+// {
+//     entry();
+// }
 
 /*Inputs : x = 0.000000
 y = 0.000000
@@ -37,14 +37,15 @@ void entry()
         .y = 0,
         .excpect = 1,
         .activations = {0, 0},
-        .weights = {randd(), randd(), randd(), randd(), randd()}
+        .weights = {randd(), randd(), randd(), randd(), randd()},
+        .bias = {randd(), randd()}
     };
 
     Node *h;
 
     h = malloc(sizeof(*h));
 
-    h->bias = randd();
+    h->bias = &data.bias[0];
     h->activation = &data.activations[0];
     h->neuronsLen = 4;
 
@@ -59,7 +60,7 @@ void entry()
 
     z = malloc(sizeof(*z));
 
-    z->bias = randd();
+    z->bias = &data.bias[1];
     z->activation = &data.activations[1];
     z->neuronsLen = 6;
 

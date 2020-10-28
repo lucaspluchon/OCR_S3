@@ -40,7 +40,7 @@ void printNode(Node *node, char name)
 {
     printf("Node %c\n", name);
     printf("    activation = %f\n", *(node->activation));
-    printf("    bias = %f\n", node->bias);
+    printf("    bias = %f\n", *(node->bias));
     for (size_t i = 0; i < node->neuronsLen; i += 2)
     {
         printf("    activation = %f", *(node->neurons[i]));
@@ -63,7 +63,7 @@ void printNetwork(Node *h, Node *z, NetworkData *data)
 
 double updateNode(Node *node)
 {
-    double res = node->bias;
+    double res = *(node->bias);
     for(size_t i = 0; i < node->neuronsLen; i += 2)
     {
         res += *(node->neurons[i]) * *(node->neurons[i + 1]);
