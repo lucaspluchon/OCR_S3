@@ -3,7 +3,7 @@
 #include "demo.h"
 #include "useful/builtin.h"
 
-int main()
+int main(int argc, char *argv[])
 {
     char choice[50];
     printf("####OCR First presentation demo####\n");

@@ -6,7 +6,7 @@
 //---- ALL THE NECESSARY FUNCTION TO MANIPULATE SDL SURFACE
 //------------------------------------------------------------------------
 
-void Image_ToRenderer(SDL_Surface * image, SDL_Renderer* renderer)
+void Image_ToRenderer(SDL_Surface * image, SDL_Window* window, SDL_Renderer* renderer)
 {
     SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, image);
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
