@@ -9,7 +9,7 @@
 int writeData(NetworkData *data)
 {
     FILE *fp;
-    fp = fopen("value", "w");
+    fp = fopen_s("value", "w");
     if (fp != NULL)
     {
         fwrite(data, sizeof(*data), 1, fp);
@@ -23,7 +23,7 @@ int writeData(NetworkData *data)
 int readData(NetworkData *data)
 {
     FILE *fp;
-    fp = fopen("value", "r");
+    fp = fopen_s("value", "r");
     if (fp != NULL)
     {
         fread(data, sizeof(*data), 1, fp);
