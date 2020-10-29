@@ -34,7 +34,7 @@ void DisplayError(char* message)
 
 bool FileExist(char* path)
 {
-    if(_access(path, 0 ))
+    if(access(path, 0 ))
     {
         printf("'%s' doesn't exist !", path);
         return false;
