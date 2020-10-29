@@ -1,4 +1,8 @@
-#include <SDL2/SDL.h>
+#ifdef _WIN32
+#	include <SDL.h>
+#else
+#	include <SDL2/SDL.h>
+#endif
 #include "image_system.h"
 #include "color_system.h"
 

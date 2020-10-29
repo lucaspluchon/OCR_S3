@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+#ifdef _WIN32
+#	include <io.h>
+#else
+#	include <unistd.h>
+#endif
 #include <string.h>
 #include "../character_detection/char_detect.h"
 
@@ -30,7 +34,7 @@ void DisplayError(char* message)
 
 bool FileExist(char* path)
 {
-    if(access(path, F_OK ))
+    if(access(path, 0 ))
     {
         printf("'%s' doesn't exist !", path);
         return false;
@@ -38,7 +42,7 @@ bool FileExist(char* path)
     return true;
 }
 
-void Console_ReadString(char *var, char* message, size_t size)
+void Console_ReadString(char *var, char* message, int size)
 {
     printf("%s",message);
     char *start = NULL;
@@ -62,7 +66,7 @@ void swap(int* a, int* b)
 }
 
 //Useful function for Quicksort
-int partition (int arr[], size_t low, size_t high)
+size_t partition (int arr[], size_t low, size_t high)
 {
     int pivot = arr[high];
     size_t i = (low - 1);

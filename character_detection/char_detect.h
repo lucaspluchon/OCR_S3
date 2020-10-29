@@ -1,7 +1,11 @@
 #ifndef CHAR_DETECT_H_INCLUDED
 #define CHAR_DETECT_H_INCLUDED
 
-#include <SDL2/SDL.h>
+#ifdef _WIN32
+#	include <SDL.h>
+#else
+#	include <SDL2/SDL.h>
+#endif
 #include <stdbool.h>
 #include "../type/pixel.h"
 

@@ -1,5 +1,9 @@
 #include <stdbool.h>
-#include <SDL2/SDL.h>
+#ifdef _WIN32
+#	include <SDL.h>
+#else
+#	include <SDL2/SDL.h>
+#endif
 #include "../image_system/image_system.h"
 #include "../image_system/color_system.h"
 #include "../useful/builtin.h"

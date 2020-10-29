@@ -5,7 +5,7 @@
 #include "../type/pixel.h"
 
 void DisplayError(char* message);
-void Console_ReadString(char *var, char* message, size_t size);
+void Console_ReadString(char *var, char* message, int size);
 bool FileExist(char* path);
 void PauseSDL();
 void swap(int* a, int* b);
