@@ -1,8 +1,7 @@
 #ifndef IMAGE_SYSTEM_H_INCLUDED
 #define IMAGE_SYSTEM_H_INCLUDED
 
-void Image_ToRenderer(SDL_Surface * image, SDL_Window* window,
-                      SDL_Renderer* renderer);
+void Image_ToRenderer(SDL_Surface * image, SDL_Renderer* renderer);
 SDL_Surface* Image_Load(char* path);
 SDL_Surface* Image_Copy(SDL_Surface* image);
 

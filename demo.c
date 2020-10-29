@@ -33,9 +33,9 @@ void ImageDemo()
     ApplyCorrection(image);
     SDL_Surface* image_rlsa = Detect_RLSA_Block(image,7);
     if (strcmp(rlsa,"y"))
-        Image_ToRenderer(image,window,renderer);
+        Image_ToRenderer(image,renderer);
     else
-        Image_ToRenderer(image_rlsa,window,renderer);
+        Image_ToRenderer(image_rlsa,renderer);
 
     //------------------------------------------------------------------------
     //---- BLOC DETECTION
