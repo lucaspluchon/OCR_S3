@@ -11,6 +11,7 @@ bin/
 *.code-workspace
 *.o
 *.out
+.idea/
 
 # Local History for Visual Studio Code
 .history/
