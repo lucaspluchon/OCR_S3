@@ -20,7 +20,7 @@ double randd()
 }
 
 
-void GenerateNetwork(Network* network, size_t inputsNumber, size_t outputsNumber, size_t hidenRowNumber, size_t* hidenRowLen)
+void GenerateNetwork(Network* network, RowMark* rowMark, size_t inputsNumber, size_t outputsNumber, size_t hidenRowNumber, size_t* hidenRowLen)
 {
 
     size_t size = 0;
@@ -35,25 +35,26 @@ void GenerateNetwork(Network* network, size_t inputsNumber, size_t outputsNumber
     network->size = size;
 
     //Row mark init
-    network->rowMark = malloc(sizeof(size_t));
-    network->rowMark->len = hidenRowNumber;
+    rowMark = malloc(sizeof(size_t));
+    rowMark->len = hidenRowNumber;
 
-    network->rowMark->lens = malloc(sizeof(double*) * (hidenRowNumber + 3));
+    rowMark->lens = malloc(sizeof(double*) * (hidenRowNumber + 3));
 
     //Data init
     network->data = calloc(size, sizeof(double));
 
     //Row mark valuation
     size_t i = 1;
-    network->rowMark->lens[0] = network->data;
+    rowMark->lens[0] = network->data;
     size_t sum = inputsNumber;
     for(; i < hidenRowNumber; i++)
     {
-        network->rowMark->lens[i] = &(network->data[sum]);
+        rowMark->lens[i] = &(network->data[sum]);
         sum += hidenRowLen[i];
     }
-    network->rowMark->lens[i] = &(network->data[sum]);
-    network->rowMark->lens[i + 1] = &(network->data[sum + outputsNumber]);
+    rowMark->lens[i] = &(network->data[sum]);
+    rowMark->lens[i + 1] = &(network->data[sum + outputsNumber]);
+    network->rowMark = rowMark;
 
 }
 

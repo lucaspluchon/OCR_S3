@@ -4,11 +4,14 @@
 int main()
 {
     Network* network = NULL;
+    RowMark* rowMark = NULL;
     size_t lens[1] = {3};
-    GenerateNetwork(network, 2, 3, 1, lens);
+    GenerateNetwork(network, rowMark, 2, 3, 1, lens);
+
 
     free(network->rowMark->lens);
-    free(network->rowMark);
+    free(rowMark->lens);
+    free(rowMark);
     free(network->data);
     free(network);
     return 0;

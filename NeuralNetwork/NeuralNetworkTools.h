@@ -18,7 +18,7 @@ struct Network
     double* data;
 };
 
-void GenerateNetwork(Network* network, size_t inputsNumber, size_t outputsNumber, size_t hidenRowNumber, size_t* hidenRowLen);
+void GenerateNetwork(Network* network, RowMark* rowMark, size_t inputsNumber, size_t outputsNumber, size_t hidenRowNumber, size_t* hidenRowLen);
 
 
 #endif
