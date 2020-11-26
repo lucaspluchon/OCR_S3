@@ -13,8 +13,9 @@ int Pixel_absRGB(double c);
 
 bool Pixel_Exist(SDL_Surface* image, int x, int y);
 Uint32 Pixel_Grayscale(Uint32 color);
-Uint32 Pixel_Constrast(Uint32 color, int delta);
-Uint32 Pixel_Treshold(Uint32 color, int n);
+double Pixel_Deviation(SDL_Surface* image, int x, int y, int m);
+int Pixel_DetectTreshold(SDL_Surface* image, int x, int y, double k);
+Uint32 Pixel_Treshold(Uint32 color, int treshold);
 Uint32 Pixel_Median(SDL_Surface* image, int x, int y);
 Uint32 Pixel_Convolution(SDL_Surface* image,int matrix[3][3], int x, int y,double factor);
 

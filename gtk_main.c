@@ -2,7 +2,7 @@
 
 int main()
 {
-    printf("Main test");
+    printf("Gtk main test");
     return 0;
 }
 

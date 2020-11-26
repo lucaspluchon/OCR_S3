@@ -5,8 +5,10 @@
 #endif
 #include "stdbool.h"
 #include "image_system.h"
+#include "color_system.h"
 #include <stdlib.h>
 #include "../useful/builtin.h"
+#include "math.h"
 //Get RGB colors from an Uint32 color
 uint8_t Pixel_GetR(Uint32 c)
 {
@@ -68,27 +70,46 @@ Uint32 Pixel_Grayscale(Uint32 color)
     int gray = (r + g + b) / 3;
     return Pixel_RGBto32(255,gray,gray,gray);
 }
-
-Uint32 Pixel_Constrast(Uint32 color, int delta)
+double Pixel_Deviation(SDL_Surface* image, int x, int y, int m)
 {
-    int r = Pixel_GetR(color);
-    int g = Pixel_GetG(color);
-    int b = Pixel_GetB(color);
-    double factor = (259 * (delta + 255))/(255 * (259 - delta));
-    r = Pixel_absRGB(factor * (r - 128) + 128);
-    g = Pixel_absRGB(factor * (g - 128) + 128);
-    b = Pixel_absRGB(factor * (b - 128) + 128);
-    return Pixel_RGBto32(255,r,g,b);
+    int color = 0;
+    double res = 0;
+
+    for (int i = y - 1; i <= y + 1; i++)
+    {
+        for (int j = x - 1; j <= x + 1; j++)
+        {
+            if (Pixel_Exist(image,j,i))
+            {
+                color = (int) Pixel_GetR(SDL_GetPixel32(image,j,i));
+                res += (color - m) * (color - m);
+            }
+        }
+    }
+
+    return sqrt(res / 9);
 }
 
-//Need to be apply on a gray scale color
-Uint32 Pixel_Treshold(Uint32 color, int n)
+//Need to be apply on a gray scale color, automatic treshold with Sauvola method
+int Pixel_DetectTreshold(SDL_Surface* image, int x, int y, double k)
 {
-    int r = Pixel_GetR(color);
-    if (r > n)
-        return Pixel_RGBto32(255,255,255,255);
-    else
+    double factor = 0.11111111111;
+    int identity[3][3] = {{1,1,1}, {1,1,1}, {1,1,1}};
+
+    int m = Pixel_GetR(Pixel_Convolution(image,identity,x,y,factor));
+    double s = Pixel_Deviation(image,x,y,m);
+
+    double res = m * (1 + k * (s / 128 - 1));
+
+    return Pixel_absRGB(res);
+}
+
+Uint32 Pixel_Treshold(Uint32 color, int treshold)
+{
+    int gray = Pixel_GetR(color);
+    if (gray <= treshold)
         return Pixel_RGBto32(255,0,0,0);
+    return Pixel_RGBto32(255,255,255,255);
 }
 
 Uint32 Pixel_Convolution(SDL_Surface* image,int matrix[3][3], int x, int y, double factor)

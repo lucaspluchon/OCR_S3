@@ -24,18 +24,23 @@ void Image_GrayScale(SDL_Surface* image)
     }
 }
 
-void Image_Threshold(SDL_Surface* image, int threshold)
+void Image_Threshold(SDL_Surface* image, double k)
 {
     Uint32 color = 0;
+    int treshold = 0;
+    SDL_Surface* image_temp = Image_Copy(image);
     for (int x = 0; x < image->w; x++)
     {
         for (int y = 0; y < image->h; y++)
         {
+            treshold = Pixel_DetectTreshold(image,x,y,k);
             color = SDL_GetPixel32(image,x,y);
-            color = Pixel_Treshold(color,threshold);
+            color = Pixel_Treshold(color,treshold);
             SDL_PutPixel32(image,x,y,color);
         }
     }
+    SDL_UnlockSurface(image_temp);
+    SDL_FreeSurface(image_temp);
 }
 
 void Image_Convolution(SDL_Surface* image, int matrix[3][3], double factor)
@@ -100,7 +105,9 @@ void ApplyCorrection(SDL_Surface* image)
     Image_Convolution(image,blur,0.0625);
     Image_Convolution(image,sharpen,1);
 
-    Image_Threshold(image,125);
+    printf("Threshold starting ..\n");
+    Image_Threshold(image,0.5);
+    printf("Threshold ended ..\n");
 
     SDL_UnlockSurface(image);
 }
