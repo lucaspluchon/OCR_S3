@@ -25,6 +25,7 @@ uint8_t Pixel_GetB(Uint32 c);
 Uint32 Pixel_RGBto32(int a, int r, int g, int b);
 int Pixel_absRGB(double c);
 bool Pixel_Exist(SDL_Surface* image, int x, int y);
+void SDL_DrawLine(SDL_Surface *image, int x0, int y0, int x1, int y1, Uint32 color);
 
 void Image_Rotate(SDL_Surface* image, double angle);
 

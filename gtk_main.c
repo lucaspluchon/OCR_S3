@@ -4,7 +4,7 @@
 // Main function.
 int main (int argc, char *argv[])
 {
-    SDL_Init(SDL_INIT_VIDEO);
+    /*SDL_Init(SDL_INIT_VIDEO);
     gtk_init(NULL, NULL);
 
     GtkBuilder* builder = gtk_builder_new();
@@ -33,7 +33,20 @@ int main (int argc, char *argv[])
     g_signal_connect(data.ui.entry_angle, "activate", G_CALLBACK(on_rotate), &data);
 
     // Runs the main loop.
-    gtk_main();
+    gtk_main();*/
+
+    text* txt = textArray_new();
+    for (size_t i = 0; i < 5; i++)
+    {
+        for (size_t j = 0; j < 5; j++)
+        {
+            for (size_t k = 0; k < 5; k++)
+            {
+                pixel_block block = {{100,100},{200,100},{100,200},{200,200}};
+                chr_append(block,i,j,txt);
+            }
+        }
+    }
 
 
     // Exits.

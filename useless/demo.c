@@ -43,8 +43,8 @@ void ImageDemo()
 
     //PixelBlock* char_block = Init_CharBlock(size);
 
-    //if (strcmp(rlsa,"y"))
-        //Detect_Block(image,image_rlsa,renderer,true,char_block,size);*/
+    if (strcmp(rlsa,"y"))
+        //Detect_Block(image,image_rlsa,renderer,true,char_block,size);
 
     SDL_RenderPresent(renderer);
     //free(char_block);

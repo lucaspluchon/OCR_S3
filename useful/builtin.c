@@ -111,21 +111,6 @@ size_t max_size(size_t a, size_t b)
     return b;
 }
 
-PixelBlock* Init_CharBlock(array_size size)
-{
-    size_t size_array = size.nb_block * size.nb_char * size.nb_line;
-    PixelBlock* a = malloc(size_array*sizeof(PixelBlock));
 
-    for (size_t i = 0; i < size_array; i++)
-    {
-        PixelBlock block = {{-1,-1},{-1,-1},{-1,-1},{-1,-1}};
-        a[i] = block;
-    }
 
-    return a;
-}
 
-size_t offset(size_t block, size_t line, size_t chr, array_size size)
-{
-    return (chr * size.nb_block * size.nb_line) + (line * size.nb_block) + block;
-}

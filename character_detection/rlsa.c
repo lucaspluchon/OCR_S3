@@ -6,8 +6,8 @@ SDL_Surface* Detect_RLSA_Block(SDL_Surface* image, int n)
     SDL_LockSurface(image);
     SDL_LockSurface(image_temp);
 
-    int c = 0;
-    int c2 = 0;
+    int c;
+    int c2;
     bool breaking = false;
 
     for (int x = 0; x < image->w; x++)
