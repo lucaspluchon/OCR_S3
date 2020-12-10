@@ -17,3 +17,7 @@ bin/
 .history/
 # For mac
 .DS_Store
+
+# Clion
+cmake-build-debug/
+.idea/

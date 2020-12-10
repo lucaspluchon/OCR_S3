@@ -1,12 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#ifdef _WIN32
-#	include <io.h>
-#else
-#	include <unistd.h>
-#endif
+#include <unistd.h>
 #include <string.h>
-#include "../character_detection/char_detect.h"
+#include <SDL2/SDL.h>
+#include <stdbool.h>
+#include "type/pixel.h"
 
 void PauseSDL()
 {

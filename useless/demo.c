@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 #include "character_detection/char_detect.h"
 #include "useful/builtin.h"
@@ -31,26 +30,26 @@ void ImageDemo()
     //---- PREPARE TO CHAR DETECTION
     //------------------------------------------------------------------------
     ApplyCorrection(image);
-    SDL_Surface* image_rlsa = Detect_RLSA_Block(image,7);
+   //SDL_Surface* image_rlsa = Detect_RLSA_Block(image,7);
     if (strcmp(rlsa,"y"))
         Image_ToRenderer(image,renderer);
-    else
-        Image_ToRenderer(image_rlsa,renderer);
+    //else
+        //Image_ToRenderer(image_rlsa,renderer);
 
     //------------------------------------------------------------------------
     //---- BLOC DETECTION
     //------------------------------------------------------------------------
-    Count_Block(image, image_rlsa, &size);
+    //Count_Block(image, image_rlsa, &size);
 
-    PixelBlock* char_block = Init_CharBlock(size);
+    //PixelBlock* char_block = Init_CharBlock(size);
 
-    if (strcmp(rlsa,"y"))
-        Detect_Block(image,image_rlsa,renderer,true,char_block,size);
+    //if (strcmp(rlsa,"y"))
+        //Detect_Block(image,image_rlsa,renderer,true,char_block,size);*/
 
     SDL_RenderPresent(renderer);
-    free(char_block);
+    //free(char_block);
     SDL_FreeSurface(image);
-    SDL_FreeSurface(image_rlsa);
+    //SDL_FreeSurface(image_rlsa);
     SDL_DestroyRenderer(renderer);
     PauseSDL();
     SDL_QuitSubSystem(SDL_INIT_VIDEO);
