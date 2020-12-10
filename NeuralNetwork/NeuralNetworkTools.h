@@ -36,14 +36,16 @@ struct DataSet
 typedef struct NeuralNetwork NeuralNetwork;
 struct NeuralNetwork
 {
-    size_t dataSize;
-    DataSet* activations;
-    DataSet* weights;
-    DataSet* bias;
+    size_t inputNumber;
+    size_t hidenNumber;
+    size_t outputNumber;
+    ListSet* activations;
+    ListSet* weights;
+    ListSet* bias;
 };
 
 
-// void GenerateNetwork(Network* network, RowMark* rowMark, size_t inputsNumber, size_t outputsNumber, size_t hidenRowNumber, size_t* hidenRowLen);
+void GenerateNetwork(NeuralNetwork* network, size_t inputNumber, size_t hidenNumber, size_t outputNumber);
 void printNetwork(NeuralNetwork* network);
 
 #endif

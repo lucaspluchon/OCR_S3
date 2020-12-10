@@ -18,21 +18,26 @@ int main()
     // free(rowMark);
     // free(network->data);
     // free(network);
-    NeuralNetwork* network = malloc(sizeof(NeuralNetwork));
+    // NeuralNetwork* network = malloc(sizeof(NeuralNetwork));
 
-    // size_t lens[1] = {3};
-    // size_t inputNumber = 2;
-    // size_t outputNumber = 3;
+    // // size_t lens[1] = {3};
+    // // size_t inputNumber = 2;
+    // // size_t outputNumber = 3;
 
-    DataSet* activation = malloc(sizeof(DataSet));
-    ListSet* li = malloc(sizeof(ListSet));
-    li->size = 20;
-    li->data = calloc(20, sizeof(double));
-    for (size_t i = 0; i< 20; i++)
-    {
-        li->data[i] = i;
-    }
+    // DataSet* activation = malloc(sizeof(DataSet));
+    // ListSet* li = malloc(sizeof(ListSet));
+    // li->size = 20;
+    // li->data = calloc(20, sizeof(double));
+    // for (size_t i = 0; i< 20; i++)
+    // {
+    //     li->data[i] = i;
+    // }
+
+    NeuralNetwork* network = NULL;
+
+    GenerateNetwork(network, 5, 6, 7);
     
+    printNetwork(network);
 
     return 0;
 }
