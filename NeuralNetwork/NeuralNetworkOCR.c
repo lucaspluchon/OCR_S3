@@ -35,9 +35,26 @@ int main()
 
     NeuralNetwork* network = NULL;
 
-    GenerateNetwork(network, 5, 6, 7);
+    network = GenerateNetwork(5, 6, 7);
     
+    // printNetwork(network);
+
+    // double i = 0;
+    // for(size_t j = 0;j < network->activations->size; j++)
+    // {
+    //     network->activations->data[j] = ++i;
+    // }
+    // for(size_t j = 0;j < network->weights->size; j++)
+    // {
+    //     network->weights->data[j] = ++i;
+    // }
+    // for(size_t j = 0;j < network->bias->size; j++)
+    // {
+    //     network->bias->data[j] = ++i;
+    // }
     printNetwork(network);
+
+    freeNetwork(network);
 
     return 0;
 }

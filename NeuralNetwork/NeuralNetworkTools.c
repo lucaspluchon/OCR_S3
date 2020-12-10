@@ -21,9 +21,9 @@ double randd()
 }
 
 
-void GenerateNetwork(NeuralNetwork* network, size_t inputNumber, size_t hidenNumber, size_t outputNumber)
+NeuralNetwork* GenerateNetwork(size_t inputNumber, size_t hidenNumber, size_t outputNumber)
 {
-    network = malloc(sizeof(NeuralNetwork));
+    NeuralNetwork* network = malloc(sizeof(NeuralNetwork));
     if (network == NULL)
         errx(1, "Memory allocation failed");
     network->inputNumber = inputNumber;
@@ -45,7 +45,10 @@ void GenerateNetwork(NeuralNetwork* network, size_t inputNumber, size_t hidenNum
     network->bias->data = malloc((hidenNumber + outputNumber) * sizeof(double));
     if (network->bias->data == NULL)
         errx(1, "Memory allocation failed");
-    
+    for(size_t i = 0; i < network->bias->size; i++)
+    {
+        network->bias->data[i] = randd();
+    }
 
     network->weights = malloc(sizeof(ListSet));
     if (network->weights == NULL)
@@ -54,8 +57,27 @@ void GenerateNetwork(NeuralNetwork* network, size_t inputNumber, size_t hidenNum
     network->weights->data = malloc((inputNumber * hidenNumber + hidenNumber * outputNumber) * sizeof(double));
     if (network->weights->data == NULL)
         errx(1, "Memory allocation failed");
+    for(size_t i = 0; i < network->weights->size; i++)
+    {
+        network->weights->data[i] = randd();
+    }
 
+    return network;
 
+}
+
+void freeNetwork(NeuralNetwork* network)
+{
+    free(network->activations->data);
+    free(network->activations);
+
+    free(network->bias->data);
+    free(network->bias);
+
+    free(network->weights->data);
+    free(network->weights);
+
+    free(network);
 
 }
 
