@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -pedantic-errors -std=c99 -g 
 
-SRC = NeuralNetworkOCR.c NeuralNetworkTools.c
+SRC = NeuralNetworkOCR.c NeuralNetworkTools.c ForwardProp.c
 OBJ = $(SRC:.c=.o)
 
 

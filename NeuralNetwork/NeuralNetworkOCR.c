@@ -1,5 +1,6 @@
 #include "NeuralNetworkTools.h"
 #include<stdlib.h>
+#include"ForwardProp.h"
 
 int main()
 {
@@ -54,6 +55,9 @@ int main()
     // }
     printNetwork(network);
 
+    forwardProp(network);
+
+    printNetwork(network);
     freeNetwork(network);
 
     return 0;

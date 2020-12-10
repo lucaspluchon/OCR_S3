@@ -50,16 +50,28 @@ NeuralNetwork* GenerateNetwork(size_t inputNumber, size_t hidenNumber, size_t ou
         network->bias->data[i] = randd();
     }
 
-    network->weights = malloc(sizeof(ListSet));
-    if (network->weights == NULL)
+    network->inputWeights = malloc(sizeof(ListSet));
+    if (network->inputWeights == NULL)
         errx(1, "Memory allocation failed");
-    network->weights->size = inputNumber * hidenNumber + hidenNumber * outputNumber;
-    network->weights->data = malloc((inputNumber * hidenNumber + hidenNumber * outputNumber) * sizeof(double));
-    if (network->weights->data == NULL)
+    network->inputWeights->size = inputNumber * hidenNumber;
+    network->inputWeights->data = malloc((inputNumber * hidenNumber) * sizeof(double));
+    if (network->inputWeights->data == NULL)
         errx(1, "Memory allocation failed");
-    for(size_t i = 0; i < network->weights->size; i++)
+    for(size_t i = 0; i < network->inputWeights->size; i++)
     {
-        network->weights->data[i] = randd();
+        network->inputWeights->data[i] = randd();
+    }
+
+    network->hidenWeights = malloc(sizeof(ListSet));
+    if (network->hidenWeights == NULL)
+        errx(1, "Memory allocation failed");
+    network->hidenWeights->size = outputNumber * hidenNumber;
+    network->hidenWeights->data = malloc((outputNumber * hidenNumber) * sizeof(double));
+    if (network->hidenWeights->data == NULL)
+        errx(1, "Memory allocation failed");
+    for(size_t i = 0; i < network->hidenWeights->size; i++)
+    {
+        network->hidenWeights->data[i] = randd();
     }
 
     return network;
@@ -74,8 +86,11 @@ void freeNetwork(NeuralNetwork* network)
     free(network->bias->data);
     free(network->bias);
 
-    free(network->weights->data);
-    free(network->weights);
+    free(network->inputWeights->data);
+    free(network->inputWeights);
+
+    free(network->hidenWeights->data);
+    free(network->hidenWeights);
 
     free(network);
 
@@ -187,7 +202,7 @@ void printNetwork(NeuralNetwork* network)
     printList(network->activations->data, network->inputNumber);
 
     printf("Weights :");
-    printList(network->weights->data, network->inputNumber * network->hidenNumber);
+    printList(network->inputWeights->data, network->inputWeights->size);
 
 
     printf("Hiden row : \n");
@@ -197,7 +212,7 @@ void printNetwork(NeuralNetwork* network)
     printList(network->bias->data, network->hidenNumber);
 
     printf("Weights :\n");
-    printList(&(network->weights->data[network->inputNumber * network->hidenNumber]), network->outputNumber * network->hidenNumber);
+    printList(network->hidenWeights->data, network->hidenWeights->size);
 
     printf("Output : \n");
     printf("  Activations : \n    ");

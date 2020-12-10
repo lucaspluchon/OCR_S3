@@ -40,7 +40,8 @@ struct NeuralNetwork
     size_t hidenNumber;
     size_t outputNumber;
     ListSet* activations;
-    ListSet* weights;
+    ListSet* inputWeights;
+    ListSet* hidenWeights;
     ListSet* bias;
 };
 
