@@ -33,6 +33,7 @@ text* textArray_new()
     return res;
 }
 
+
 void block_add(text* arr)
 {
     arr->nb_block++;
@@ -45,17 +46,22 @@ void block_add(text* arr)
             errx(1,"Not enough memory to add a new block!");
     }
 
-    arr->blocks[arr->nb_block].lines = malloc(sizeof (text_line));
-    arr->blocks[arr->nb_block].capacity = 1;
+    if(arr->nb_block > 1)
+    {
+        arr->blocks[arr->nb_block - 1].lines = malloc(sizeof(text_line));
+        arr->blocks[arr->nb_block - 1].capacity = 1;
+        arr->blocks[arr->nb_block - 1].nb_line = 0;
 
-    if (arr->blocks[arr->nb_block].lines == NULL)
-        errx(1,"Not enough memory to add a new block!");
+        if (arr->blocks[arr->nb_block - 1].lines == NULL)
+            errx(1, "Not enough memory to add a new block!");
 
-    arr->blocks[arr->nb_block].lines[0].chrs = malloc(sizeof (pixel_block));
-    arr->blocks[arr->nb_block].lines[0].capacity = 1;
+        arr->blocks[arr->nb_block - 1].lines[0].chrs = malloc(sizeof(pixel_block));
+        arr->blocks[arr->nb_block - 1].lines[0].capacity = 1;
+        arr->blocks[arr->nb_block - 1].lines[0].nb_char = 0;
 
-    if (arr->blocks[arr->nb_block].lines[0].chrs == NULL)
-        errx(1,"Not enough memory to add a new block!");
+        if (arr->blocks[arr->nb_block - 1].lines[0].chrs == NULL)
+            errx(1, "Not enough memory to add a new block!");
+    }
 }
 
 void line_add(text_block * arr)
@@ -70,12 +76,15 @@ void line_add(text_block * arr)
             errx(1,"Not enough memory to add a new line!");
     }
 
-    arr->lines[arr->nb_line].chrs = malloc(sizeof (pixel_block));
-    arr->lines[arr->nb_line].capacity = 1;
+    if (arr->nb_line > 1)
+    {
+        arr->lines[arr->nb_line - 1].chrs = malloc(sizeof(pixel_block));
+        arr->lines[arr->nb_line - 1].capacity = 1;
+        arr->lines[arr->nb_line - 1].nb_char = 0;
 
-    if (arr->lines[arr->nb_line].chrs == NULL)
-        errx(1,"Not enough memory to add a new line!");
-
+        if (arr->lines[arr->nb_line - 1].chrs == NULL)
+            errx(1, "Not enough memory to add a new line!");
+    }
 }
 
 void chr_add(text_line * arr)

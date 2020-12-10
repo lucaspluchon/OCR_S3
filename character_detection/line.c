@@ -40,7 +40,7 @@ void detect_line(ocr_data* data, pixel_block block, array_pos pos)
             block_temp.right_bottom.y = y;
             SDL_DrawLine(data->sdl.image_segmented, block_temp.left_bottom.x,block_temp.left_bottom.y,
                                    block_temp.right_bottom.x,block_temp.right_bottom.y, 4278255360);
-            detect_char(data,block_temp,pos);
+            detect_char_vertical(data,block_temp,pos);
             pos.line++;
         }
     }

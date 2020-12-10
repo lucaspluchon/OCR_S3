@@ -42,7 +42,7 @@ add_executable(GTK_Test
                 ui/ui.c
                 useful/builtin.c
                 gtk_main.c
-        character_detection/segmentation.c type/data.h type/pixel.c)
+        character_detection/segmentation.c type/data.h type/pixel.c character_detection/correction.c)
 
 target_link_libraries(GTK_Test ${SDL2_LIBRARIES})
 TARGET_LINK_LIBRARIES(GTK_Test ${GTK3_LIBRARIES})

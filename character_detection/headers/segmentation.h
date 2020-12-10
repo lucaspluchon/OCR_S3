@@ -15,8 +15,8 @@ void apply_segmentation(ocr_data* data);
 void detect_text(ocr_data* data);
 void detect_verticalBlock(ocr_data* data, pixel_block block, bool detected_whitebefore, array_pos pos);
 void detect_horizontalBlock(ocr_data* data, pixel_block block, bool detected_whitebefore, array_pos pos);
-void detect_line(ocr_data* data, pixel_block block, array_pos pos);
-void detect_char(ocr_data* data, pixel_block block, array_pos pos);
+void detect_char_vertical(ocr_data* data, pixel_block block, array_pos pos);
+void detect_char_horizontal(ocr_data* data, pixel_block block, array_pos pos);
 
 
 #endif //OCR_S3_SEGMENTATION_H
