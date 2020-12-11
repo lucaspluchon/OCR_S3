@@ -3,20 +3,6 @@
 #ifndef NEURAL_NETWORK_TOOLS_H
 #define NEURAL_NETWORK_TOOLS_H
 
-// typedef struct RowMark RowMark;
-// struct RowMark
-// {
-//     size_t len;
-//     double** lens;
-// };
-
-// typedef struct Network Network;
-// struct Network
-// {
-//     size_t size;
-//     RowMark* rowMark;
-//     double* data;
-// };
 
 typedef struct ListSet ListSet;
 struct ListSet
@@ -25,13 +11,8 @@ struct ListSet
     double* data;
 };
 
-typedef struct DataSet DataSet;
-struct DataSet
-{
-    size_t size;
-    ListSet* data;
-    double** mark;
-};
+double sigmoid(double x);
+double sigmoideDerivate(double x);
 
 typedef struct NeuralNetwork NeuralNetwork;
 struct NeuralNetwork

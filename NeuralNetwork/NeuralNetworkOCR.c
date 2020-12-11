@@ -1,6 +1,7 @@
 #include "NeuralNetworkTools.h"
 #include<stdlib.h>
 #include"ForwardProp.h"
+#include"BackProp.h"
 
 int main()
 {
@@ -55,9 +56,19 @@ int main()
     // }
     printNetwork(network);
 
-    forwardProp(network);
+    double* ex = calloc(7, sizeof(double));
+    double* error = outputError(network, ex);
+    hidenError(network, 5, error);
+    hidenError(network, 6, error);
+    hidenError(network, 7, error);
+    hidenError(network, 8, error);
+    hidenError(network, 9, error);
+    hidenError(network, 10, error);
 
     printNetwork(network);
+
+
+    free(error);
     freeNetwork(network);
 
     return 0;

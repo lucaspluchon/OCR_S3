@@ -5,7 +5,7 @@
 #include<err.h>
 #include"NeuralNetworkTools.h"
 
-double sigmoideDerivate(double x) 
+double sigmoideDerivate(double x)
 {
     return x * (1 - x);
 }
@@ -15,7 +15,7 @@ double sigmoid(double x)
    return 1 / (1 + exp(-x));
 }
 
-double randd() 
+double randd()
 {
     return (((double)rand() / (RAND_MAX)) * 2) - 1;
 }
