@@ -67,7 +67,7 @@ int main()
 
     printNetwork(network);
 
-
+    free(ex);
     free(error);
     freeNetwork(network);
 

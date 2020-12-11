@@ -26,10 +26,10 @@ double hidenError(NeuralNetwork* network, size_t nodeIndex, double* outputError)
 {
     double* weights = &(network->hidenWeights->data[nodeIndex - network->inputNumber]);
     double res = sigmoideDerivate(network->activations->data[nodeIndex]);
-    for (size_t i = 0; i < network->inputNumber; i++)
+    for (size_t i = 0; i < network->outputNumber; i++)
     {
-        res += outputError[i] + weights[i * network->inputNumber];
-        weights[i * network->outputNumber] = nodeIndex;
+        res += outputError[i] + weights[i * network->hidenNumber];
+        weights[i * network->hidenNumber] = nodeIndex;
     }
     return res;
 }
