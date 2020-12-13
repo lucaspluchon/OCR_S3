@@ -28,6 +28,7 @@ struct NeuralNetwork
 
 void freeNetwork(NeuralNetwork* network);
 NeuralNetwork* GenerateNetwork(size_t inputNumber, size_t hidenNumber, size_t outputNumber);
+void printList(double* list, size_t len);
 void printNetwork(NeuralNetwork* network);
 
 #endif

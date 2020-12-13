@@ -1,5 +1,6 @@
 #include "NeuralNetworkTools.h"
 #include<stdlib.h>
+#include<stdio.h>
 #include"ForwardProp.h"
 #include"BackProp.h"
 
@@ -54,21 +55,35 @@ int main()
     // {
     //     network->bias->data[j] = ++i;
     // }
+    forwardProp(network);
     printNetwork(network);
 
     double* ex = calloc(7, sizeof(double));
-    double* error = outputError(network, ex);
-    hidenError(network, 5, error);
-    hidenError(network, 6, error);
-    hidenError(network, 7, error);
-    hidenError(network, 8, error);
-    hidenError(network, 9, error);
-    hidenError(network, 10, error);
+    ex[2] = 1;
+    // printf("*");
+    double* error = calloc(network->outputNumber, sizeof(double));
+    error = outputError(network, ex, error);
+    printList(error, 7);
 
-    printNetwork(network);
+    double* herror = calloc(network->hidenNumber, sizeof(double));
+    herror = hidenErrors(network, error, herror);
+    printList(herror, 6);
+    // hidenError(network, 5, error);
+    // hidenError(network, 6, error);
+    // hidenError(network, 7, error);
+    // hidenError(network, 8, error);
+    // hidenError(network, 9, error);
+    // hidenError(network, 10, error);
 
-    free(ex);
-    free(error);
+    double* res = calloc(network->outputNumber * network->hidenNumber, sizeof(double));
+    outputWeightDelta(network, error, 1, res);
+
+    double* resH = calloc(network->inputNumber * network->hidenNumber, sizeof(double));
+    resH = hidenWeightDelta(network, herror, 1, resH);
+    // printNetwork(network);
+
+    // free(ex);
+    // free(error);
     freeNetwork(network);
 
     return 0;

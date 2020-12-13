@@ -32,7 +32,7 @@ void updateNode(NeuralNetwork* network, size_t nodeIndex)
     {
         res += activations[i] * weights[i];
     }
-    network->activations->data[nodeIndex] = res;
+    network->activations->data[nodeIndex] = sigmoid(res);
 
 }
 
