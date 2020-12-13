@@ -24,8 +24,6 @@ void detect_verticalBlock(ocr_data* data, pixel_block block, bool detected_white
             {
                 block_temp.left_top.x = x;
                 block_temp.left_bottom.x = x;
-                SDL_DrawLine(data->sdl.image_segmented, block_temp.left_top.x,block_temp.left_top.y,
-                                       block_temp.left_bottom.x,block_temp.left_bottom.y, 4294901760);
             }
             inDetection = true;
         }
@@ -35,8 +33,12 @@ void detect_verticalBlock(ocr_data* data, pixel_block block, bool detected_white
             inDetection = false;
             block_temp.right_top.x = x;
             block_temp.right_bottom.x = x;
-            SDL_DrawLine(data->sdl.image_segmented, block_temp.right_top.x,block_temp.right_top.y,
-                         block_temp.right_bottom.x,block_temp.right_bottom.y, 4294901760);
+            if (pos.block >= data->text_array->nb_block)
+            {
+                block_add(data->text_array);
+            }
+            data->text_array->blocks[pos.block].bottom_y = block_temp.left_top.y;
+            data->text_array->blocks[pos.block].top_y = block_temp.left_bottom.y;
             if (detected_white == true || detected_whitebefore == true)
                 detect_horizontalBlock(data, block_temp, detected_white, pos);
             else
@@ -72,8 +74,6 @@ void detect_horizontalBlock(ocr_data* data, pixel_block block, bool detected_whi
             {
                 block_temp.left_top.y = y;
                 block_temp.right_top.y = y;
-                SDL_DrawLine(data->sdl.image_segmented, block_temp.left_top.x,block_temp.left_top.y,
-                             block_temp.right_top.x,block_temp.right_top.y, 4294901760);
             }
             inDetection = true;
         }
@@ -83,9 +83,12 @@ void detect_horizontalBlock(ocr_data* data, pixel_block block, bool detected_whi
             inDetection = false;
             block_temp.left_bottom.y = y;
             block_temp.right_bottom.y = y;
-            SDL_DrawLine(data->sdl.image_segmented, block_temp.left_bottom.x,block_temp.left_bottom.y,
-                         block_temp.right_bottom.x,block_temp.right_bottom.y, 4294901760);
-
+            if (pos.block >= data->text_array->nb_block)
+            {
+                block_add(data->text_array);
+            }
+            data->text_array->blocks[pos.block].bottom_y = block_temp.left_top.y;
+            data->text_array->blocks[pos.block].top_y = block_temp.left_bottom.y;
             if (detected_white == true || detected_whitebefore == true)
                 detect_verticalBlock(data, block_temp, detected_white, pos);
             else

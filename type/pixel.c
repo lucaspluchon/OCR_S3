@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <err.h>
+#include <stdbool.h>
 #include "pixel.h"
 
 text* textArray_new()
@@ -101,11 +102,6 @@ void chr_add(text_line * arr)
 
 void chr_append(pixel_block x, size_t block, size_t line, text* text_array)
 {
-    if (block >= text_array->nb_block)
-    {
-        block_add(text_array);
-    }
-
     if (line >= text_array->blocks[block].nb_line)
     {
         line_add(&text_array->blocks[block]);
@@ -116,3 +112,28 @@ void chr_append(pixel_block x, size_t block, size_t line, text* text_array)
     text_array->blocks[block].lines[line].chrs[pos] = x;
 }
 
+
+void chr_delete(text_line* arr, size_t pos)
+{
+    if (pos < arr->nb_char && pos >= 0)
+    {
+        arr->chrs[pos] = arr->chrs[pos + 1];
+        for (size_t i = pos + 1; i < arr->nb_char - 1; i++)
+        {
+            arr->chrs[i] = arr->chrs[i + 1];
+        }
+        arr->nb_char--;
+    }
+}
+
+void chr_merge_top(pixel_block* chr1, pixel_block* chr2)
+{
+    chr1->left_top.y = chr2->left_top.y;
+    chr1->right_top.y = chr2->right_top.y;
+}
+
+void chr_merge_bottom(pixel_block* chr1, pixel_block* chr2)
+{
+    chr1->left_bottom.y = chr2->left_bottom.y;
+    chr1->right_bottom.y = chr2->right_bottom.y;
+}

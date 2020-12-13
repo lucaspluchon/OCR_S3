@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <SDL2/SDL_image.h>
 #include "../useful/builtin.h"
 #include "headers/preprocessing.h"
 
@@ -16,12 +17,13 @@ SDL_Surface* Image_Load(char* path)
         exit(1);
     }
 
-    return SDL_LoadBMP(path);
+    return IMG_Load(path);
 }
 
 SDL_Surface* Image_Copy(SDL_Surface* image)
 {
-    return SDL_ConvertSurface(image, image->format, SDL_SWSURFACE);
+    SDL_PixelFormat *format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA32);
+    return SDL_ConvertSurface(image, format, 0);
 }
 
 

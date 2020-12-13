@@ -24,6 +24,7 @@ struct pixel_block
     pixel right_top;
     pixel left_bottom;
     pixel right_bottom;
+    char letter;
 };
 
 typedef struct text_line text_line;
@@ -31,6 +32,8 @@ struct text_line
 {
     size_t nb_char;
     size_t capacity;
+    int top_y;
+    int bottom_y;
     pixel_block* chrs;
 };
 
@@ -39,6 +42,8 @@ struct text_block
 {
     size_t nb_line;
     size_t capacity;
+    int top_y;
+    int bottom_y;
     text_line* lines;
 };
 
@@ -55,5 +60,9 @@ void line_add(text_block * arr);
 void block_add(text* arr);
 text* textArray_new();
 void chr_append(pixel_block x, size_t block, size_t line, text* text_array);
+void chr_delete(text_line* arr, size_t pos);
+void chr_merge_top(pixel_block* chr1, pixel_block* chr2);
+void chr_merge_bottom(pixel_block* chr1, pixel_block* chr2);
+
 
 #endif // PIXEL_H_INCLUDED

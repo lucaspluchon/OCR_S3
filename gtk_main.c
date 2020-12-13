@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include "ui.h"
 
 // Main function.
@@ -36,5 +37,8 @@ int main (int argc, char *argv[])
     gtk_main();
 
     // Exits.
+
+
+
     return 0;
 }

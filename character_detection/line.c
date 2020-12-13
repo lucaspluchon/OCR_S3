@@ -27,8 +27,6 @@ void detect_line(ocr_data* data, pixel_block block, array_pos pos)
             {
                 block_temp.left_top.y = y;
                 block_temp.right_top.y = y;
-                SDL_DrawLine(data->sdl.image_segmented, block_temp.left_top.x,block_temp.left_top.y,
-                             block_temp.right_top.x,block_temp.right_top.y, 4278255360);
             }
             inDetection = true;
         }
@@ -38,8 +36,12 @@ void detect_line(ocr_data* data, pixel_block block, array_pos pos)
             inDetection = false;
             block_temp.left_bottom.y = y;
             block_temp.right_bottom.y = y;
-            SDL_DrawLine(data->sdl.image_segmented, block_temp.left_bottom.x,block_temp.left_bottom.y,
-                                   block_temp.right_bottom.x,block_temp.right_bottom.y, 4278255360);
+            if (pos.line >= data->text_array->blocks[pos.block].nb_line)
+            {
+                line_add(&data->text_array->blocks[pos.block]);
+            }
+            data->text_array->blocks[pos.block].lines[pos.line].top_y = block_temp.left_top.y;
+            data->text_array->blocks[pos.block].lines[pos.line].bottom_y = block_temp.left_bottom.y;
             detect_char_vertical(data,block_temp,pos);
             pos.line++;
         }

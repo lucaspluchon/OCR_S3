@@ -31,6 +31,7 @@ void apply_sdl_on_gtk(ocr_data* data)
 
     data->sdl.image = Image_Copy(data->sdl.image_original);
     Image_ApplyCorrection(data->sdl.image, data->sdl.threshold, data->sdl.angle);
+    g_print("Image correction ended\n");
     apply_segmentation(data);
 
     data->ui.image_pixbuf =  pixbuf_from_sdl_at_scale(data->sdl.image_segmented,w,h);
@@ -43,6 +44,7 @@ void on_image_choose(GtkFileChooserButton *widget, gpointer user_data)
     data->file_path = gtk_file_chooser_get_filename((GtkFileChooser *) widget);
 
     data->sdl.image_original = Image_Load(data->file_path);
+    g_print("Image loaded\n");
 
     gint x = 0;
     gint y = 0;

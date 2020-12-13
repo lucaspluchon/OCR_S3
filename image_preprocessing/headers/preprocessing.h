@@ -31,4 +31,5 @@ void Image_Rotate(SDL_Surface* image, double angle);
 
 void Image_ApplyCorrection(SDL_Surface* image, int threshold, double angle);
 
+
 #endif

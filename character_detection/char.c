@@ -70,17 +70,30 @@ void detect_char_horizontal(ocr_data* data, pixel_block block, array_pos pos)
             block_temp.right_top.y = y;
             inDetection = true;
         }
-
     }
-
-    SDL_DrawLine(data->sdl.image_segmented, block_temp.left_bottom.x, block_temp.left_bottom.y,
-                 block_temp.right_bottom.x, block_temp.right_bottom.y, 4278190335);
-    SDL_DrawLine(data->sdl.image_segmented, block_temp.right_top.x,block_temp.right_top.y,
-                 block_temp.right_bottom.x, block_temp.right_bottom.y, 4278190335);
-    SDL_DrawLine(data->sdl.image_segmented, block_temp.left_top.x,block_temp.left_top.y,
-                 block_temp.left_bottom.x,block_temp.left_bottom.y, 4278190335);
-    SDL_DrawLine(data->sdl.image_segmented, block_temp.left_top.x, block_temp.left_top.y,
-                 block_temp.right_top.x, block_temp.right_top.y, 4278190335);
     chr_append(block_temp,pos.block,pos.line,data->text_array);
+}
+
+void char_draw(ocr_data* data)
+{
+    text* arr = data->text_array;
+    for (size_t block = 0; block < arr->nb_block; block++)
+    {
+        for (size_t line = 0; line < arr->blocks[block].nb_line; line++)
+        {
+            for (size_t chr = 0; chr < arr->blocks[block].lines[line].nb_char; chr++)
+            {
+                pixel_block* pblock = &arr->blocks[block].lines[line].chrs[chr];
+                SDL_DrawLine(data->sdl.image_segmented, pblock->left_bottom.x, pblock->left_bottom.y,
+                             pblock->right_bottom.x, pblock->right_bottom.y, 4278190335);
+                SDL_DrawLine(data->sdl.image_segmented, pblock->right_top.x,pblock->right_top.y,
+                             pblock->right_bottom.x, pblock->right_bottom.y, 4278190335);
+                SDL_DrawLine(data->sdl.image_segmented, pblock->left_top.x,pblock->left_top.y,
+                             pblock->left_bottom.x,pblock->left_bottom.y, 4278190335);
+                SDL_DrawLine(data->sdl.image_segmented, pblock->left_top.x, pblock->left_top.y,
+                             pblock->right_top.x, pblock->right_top.y, 4278190335);
+            }
+        }
+    }
 }
 
