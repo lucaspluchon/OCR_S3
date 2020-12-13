@@ -11,6 +11,24 @@ void SDL_PutPixel32(SDL_Surface *surface, int x, int y, Uint32 pixel)
     *(Uint32*)p = pixel;
 }
 
+void SDL_DrawLine(SDL_Surface *image, int x0, int y0, int x1, int y1, Uint32 color)
+{
+    double x = x1 - x0;
+    double y = y1 - y0;
+    double length = sqrt( x*x + y*y );
+    double add_x = x / length;
+    double add_y = y / length;
+    x = x0;
+    y = y0;
+
+    for (int i = 0; i < length; i += 1)
+    {
+        SDL_PutPixel32(image, x, y, color);
+        x += add_x;
+        y += add_y;
+    }
+}
+
 uint8_t Pixel_GetR(Uint32 c)
 {
     return  c >> 16;

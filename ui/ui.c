@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include "ui.h"
 #include "../image_preprocessing/headers/preprocessing.h"
+#include "../character_detection/headers/segmentation.h"
 
 
 
@@ -19,19 +20,21 @@ GdkPixbuf* pixbuf_from_sdl_at_scale(SDL_Surface* image_sdl,int w, int h)
                        dst_format, pixels, rowstride);
     SDL_UnlockSurface(image_sdl);
 
-    return gdk_pixbuf_scale_simple(image_pixbuf,w,h,GDK_INTERP_BILINEAR);
+   return image_pixbuf;
 }
 
 
 void apply_sdl_on_gtk(ocr_data* data)
 {
-    data->sdl.image = Image_Copy(data->sdl.image_original);
-    Image_ApplyCorrection(data->sdl.image, data->sdl.threshold, data->sdl.angle);
-
     int w = gtk_widget_get_allocated_width(data->ui.image_viewer);
     int h = gtk_widget_get_allocated_height(data->ui.image_viewer);
 
-    data->ui.image_pixbuf =  pixbuf_from_sdl_at_scale(data->sdl.image,w,h);
+    data->sdl.image = Image_Copy(data->sdl.image_original);
+    Image_ApplyCorrection(data->sdl.image, data->sdl.threshold, data->sdl.angle);
+    g_print("Image correction ended\n");
+    apply_segmentation(data);
+
+    data->ui.image_pixbuf =  pixbuf_from_sdl_at_scale(data->sdl.image_segmented,w,h);
     gtk_image_set_from_pixbuf(data->ui.image_viewer,data->ui.image_pixbuf);
 }
 
@@ -41,7 +44,7 @@ void on_image_choose(GtkFileChooserButton *widget, gpointer user_data)
     data->file_path = gtk_file_chooser_get_filename((GtkFileChooser *) widget);
 
     data->sdl.image_original = Image_Load(data->file_path);
-    data->sdl.image = Image_Copy(data->sdl.image_original);
+    g_print("Image loaded\n");
 
     gint x = 0;
     gint y = 0;
@@ -69,7 +72,6 @@ void on_quitAnalyse(GtkFileChooserButton *widget, gpointer user_data)
 
     gtk_widget_show(data->ui.window_main);
     gtk_widget_hide(data->ui.window_image);
-
 }
 
 void on_confirmAnalyse(GtkFileChooserButton *widget, gpointer user_data)
@@ -127,7 +129,7 @@ gboolean on_switch_auto(GtkSwitch *widget, gboolean state, gpointer user_data)
 
 void gtk_build_from_glade(GtkBuilder* builder, GError* error)
 {
-    if (gtk_builder_add_from_file(builder, "ui_ocr.glade", &error) == 0)
+    if (gtk_builder_add_from_file(builder, "../ui_ocr.glade", &error) == 0)
     {
         g_printerr("Error loading file: %s\n", error->message);
         g_clear_error(&error);

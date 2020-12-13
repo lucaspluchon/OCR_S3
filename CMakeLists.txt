@@ -10,12 +10,14 @@ include_directories(type)
 include_directories(useful)
 include_directories(ui)
 
-find_package(SDL2 REQUIRED)
-include_directories(${SDL2_INCLUDE_DIRS})
+INCLUDE(FindPkgConfig)
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
-include_directories(${GTK3_INCLUDE_DIRS})
+PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
+PKG_SEARCH_MODULE(SDL2IMAGE REQUIRED SDL2_image>=2.0.0)
+PKG_SEARCH_MODULE(GTK3 REQUIRED gtk+-3.0)
+
+INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS} ${GTK3_INCLUDE_DIRS})
+
 link_directories(${GTK3_LIBRARY_DIRS})
 
 add_executable(Main
@@ -42,8 +44,6 @@ add_executable(GTK_Test
                 ui/ui.c
                 useful/builtin.c
                 gtk_main.c
-                )
+        character_detection/segmentation.c type/data.h type/pixel.c character_detection/correction.c character_detection/line_analyser.c)
 
-target_link_libraries(GTK_Test ${SDL2_LIBRARIES})
-TARGET_LINK_LIBRARIES(GTK_Test ${GTK3_LIBRARIES})
-target_link_libraries(GTK_Test -lm ${LIBS})
+TARGET_LINK_LIBRARIES(GTK_Test ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${GTK3_LIBRARIES} -lm ${LIBS})
