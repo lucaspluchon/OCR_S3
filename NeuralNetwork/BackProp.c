@@ -69,7 +69,7 @@ double* hidenWeightDelta(NeuralNetwork* network, double* errors, double v, doubl
         for (size_t j = 0; j < network->inputNumber; j++)
         {
             res[i + j] = delta(errors[i], network->activations->data[j], v);
-            printf("error : %f  activation : %f\n", errors[i], network->activations->data[j]);
+            // printf("error : %f  activation : %f\n", errors[i], network->activations->data[j]);
         }
     }
     return res;

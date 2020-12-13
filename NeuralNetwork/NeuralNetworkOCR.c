@@ -38,7 +38,7 @@ int main()
 
     NeuralNetwork* network = NULL;
 
-    network = GenerateNetwork(5, 6, 7);
+    network = GenerateNetwork(3, 3, 1);
     
     // printNetwork(network);
 
@@ -57,17 +57,162 @@ int main()
     // }
     forwardProp(network);
     printNetwork(network);
+    double* hDelta = calloc(network->hidenNumber * network->outputNumber, sizeof(double));
+    double* iDelta = calloc(network->hidenNumber * network->inputNumber, sizeof(double));
+    double* bdelta = calloc(network->hidenNumber + network->outputNumber, sizeof(double));
 
-    double* ex = calloc(7, sizeof(double));
-    ex[2] = 1;
+    for(size_t i = 0; i < 1000; i++)
+    {
+
+
+        network->activations->data[0] = 1;
+        network->activations->data[1] = 1;
+        network->activations->data[2] = 1;
+        forwardProp(network);
+        double ex = 1;
+        double* exep = &ex;
+        double* error = calloc(network->outputNumber, sizeof(double));
+        error = outputError(network, exep, error);
+
+        double* herror = calloc(network->hidenNumber, sizeof(double));
+        herror = hidenErrors(network, error, herror);
+        double* res = calloc(network->outputNumber * network->hidenNumber, sizeof(double));
+        outputWeightDelta(network, error, 1, res);
+
+        double* resH = calloc(network->inputNumber * network->hidenNumber, sizeof(double));
+        resH = hidenWeightDelta(network, herror, 1, resH);
+
+        double* bres = calloc(network->hidenNumber + network->outputNumber, sizeof(double));
+        biasDelta(network->hidenNumber, resH, 1, bres);
+        biasDelta(network->outputNumber, resH, 1, &(bres[network->hidenNumber]));
+
+        for (size_t i = 0; i < network->outputNumber * network->hidenNumber; i++)
+        {
+            hDelta[i] += res[i];
+        }
+        for (size_t i = 0; i < network->inputNumber * network->hidenNumber; i++)
+        {
+            iDelta[i] += resH[i];
+        }
+        for (size_t i = 0; i < network->outputNumber + network->hidenNumber; i++)
+        {
+            bdelta[i] += bres[i];
+        }
+
+
+        network->activations->data[0] = 0;
+        network->activations->data[1] = 1;
+        network->activations->data[2] = 1;
+        forwardProp(network);
+        ex = 0;
+        error = outputError(network, exep, error);
+
+        herror = hidenErrors(network, error, herror);
+        outputWeightDelta(network, error, 1, res);
+
+
+        resH = hidenWeightDelta(network, herror, 1, resH);
+
+
+        biasDelta(network->hidenNumber, resH, 1, bres);
+        biasDelta(network->outputNumber, resH, 1, &(bres[network->hidenNumber]));
+
+        for (size_t i = 0; i < network->outputNumber * network->hidenNumber; i++)
+        {
+            hDelta[i] += res[i];
+        }
+        for (size_t i = 0; i < network->inputNumber * network->hidenNumber; i++)
+        {
+            iDelta[i] += resH[i];
+        }
+        for (size_t i = 0; i < network->outputNumber + network->hidenNumber; i++)
+        {
+            bdelta[i] += bres[i];
+        }
+        network->activations->data[0] = 1;
+        network->activations->data[1] = 0;
+        network->activations->data[2] = 0;
+        forwardProp(network);
+        ex = 1;
+        error = outputError(network, exep, error);
+
+        herror = hidenErrors(network, error, herror);
+        outputWeightDelta(network, error, 1, res);
+
+
+        resH = hidenWeightDelta(network, herror, 1, resH);
+
+
+        biasDelta(network->hidenNumber, resH, 1, bres);
+        biasDelta(network->outputNumber, resH, 1, &(bres[network->hidenNumber]));
+
+        for (size_t i = 0; i < network->outputNumber * network->hidenNumber; i++)
+        {
+            hDelta[i] += res[i];
+        }
+        for (size_t i = 0; i < network->inputNumber * network->hidenNumber; i++)
+        {
+            iDelta[i] += resH[i];
+        }
+        for (size_t i = 0; i < network->outputNumber + network->hidenNumber; i++)
+        {
+            bdelta[i] += bres[i];
+        }
+        network->activations->data[0] = 0;
+        network->activations->data[1] = 1;
+        network->activations->data[1] = 0;
+        forwardProp(network);
+        ex = 0;
+        error = outputError(network, exep, error);
+
+        herror = hidenErrors(network, error, herror);
+        outputWeightDelta(network, error, 1, res);
+
+
+        resH = hidenWeightDelta(network, herror, 1, resH);
+
+
+        biasDelta(network->hidenNumber, resH, 1, bres);
+        biasDelta(network->outputNumber, resH, 1, &(bres[network->hidenNumber]));
+
+        for (size_t i = 0; i < network->outputNumber * network->hidenNumber; i++)
+        {
+            hDelta[i] += res[i];
+        }
+        for (size_t i = 0; i < network->inputNumber * network->hidenNumber; i++)
+        {
+            iDelta[i] += resH[i];
+        }
+        for (size_t i = 0; i < network->outputNumber + network->hidenNumber; i++)
+        {
+            bdelta[i] += bres[i];
+        }
+        free(bres);
+        free(res);
+        free(resH);
+        for (size_t i = 0; i < network->outputNumber * network->hidenNumber; i++)
+        {
+            network->hidenWeights->data[i] += hDelta[i];
+        }
+        for (size_t i = 0; i < network->inputNumber * network->hidenNumber; i++)
+        {
+            network->inputWeights->data[i] += iDelta[i];
+        }
+        for (size_t i = 0; i < network->outputNumber + network->hidenNumber; i++)
+        {
+            network->bias->data[i] = bdelta[i];
+        }
+
+    }
+
+    network->activations->data[0] = 1;
+    network->activations->data[1] = 0;
+    forwardProp(network);
+    printNetwork(network);
+    printf("Res for 0 0 %f\n", network->activations->data[network->inputNumber + network->hidenNumber + network->outputNumber - 1]);
+    // double* ex = calloc(7, sizeof(double));
+    // ex[2] = 1;
     // printf("*");
-    double* error = calloc(network->outputNumber, sizeof(double));
-    error = outputError(network, ex, error);
-    printList(error, 7);
-
-    double* herror = calloc(network->hidenNumber, sizeof(double));
-    herror = hidenErrors(network, error, herror);
-    printList(herror, 6);
     // hidenError(network, 5, error);
     // hidenError(network, 6, error);
     // hidenError(network, 7, error);
@@ -75,11 +220,6 @@ int main()
     // hidenError(network, 9, error);
     // hidenError(network, 10, error);
 
-    double* res = calloc(network->outputNumber * network->hidenNumber, sizeof(double));
-    outputWeightDelta(network, error, 1, res);
-
-    double* resH = calloc(network->inputNumber * network->hidenNumber, sizeof(double));
-    resH = hidenWeightDelta(network, herror, 1, resH);
     // printNetwork(network);
 
     // free(ex);
