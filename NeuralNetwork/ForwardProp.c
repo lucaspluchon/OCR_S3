@@ -30,9 +30,9 @@ void updateNode(NeuralNetwork* network, size_t nodeIndex)
 
     for (size_t i = 0; i < len; i++)
     {
-        res += activations[i] * weights[i];
+        res += sigmoid(activations[i]) * weights[i];
     }
-    network->activations->data[nodeIndex] = sigmoid(res);
+    network->activations->data[nodeIndex] = res;
 
 }
 

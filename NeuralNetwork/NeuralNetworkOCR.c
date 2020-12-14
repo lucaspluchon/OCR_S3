@@ -38,9 +38,47 @@ int main()
 
     NeuralNetwork* network = NULL;
 
-    network = GenerateNetwork(3, 3, 1);
+
+    network = GenerateNetwork(2, 2, 1);
+
+    // double k = 0.1;
+
+    // for (size_t i = 0; i < 9; i++)
+    // {
+    //     network->activations->data[i] = k;
+    //     k++;
+    // }
+
+    // network->activations->data[0] = 0.5;
+    // network->activations->data[1] = 0.6;
+    // network->activations->data[2] = 0.7;
+    // // network->bias->data[0] = 0.1;
+
+    // for (size_t i = 2; i < 4; i++)
+    // {
+    //     network->hidenWeights->data[i] = k;
+    //     k += 0.1;
+    // }
+
+    // for(size_t i = 0; i < 6 ; i++)
+    // {
+    //     network->bias->data[i] = k;
+    //     k++;
+    // }
+
+    // for (size_t i = 0; i < 8 ; i++)
+    // {
+    //     network->hidenWeights->data[i] = k;
+    //     k++;
+
+    // }
     
-    // printNetwork(network);
+    printNetwork(network);
+
+    forwardProp(network);
+
+    printNetwork(network);
+    
 
     // double i = 0;
     // for(size_t j = 0;j < network->activations->size; j++)
@@ -55,21 +93,20 @@ int main()
     // {
     //     network->bias->data[j] = ++i;
     // }
-    forwardProp(network);
-    printNetwork(network);
+    // forwardProp(network);
+    // printNetwork(network);
     double* hDelta = calloc(network->hidenNumber * network->outputNumber, sizeof(double));
     double* iDelta = calloc(network->hidenNumber * network->inputNumber, sizeof(double));
     double* bdelta = calloc(network->hidenNumber + network->outputNumber, sizeof(double));
 
-    for(size_t i = 0; i < 1000; i++)
+    for(size_t i = 0; i < 10000; i++)
     {
 
 
         network->activations->data[0] = 1;
         network->activations->data[1] = 1;
-        network->activations->data[2] = 1;
         forwardProp(network);
-        double ex = 1;
+        double ex = 0;
         double* exep = &ex;
         double* error = calloc(network->outputNumber, sizeof(double));
         error = outputError(network, exep, error);
@@ -102,9 +139,8 @@ int main()
 
         network->activations->data[0] = 0;
         network->activations->data[1] = 1;
-        network->activations->data[2] = 1;
         forwardProp(network);
-        ex = 0;
+        ex = 1;
         error = outputError(network, exep, error);
 
         herror = hidenErrors(network, error, herror);
@@ -131,7 +167,6 @@ int main()
         }
         network->activations->data[0] = 1;
         network->activations->data[1] = 0;
-        network->activations->data[2] = 0;
         forwardProp(network);
         ex = 1;
         error = outputError(network, exep, error);
@@ -160,9 +195,8 @@ int main()
         }
         network->activations->data[0] = 0;
         network->activations->data[1] = 1;
-        network->activations->data[1] = 0;
         forwardProp(network);
-        ex = 0;
+        ex = 1;
         error = outputError(network, exep, error);
 
         herror = hidenErrors(network, error, herror);
@@ -205,8 +239,8 @@ int main()
 
     }
 
-    network->activations->data[0] = 1;
-    network->activations->data[1] = 0;
+    network->activations->data[0] = 0;
+    network->activations->data[1] = 1;
     forwardProp(network);
     printNetwork(network);
     printf("Res for 0 0 %f\n", network->activations->data[network->inputNumber + network->hidenNumber + network->outputNumber - 1]);
