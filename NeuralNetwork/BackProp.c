@@ -23,12 +23,12 @@ double* outputError(NeuralNetwork* network, double* expected, double* res)
 double hidenError(NeuralNetwork* network, size_t nodeIndex, double* outputError)
 {
     double* weights = &(network->hidenWeights->data[nodeIndex - network->inputNumber]);
-    double res = sigmoideDerivate(network->activations->data[nodeIndex]);
+    double res = 0;
     for (size_t i = 0; i < network->outputNumber; i++)
     {
         res += outputError[i] * weights[i * network->hidenNumber];
     }
-    return res;
+    return res * sigmoideDerivate(network->activations->data[nodeIndex]);
 }
 
 double* hidenErrors(NeuralNetwork* network, double* outputError, double* res)
@@ -44,7 +44,7 @@ double* biasDelta(size_t len, double* errors, double v, double* res)
 {
     for (size_t i = 0; i < len; i++)
     {
-        res[i] = delta(errors[i], 1, v);
+        res[i] += delta(errors[i], 1, v);
     }
     return res;
 }
@@ -55,7 +55,7 @@ double* outputWeightDelta(NeuralNetwork* network, double* errors, double v, doub
     {
         for(size_t j = 0; j < network->hidenNumber; j++)
         {
-            res[i + j] = delta(errors[i], network->activations->data[network->inputNumber + j], v);
+            res[(i * network->hidenNumber) + j] += delta(errors[i], network->activations->data[network->inputNumber + j], v);
             // printf("error : %f  activation : %f\n", errors[i], network->activations->data[network->inputNumber + j]);
         }
     }
@@ -68,7 +68,7 @@ double* hidenWeightDelta(NeuralNetwork* network, double* errors, double v, doubl
     {
         for (size_t j = 0; j < network->inputNumber; j++)
         {
-            res[i + j] = delta(errors[i], network->activations->data[j], v);
+            res[(i * network->inputNumber) + j] += delta(errors[i], network->activations->data[j], v);
             // printf("error : %f  activation : %f\n", errors[i], network->activations->data[j]);
         }
     }

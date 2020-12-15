@@ -6,224 +6,218 @@
 
 int main()
 {
-    // Network* network = malloc(sizeof(Network));
-    // RowMark* rowMark = malloc(sizeof(RowMark));
-    // size_t lens[1] = {3};
-    // GenerateNetwork(network, rowMark, 2, 3, 1, lens);
-    // for(size_t i = 0; i < network->size; i++)
-    // {
-    //     network->data[i] = i;
-    // }
-    // printNetwork(network);
-    
-
-    // free(rowMark->lens);
-    // free(rowMark);
-    // free(network->data);
-    // free(network);
-    // NeuralNetwork* network = malloc(sizeof(NeuralNetwork));
-
-    // // size_t lens[1] = {3};
-    // // size_t inputNumber = 2;
-    // // size_t outputNumber = 3;
-
-    // DataSet* activation = malloc(sizeof(DataSet));
-    // ListSet* li = malloc(sizeof(ListSet));
-    // li->size = 20;
-    // li->data = calloc(20, sizeof(double));
-    // for (size_t i = 0; i< 20; i++)
-    // {
-    //     li->data[i] = i;
-    // }
 
     NeuralNetwork* network = NULL;
 
-    network = GenerateNetwork(3, 3, 1);
-    
-    // printNetwork(network);
 
-    // double i = 0;
-    // for(size_t j = 0;j < network->activations->size; j++)
-    // {
-    //     network->activations->data[j] = ++i;
-    // }
-    // for(size_t j = 0;j < network->weights->size; j++)
-    // {
-    //     network->weights->data[j] = ++i;
-    // }
-    // for(size_t j = 0;j < network->bias->size; j++)
-    // {
-    //     network->bias->data[j] = ++i;
-    // }
-    forwardProp(network);
+    network = GenerateNetwork(2, 3, 2);
+
     printNetwork(network);
-    double* hDelta = calloc(network->hidenNumber * network->outputNumber, sizeof(double));
-    double* iDelta = calloc(network->hidenNumber * network->inputNumber, sizeof(double));
-    double* bdelta = calloc(network->hidenNumber + network->outputNumber, sizeof(double));
-
-    for(size_t i = 0; i < 1000; i++)
+ 
+    printNetwork(network);
+    for(size_t i = 0; i < 200; i++)
     {
+        network->activations->data[0] = 1;
+        network->activations->data[1] = 0;
+        forwardProp(network);
+
+        double* exep = malloc(2 * sizeof(double));
+        exep[0] = 1;
+        exep[1] = 1;
+
+        double* outError = calloc(2, sizeof(double));
+        outputError(network, exep, outError);
+        // printf("Output error\n");
+        // printf("%f\n", *outError);
+
+        double* hidError = calloc(3, sizeof(double));
+        hidenErrors(network, outError, hidError);
+        // printf("Hiden error\n");
+        // printf("%f, %f\n", hidError[0], hidError[1]);
+
+        double* bDelta = calloc(3, sizeof(double));
+        double* bDelta2 = calloc(2, sizeof(double));
+        biasDelta(3, hidError, 2, bDelta);
+        biasDelta(2, outError, 2, bDelta2);
+
+        // printf("Delta bias ; \n");
+        // printf("%f ; %f ; %f\n", bDelta[0], bDelta[1], bDelta[2]);
+
+        double* dOut = calloc(6, sizeof(double));
+        outputWeightDelta(network, outError, 2, dOut);
+
+        // printf("Delta out ; \n");
+        // printf("%f ; %f\n", dOut[0], dOut[1]);
+        
+        double* dHid = calloc(6, sizeof(double));
+        hidenWeightDelta(network, hidError, 2, dHid);
+
+        // printf("Delta hid ; \n");
+        // printf("%f ; %f ; %f ; %f\n", dHid[0], dHid[1], dHid[2], dHid[3]);
+        free(outError);
+        free(hidError);
+ 
 
 
         network->activations->data[0] = 1;
         network->activations->data[1] = 1;
-        network->activations->data[2] = 1;
         forwardProp(network);
-        double ex = 1;
-        double* exep = &ex;
-        double* error = calloc(network->outputNumber, sizeof(double));
-        error = outputError(network, exep, error);
+        exep[0] = 0;
+        exep[1] = 1;
 
-        double* herror = calloc(network->hidenNumber, sizeof(double));
-        herror = hidenErrors(network, error, herror);
-        double* res = calloc(network->outputNumber * network->hidenNumber, sizeof(double));
-        outputWeightDelta(network, error, 1, res);
+        outError = calloc(2, sizeof(double));
+        outputError(network, exep, outError);
+        // printf("Output error\n");
+        // printf("%f\n", *outError);
 
-        double* resH = calloc(network->inputNumber * network->hidenNumber, sizeof(double));
-        resH = hidenWeightDelta(network, herror, 1, resH);
+        hidError = calloc(3, sizeof(double));
+        hidenErrors(network, outError, hidError);
+        // printf("Hiden error\n");
+        // printf("%f, %f\n", hidError[0], hidError[1]);
 
-        double* bres = calloc(network->hidenNumber + network->outputNumber, sizeof(double));
-        biasDelta(network->hidenNumber, resH, 1, bres);
-        biasDelta(network->outputNumber, resH, 1, &(bres[network->hidenNumber]));
+        biasDelta(3, hidError, 1, bDelta);
+        biasDelta(2, outError, 1, bDelta2);
 
-        for (size_t i = 0; i < network->outputNumber * network->hidenNumber; i++)
-        {
-            hDelta[i] += res[i];
-        }
-        for (size_t i = 0; i < network->inputNumber * network->hidenNumber; i++)
-        {
-            iDelta[i] += resH[i];
-        }
-        for (size_t i = 0; i < network->outputNumber + network->hidenNumber; i++)
-        {
-            bdelta[i] += bres[i];
-        }
+        // printf("Delta bias ; \n");
+        // printf("%f ; %f ; %f\n", bDelta[0], bDelta[1], bDelta[2]);
+
+        outputWeightDelta(network, outError, 2, dOut);
+
+        // printf("Delta out ; \n");
+        // printf("%f ; %f\n", dOut[0], dOut[1]);
+        
+        hidenWeightDelta(network, hidError, 2, dHid);
+
+        // printf("Delta hid ; \n");
+        // printf("%f ; %f ; %f ; %f\n", dHid[0], dHid[1], dHid[2], dHid[3]);
+        free(outError);
+        free(hidError);
 
 
         network->activations->data[0] = 0;
         network->activations->data[1] = 1;
-        network->activations->data[2] = 1;
         forwardProp(network);
-        ex = 0;
-        error = outputError(network, exep, error);
+        exep[0] = 1;
+        exep[1] = 1;
 
-        herror = hidenErrors(network, error, herror);
-        outputWeightDelta(network, error, 1, res);
+        outError = calloc(2, sizeof(double));
+        outputError(network, exep, outError);
+        // printf("Output error\n");
+        // printf("%f\n", *outError);
 
+        hidError = calloc(3, sizeof(double));
+        hidenErrors(network, outError, hidError);
+        // printf("Hiden error\n");
+        // printf("%f, %f\n", hidError[0], hidError[1]);
 
-        resH = hidenWeightDelta(network, herror, 1, resH);
+        biasDelta(3, hidError, 2, bDelta);
+        biasDelta(2, outError, 2, bDelta2);
 
+        // printf("Delta bias ; \n");
+        // printf("%f ; %f ; %f\n", bDelta[0], bDelta[1], bDelta[2]);
 
-        biasDelta(network->hidenNumber, resH, 1, bres);
-        biasDelta(network->outputNumber, resH, 1, &(bres[network->hidenNumber]));
+        outputWeightDelta(network, outError, 2, dOut);
 
-        for (size_t i = 0; i < network->outputNumber * network->hidenNumber; i++)
-        {
-            hDelta[i] += res[i];
-        }
-        for (size_t i = 0; i < network->inputNumber * network->hidenNumber; i++)
-        {
-            iDelta[i] += resH[i];
-        }
-        for (size_t i = 0; i < network->outputNumber + network->hidenNumber; i++)
-        {
-            bdelta[i] += bres[i];
-        }
-        network->activations->data[0] = 1;
-        network->activations->data[1] = 0;
-        network->activations->data[2] = 0;
-        forwardProp(network);
-        ex = 1;
-        error = outputError(network, exep, error);
+        // printf("Delta out ; \n");
+        // printf("%f ; %f\n", dOut[0], dOut[1]);
+        
+        hidenWeightDelta(network, hidError, 2, dHid);
 
-        herror = hidenErrors(network, error, herror);
-        outputWeightDelta(network, error, 1, res);
+        // printf("Delta hid ; \n");
+        // printf("%f ; %f ; %f ; %f\n", dHid[0], dHid[1], dHid[2], dHid[3]);
+        free(outError);
+        free(hidError);
 
-
-        resH = hidenWeightDelta(network, herror, 1, resH);
-
-
-        biasDelta(network->hidenNumber, resH, 1, bres);
-        biasDelta(network->outputNumber, resH, 1, &(bres[network->hidenNumber]));
-
-        for (size_t i = 0; i < network->outputNumber * network->hidenNumber; i++)
-        {
-            hDelta[i] += res[i];
-        }
-        for (size_t i = 0; i < network->inputNumber * network->hidenNumber; i++)
-        {
-            iDelta[i] += resH[i];
-        }
-        for (size_t i = 0; i < network->outputNumber + network->hidenNumber; i++)
-        {
-            bdelta[i] += bres[i];
-        }
         network->activations->data[0] = 0;
-        network->activations->data[1] = 1;
         network->activations->data[1] = 0;
         forwardProp(network);
-        ex = 0;
-        error = outputError(network, exep, error);
+        exep[0] = 0;
+        exep[1] = 0;
 
-        herror = hidenErrors(network, error, herror);
-        outputWeightDelta(network, error, 1, res);
+        outError = calloc(2, sizeof(double));
+        outputError(network, exep, outError);
+        // printf("Output error\n");
+        // printf("%f\n", *outError);
 
+        hidError = calloc(3, sizeof(double));
+        hidenErrors(network, outError, hidError);
+        // printf("Hiden error\n");
+        // printf("%f, %f\n", hidError[0], hidError[1]);
 
-        resH = hidenWeightDelta(network, herror, 1, resH);
+        biasDelta(3, hidError, 2, bDelta);
+        biasDelta(2, outError, 2, bDelta2);
 
+        // printf("Delta bias ; \n");
+        // printf("%f ; %f ; %f\n", bDelta[0], bDelta[1], bDelta[2]);
 
-        biasDelta(network->hidenNumber, resH, 1, bres);
-        biasDelta(network->outputNumber, resH, 1, &(bres[network->hidenNumber]));
+        outputWeightDelta(network, outError, 2, dOut);
 
-        for (size_t i = 0; i < network->outputNumber * network->hidenNumber; i++)
-        {
-            hDelta[i] += res[i];
-        }
-        for (size_t i = 0; i < network->inputNumber * network->hidenNumber; i++)
-        {
-            iDelta[i] += resH[i];
-        }
-        for (size_t i = 0; i < network->outputNumber + network->hidenNumber; i++)
-        {
-            bdelta[i] += bres[i];
-        }
-        free(bres);
-        free(res);
-        free(resH);
-        for (size_t i = 0; i < network->outputNumber * network->hidenNumber; i++)
-        {
-            network->hidenWeights->data[i] += hDelta[i];
-        }
-        for (size_t i = 0; i < network->inputNumber * network->hidenNumber; i++)
-        {
-            network->inputWeights->data[i] += iDelta[i];
-        }
-        for (size_t i = 0; i < network->outputNumber + network->hidenNumber; i++)
-        {
-            network->bias->data[i] = bdelta[i];
-        }
+        // printf("Delta out ; \n");
+        // printf("%f ; %f\n", dOut[0], dOut[1]);
+        
+        hidenWeightDelta(network, hidError, 2, dHid);
 
+        // printf("Delta hid ; \n");
+        // printf("%f ; %f ; %f ; %f\n", dHid[0], dHid[1], dHid[2], dHid[3]);
+        free(outError);
+        free(hidError);
+ 
+
+        network->inputWeights->data[0] += dHid[0];
+        network->inputWeights->data[1] += dHid[1];
+        network->inputWeights->data[2] += dHid[2];
+        network->inputWeights->data[3] += dHid[3];
+        network->inputWeights->data[4] += dHid[4];
+        network->inputWeights->data[5] += dHid[5];
+
+        network->hidenWeights->data[0] += dOut[0];
+        network->hidenWeights->data[1] += dOut[1];
+        network->hidenWeights->data[2] += dOut[2];
+        network->hidenWeights->data[3] += dOut[3];
+        network->hidenWeights->data[4] += dOut[4];
+        network->hidenWeights->data[5] += dOut[5];
+
+        network->bias->data[0] += bDelta[0];
+        network->bias->data[1] += bDelta[1];
+        network->bias->data[2] += bDelta[2];
+        network->bias->data[3] += bDelta2[0];
+        network->bias->data[4] += bDelta2[1];
+
+        // if (i > 100)
+        // {
+        //     printf("\n\ni = %zu\n", i);
+        //     printNetwork(network);
+        //     printf("Delta hiden : %f ; %f ; %f ; %f\n", dHid[0], dHid[1], dHid[2], dHid[3]);
+        //     printf("Delta hiden : %f ; %f\n", dOut[0], dOut[1]);
+        //     printf("Delta bias : %f ; %f ; %f\n\n", bDelta[0], bDelta[1], bDelta[2]);
+
+        // }
+
+        free(dHid);
+        free(dOut);
+        free(bDelta);
+        free(bDelta2);
     }
 
+    network->activations->data[0] = 0;
+    network->activations->data[1] = 0;
+    forwardProp(network);
+    printNetwork(network);
     network->activations->data[0] = 1;
     network->activations->data[1] = 0;
     forwardProp(network);
     printNetwork(network);
-    printf("Res for 0 0 %f\n", network->activations->data[network->inputNumber + network->hidenNumber + network->outputNumber - 1]);
-    // double* ex = calloc(7, sizeof(double));
-    // ex[2] = 1;
-    // printf("*");
-    // hidenError(network, 5, error);
-    // hidenError(network, 6, error);
-    // hidenError(network, 7, error);
-    // hidenError(network, 8, error);
-    // hidenError(network, 9, error);
-    // hidenError(network, 10, error);
+    network->activations->data[0] = 0;
+    network->activations->data[1] = 1;
+    forwardProp(network);
+    printNetwork(network);
+    network->activations->data[0] = 1;
+    network->activations->data[1] = 1;
+    forwardProp(network);
+    printNetwork(network);
 
-    // printNetwork(network);
 
-    // free(ex);
-    // free(error);
+
     freeNetwork(network);
 
     return 0;
