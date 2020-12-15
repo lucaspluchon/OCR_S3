@@ -169,6 +169,7 @@ int main()
         // printf("%f ; %f ; %f ; %f\n", dHid[0], dHid[1], dHid[2], dHid[3]);
         free(outError);
         free(hidError);
+        free(exep);
  
 
         network->inputWeights->data[0] += dHid[0];

@@ -21,3 +21,7 @@ bin/
 # Clion
 cmake-build-debug/
 .idea/
+
+
+# Local saving files
+*.save

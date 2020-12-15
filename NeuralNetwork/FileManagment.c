@@ -82,18 +82,18 @@ ListSet* readList(char* name, char* listName)
 int writeNetwork(NeuralNetwork* network)
 {
     FILE* netFp;
-    netFp = fopen("network", "w");
+    netFp = fopen("network.save", "w");
     if (netFp == NULL)
         return 1;
     fwrite(network, sizeof(size_t) * 3, 1, netFp);
     fclose(netFp);
-    if (writeList(network->activations, "activations", "activations_l") == 1)
+    if (writeList(network->activations, "activations.save", "activations_l.save") == 1)
         return 1;
-    if(writeList(network->bias, "bias", "bias_l") == 1)
+    if(writeList(network->bias, "bias.save", "bias_l.save") == 1)
         return 1;
-    if(writeList(network->hidenWeights, "hWeights", "hWeights_l") == 1)
+    if(writeList(network->hidenWeights, "hWeights.save", "hWeights_l.save") == 1)
         return 1;
-    if(writeList(network->inputWeights, "iWeights", "iWeights_l") == 1)
+    if(writeList(network->inputWeights, "iWeights.save", "iWeights_l.save") == 1)
         return 1;
     return 0;
 }
@@ -101,7 +101,7 @@ int writeNetwork(NeuralNetwork* network)
 NeuralNetwork* readNetwork()
 {
     FILE* netFp;
-    netFp = fopen("network", "r");
+    netFp = fopen("network.save", "r");
     if(netFp == NULL)
         return NULL;
     NeuralNetwork* network = malloc(sizeof(NeuralNetwork));
@@ -109,10 +109,10 @@ NeuralNetwork* readNetwork()
         errx(1, "Memory allocation failed");
     fread(network, sizeof(size_t) * 3, 1, netFp);
 
-    network->activations = readList("activations", "activation_l");
-    network->hidenWeights = readList("hWeights", "hWeights_l");
-    network->inputWeights = readList("iWeights", "iWeights_l");
-    network->bias = readList("bias", "bias_l");
+    network->activations = readList("activations.save", "activations_l.save");
+    network->hidenWeights = readList("hWeights.save", "hWeights_l.save");
+    network->inputWeights = readList("iWeights.save", "iWeights_l.save");
+    network->bias = readList("bias.save", "bias_l.save");
 
     if (network->bias == NULL)
         printf("Unable to load bias\n");
