@@ -172,7 +172,6 @@ ocr_data init_data(GtkBuilder* builder)
                             .entry_angle = entry_angle,
                         },
                     .file_path = "",
-                    .no_destroy = 0,
                     .sdl = {
                             .threshold = -1,
                             .angle = -1,

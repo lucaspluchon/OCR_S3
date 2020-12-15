@@ -1,5 +1,25 @@
 #include "headers/segmentation.h"
 
+text* apply_segmentation_for_training(char* path)
+{
+    ocr_data data =
+            {
+                    .ui = NULL,
+                    .file_path = path,
+                    .sdl = {
+                            .threshold = -1,
+                            .angle = -1,
+                    },
+            };
+
+    data.sdl.image_original = Image_Load(data.file_path);
+    data.sdl.image = Image_Copy(data.sdl.image_original);
+    Image_ApplyCorrection(data.sdl.image, data.sdl.threshold, data.sdl.angle);
+    apply_segmentation(&data);
+
+    return data.text_array;
+}
+
 void apply_segmentation(ocr_data* data)
 {
     g_print("Segmentation started\n");

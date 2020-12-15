@@ -39,8 +39,7 @@ struct ocr_data
 {
     ui_data ui;
     sdl_data sdl;
-    gchar* file_path;
-    int no_destroy;
+    char* file_path;
     text* text_array;
 };
 
