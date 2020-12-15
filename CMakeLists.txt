@@ -56,6 +56,8 @@ add_executable(GTK_Test
                 gtk_main.c
         character_detection/segmentation.c type/data.h type/pixel.c character_detection/correction.c character_detection/line_analyser.c)
 
-TARGET_LINK_LIBRARIES(GTK_Test ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${GTK3_LIBRARIES} -lm ${LIBS})
+if (UNIX AND NOT APPLE)
+    TARGET_LINK_LIBRARIES(GTK_Test ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${GTK3_LIBRARIES} -lm ${LIBS})
+endif()
 
 TARGET_LINK_LIBRARIES(Neural_Test ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES})
