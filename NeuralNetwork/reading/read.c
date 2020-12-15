@@ -14,7 +14,7 @@ int** get_pixel_block(SDL_Surface* image, int x1, int y1, int x2, int y2)
     int** chr_image = malloc(width * sizeof(int));
     for (int i = 0; i < width; i++)
     {
-        chr_image = malloc(height * sizeof(int));
+        chr_image[i] = malloc(height * sizeof(int));
     }
 
     for (int i = 0; i < width; i++)
@@ -37,13 +37,9 @@ int** get_pixel_block(SDL_Surface* image, int x1, int y1, int x2, int y2)
 }
 
 
-int** resize(int** chr, int widthChr, int heightChr)
+int* resize(int** chr, int widthChr, int heightChr)
 {
-    int** chr_resized = malloc(Neural_Network_Entry_Size * sizeof(int));
-    for (int i = 0; i < Neural_Network_Entry_Size; i++)
-    {
-        chr_resized= malloc(Neural_Network_Entry_Size * sizeof(int));
-    }
+    int** chr_resized = malloc(Neural_Network_Entry_Size * Neural_Network_Entry_Size * sizeof(int));
 
     double newRatio = (double) ( widthChr < heightChr ? widthChr : heightChr ) / Neural_Network_Entry_Size;
 
@@ -56,11 +52,11 @@ int** resize(int** chr, int widthChr, int heightChr)
 
             if(resX >= widthChr || resY >= heightChr)
             {
-                chr_resized[i][j] = 0;
+                chr_resized[i * Neural_Network_Entry_Size + j] = 0;
             }
             else
             {
-                chr_resized[i][j] = chr[resX][resY];
+                chr_resized[i * Neural_Network_Entry_Size + j] = chr[resX][resY];
             }
         }
     }
@@ -94,7 +90,7 @@ void parcours(SDL_Surface* image, text* arr)
                 int** chr_image = get_pixel_block(image, caractere.left_top.x, caractere.left_top.y,
                     caractere.right_bottom.x, caractere.right_bottom.y);
 
-                int** chr_resized = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
+                int* chr_resized = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
                     caractere.right_bottom.y - caractere.left_top.y);
 
                 // char c = networkSet(chr_resized)         send chr_resized to Neural network
@@ -116,4 +112,6 @@ void parcours(SDL_Surface* image, text* arr)
         printf("\n\n\n");
     }
 }
+
+
 

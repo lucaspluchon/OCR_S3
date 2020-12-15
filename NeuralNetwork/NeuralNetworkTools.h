@@ -26,6 +26,8 @@ struct NeuralNetwork
     ListSet* bias;
 };
 
+double randd();
+
 void freeNetwork(NeuralNetwork* network);
 NeuralNetwork* GenerateNetwork(size_t inputNumber, size_t hidenNumber, size_t outputNumber);
 void printList(double* list, size_t len);

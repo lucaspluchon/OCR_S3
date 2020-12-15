@@ -24,7 +24,7 @@ endif()
 
 if (APPLE)
     INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS})
-    find_package (pkgconfig required)
+    find_package (pkgconfig)
     pkg_check_modules (GTK3 REQUIRED gtk+-3.0)
     include_directories (${gtk3_include_dirs})
     link_directories (${GTK3_LIBRARY_DIRS})
