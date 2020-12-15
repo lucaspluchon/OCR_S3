@@ -10,23 +10,33 @@ include_directories(type)
 include_directories(useful)
 include_directories(ui)
 
-INCLUDE(FindPkgConfig)
+if(UNIX AND NOT APPLE)
+    INCLUDE(FindPkgConfig)
 
-PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
-PKG_SEARCH_MODULE(SDL2IMAGE REQUIRED SDL2_image>=2.0.0)
-PKG_SEARCH_MODULE(GTK3 REQUIRED gtk+-3.0)
+    PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
+    PKG_SEARCH_MODULE(SDL2IMAGE REQUIRED SDL2_image>=2.0.0)
+    PKG_SEARCH_MODULE(GTK3 REQUIRED gtk+-3.0)
 
-INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS} ${GTK3_INCLUDE_DIRS})
+    INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS} ${GTK3_INCLUDE_DIRS})
 
-link_directories(${GTK3_LIBRARY_DIRS})
+    link_directories(${GTK3_LIBRARY_DIRS})
+endif()
+
+if (APPLE)
+    INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS})
+endif()
+
+file(GLOB src_network NeuralNetwork/*.c)
+file(GLOB src_type type/*.c)
+file(GLOB src_ui ui/*.c)
+file(GLOB src_image image_preprocessing/*.c)
+file(GLOB src_useful useful/*.c)
 
 add_executable(Main
                 main.c
                 )
 
-add_executable(Neural_Test
-                neural_main.c
-                )
+add_executable(Neural_Test ${src_network} ${src_type} ${src_ui} ${src_image} ${src_useful})
 
 add_executable(GTK_Test
                 character_detection/block.c
@@ -47,3 +57,5 @@ add_executable(GTK_Test
         character_detection/segmentation.c type/data.h type/pixel.c character_detection/correction.c character_detection/line_analyser.c)
 
 TARGET_LINK_LIBRARIES(GTK_Test ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${GTK3_LIBRARIES} -lm ${LIBS})
+
+TARGET_LINK_LIBRARIES(Neural_Test ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES})
