@@ -1,6 +1,7 @@
 #include <stdio.h>
-#include "type/pixel.h"
+#include "../../type/pixel.h"
 #include <SDL2/SDL.h>
+#include"../../image_preprocessing/headers/preprocessing.h"
 
 #define Neural_Network_Entry_Size 32
 
