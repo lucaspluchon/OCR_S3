@@ -45,7 +45,7 @@ int** resize(int** chr, int widthChr, int heightChr)
         chr_resized= malloc(Neural_Network_Entry_Size * sizeof(int));
     }
 
-    double newRatio = (double) (max(widthChr, heightChr)) / Neural_Network_Entry_Size;
+    double newRatio = (double) ( widthChr < heightChr ? widthChr : heightChr ) / Neural_Network_Entry_Size;
 
     for (int i = 0; i < Neural_Network_Entry_Size; i++)
     {
@@ -71,12 +71,12 @@ int** resize(int** chr, int widthChr, int heightChr)
 
 void parcours(SDL_Surface* image, text* arr)
 {
-    for (int i = 0; i < arr->nb_block; i++)
+    for (size_t i = 0; i < arr->nb_block; i++)
     {
-        for (int j = 0; j < arr->blocks[i].nb_line; j++)
+        for (size_t j = 0; j < arr->blocks[i].nb_line; j++)
         {
             int sumSpace = 0;
-            for (int k = 0; k < arr->blocks[i].lines[j].nb_char; k++)
+            for (size_t k = 0; k < arr->blocks[i].lines[j].nb_char; k++)
             {
                 pixel_block caractere = arr->blocks[i].lines[j].chrs[k];
                 if (k != arr->blocks[i].lines[j].nb_char - 1)
@@ -87,7 +87,7 @@ void parcours(SDL_Surface* image, text* arr)
 
             int averageSpace = sumSpace / arr->blocks[i].lines[j].nb_char;
 
-            for (int k = 0; k < arr->blocks[i].lines[j].nb_char; k++)
+            for (size_t k = 0; k < arr->blocks[i].lines[j].nb_char; k++)
             {
                 pixel_block caractere = arr->blocks[i].lines[j].chrs[k];
 
@@ -116,3 +116,4 @@ void parcours(SDL_Surface* image, text* arr)
         printf("\n\n\n");
     }
 }
+
