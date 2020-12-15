@@ -3,14 +3,22 @@
 #include<stdio.h>
 #include"ForwardProp.h"
 #include"BackProp.h"
+#include"FileManagment.h"
+
 
 int main()
 {
 
     NeuralNetwork* network = NULL;
 
+    network = readNetwork();
+    printNetwork(network);
+    return 0;
+
 
     network = GenerateNetwork(2, 3, 2);
+
+    readData(network);
 
     printNetwork(network);
  
@@ -161,6 +169,7 @@ int main()
         // printf("%f ; %f ; %f ; %f\n", dHid[0], dHid[1], dHid[2], dHid[3]);
         free(outError);
         free(hidError);
+        free(exep);
  
 
         network->inputWeights->data[0] += dHid[0];
@@ -199,26 +208,46 @@ int main()
         free(bDelta2);
     }
 
-    network->activations->data[0] = 0;
-    network->activations->data[1] = 0;
-    forwardProp(network);
     printNetwork(network);
-    network->activations->data[0] = 1;
-    network->activations->data[1] = 0;
-    forwardProp(network);
-    printNetwork(network);
-    network->activations->data[0] = 0;
-    network->activations->data[1] = 1;
-    forwardProp(network);
-    printNetwork(network);
-    network->activations->data[0] = 1;
-    network->activations->data[1] = 1;
-    forwardProp(network);
-    printNetwork(network);
+    writeNetwork(network);
+
+    // network->activations->data[0] = 0;
+    // network->activations->data[1] = 0;
+    // forwardProp(network);
+    // printNetwork(network);
+    // network->activations->data[0] = 1;
+    // network->activations->data[1] = 0;
+    // forwardProp(network);
+    // printNetwork(network);
+    // network->activations->data[0] = 0;
+    // network->activations->data[1] = 1;
+    // forwardProp(network);
+    // printNetwork(network);
+    // network->activations->data[0] = 1;
+    // network->activations->data[1] = 1;
+    // forwardProp(network);
+    // printNetwork(network);
 
 
 
-    freeNetwork(network);
+    // writeData(network);
+    // freeNetwork(network);
+
+
+    // ListSet* l = NULL;
+    // ListSet* l = malloc(sizeof(ListSet));
+    // l->size = 5;
+    // l->data = malloc(sizeof(double) * 5);
+    // l->data[0] = 1;
+    // l->data[1] = 2;
+    // l->data[2] = 3;
+    // l->data[3] = 4;
+    // l->data[4] = 5;
+
+    // l = readList("activation", "activation_l");
+    // printList(l->data, l->size);
+    // printf("%lu", sizeof(*l));
+    // writeList(l, "activation", "activation_l");
 
     return 0;
 }
