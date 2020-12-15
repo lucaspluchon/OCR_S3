@@ -24,6 +24,11 @@ endif()
 
 if (APPLE)
     INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS})
+    find_package (pkgconfig required)
+    pkg_check_modules (GTK3 REQUIRED gtk+-3.0)
+    include_directories (${gtk3_include_dirs})
+    link_directories (${GTK3_LIBRARY_DIRS})
+    add_definitions (${gtk3_cflags_other})
 endif()
 
 file(GLOB src_network NeuralNetwork/*.c)
