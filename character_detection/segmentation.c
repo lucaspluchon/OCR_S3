@@ -26,7 +26,7 @@ void apply_segmentation(ocr_data* data)
 {
 
     data->sdl.image_rlsa = Detect_RLSA_Block(data->sdl.image,7, data->ui.progress_main);
-    Progress_Set(data->ui.progress_main,0.6,data);
+    //Progress_Set(data->ui.progress_main,0.6,data);
     data->text_array = textArray_new();
     detect_text(data);
 }
@@ -43,7 +43,7 @@ void detect_text(ocr_data* data)
     data->sdl.image_segmented = Image_Copy(image);
     detect_verticalBlock(data, pblock, true, pos);
 
-    Progress_Set(data->ui.progress_main,0.8,data);
+    //Progress_Set(data->ui.progress_main,0.8,data);
 
     double average_size = size_averageFont(data->text_array);
     double average_spaceLine = size_averageSpaceLine(data->text_array);
