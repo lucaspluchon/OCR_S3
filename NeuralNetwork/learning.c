@@ -163,10 +163,69 @@ NeuralNetwork* fullTrain(double v, size_t itteration, size_t hidenNumber, size_t
     return network;
 }
 
+NeuralNetwork *testOnLetter(NeuralNetwork network, int letter, int lowerBound)
+{
+    char filename[] = "data/letters/**/*.bmp";
+
+    char dirNum[25];
+    sprintf(dirNum, "%i", letter);
+
+    int randPolice = (int)((randd() + 1 ) * 7 / 2);
+    char fileNum[25];
+    sprintf(fileNum, "%i", randPolice);
+
+    filename[13] = dirNum[0];
+    filename[14] = dirNum[1];
+    filename[16] = fileNum[0];
+
+
+
+    SDL_Surface* image = Image_Load(filename);
+
+    struct text* text = apply_segmentation_for_training(filename);
+
+    pixel_block caractere = text->blocks[0].lines[0].chrs[0];
+
+    int* chr_image = get_pixel_block(image, caractere.left_top.x, caractere.left_top.y,
+        caractere.right_bottom.x, caractere.right_bottom.y);
+
+    int* chr_resized = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
+        caractere.right_bottom.y - caractere.left_top.y);
+
+    for (size_t i = 0; i < network->inputNumber; i++)
+    {
+        network->activations->data[i] = inputs[i];
+    }
+
+    forwardProp(network);
+
+    double *output = &(network->activation->data[network->inputNumber + network->hidenNumber]
+    double maxI = 0;
+    for (size_t i = 0; i < network->outputNumber; i++)
+    {
+        if (output[i] > output[maxI])
+        {
+            maxI = i;
+        }
+        
+    }
+
+    printf("The network was given a %c and gessed it was a %c\n\n", letter, lowerBound + maxI);
+
+    printf("the outputs were :\n");
+    printList(output, network->outputNumber);
+
+
+}
+
 int main()
 {
-    NeuralNetwork * trainedNetwork = fullTrain(2, 100, 69, 65, 90);
-    printNetwork(trainedNetwork);
+    NeuralNetwork * trainedNetwork = fullTrain(2, 100, 69, 65, 70);
+
+
+    testOnLetter(trainedNetwork, 65, 65)
+
+    //printNetwork(trainedNetwork);
 
     return 0;
 }
