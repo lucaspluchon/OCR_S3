@@ -36,12 +36,13 @@ file(GLOB src_type type/*.c)
 file(GLOB src_seg character_detection/*.c)
 file(GLOB src_image image_preprocessing/*.c)
 file(GLOB src_useful useful/*.c)
+file(GLOB src_ui ui/*.c)
 
 add_executable(Main
                 main.c
                 )
 
-add_executable(Neural_Test ${src_network} ${src_type} ${src_seg} ${src_image} ${src_useful})
+add_executable(Neural_Test ${src_network} ${src_type} ${src_seg} ${src_image} ${src_useful} ${src_ui})
 
 add_executable(GTK_Test
                 character_detection/block.c
