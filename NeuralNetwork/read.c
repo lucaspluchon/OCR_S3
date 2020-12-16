@@ -2,8 +2,10 @@
 #include "../type/pixel.h"
 #include <SDL2/SDL.h>
 #include"../image_preprocessing/headers/preprocessing.h"
+#include"../character_detection/headers/segmentation.h"
 #include "NeuralNetworkTools.h"
 #include "ForwardProp.h"
+#include "../useful/test_resize.h"
 
 #define Neural_Network_Entry_Size 32
 
@@ -71,12 +73,14 @@ char readLetter(NeuralNetwork* network, pixel_block caractere, SDL_Surface* imag
     int* chr_resized = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
         caractere.right_bottom.y - caractere.left_top.y);
 
+    test_sdl_neural(chr_resized);
     for (size_t i = 0; i < network->inputNumber; i++)
     {
         network->activations->data[i] = chr_resized[i];
     }
 
     forwardProp(network);
+    printList((&network->activations->data[network->inputNumber + network->hidenNumber]), network->outputNumber);
 
     double *output = &(network->activations->data[network->inputNumber + network->hidenNumber]);
     size_t maxI = 0;
@@ -89,21 +93,21 @@ char readLetter(NeuralNetwork* network, pixel_block caractere, SDL_Surface* imag
         
     }
 
-    return char(network->lowerBound + maxI);
+    return (char)(network->lowerBound + maxI);
 }
 
 void fullRead(NeuralNetwork* network, char* filename)
 {
     SDL_Surface* image = Image_Load(filename);
 
-    struct text* text = apply_segmentation_for_training(filename);  
+    struct text* arr = apply_segmentation_for_training(filename);
 
     for (size_t i = 0; i < arr->nb_block; i++)
     {
         for (size_t j = 0; j < arr->blocks[i].nb_line; j++)
         {
             int sumSpace = 0;
-            for (size_t k = 0; k < arr->blocks[i].lines[j].nb_char; k++)
+            for (size_t k = 0; k < arr->blocks[i].lines[j].nb_char - 1; k++)
             {
                 pixel_block caractere = arr->blocks[i].lines[j].chrs[k];
                 if (k != arr->blocks[i].lines[j].nb_char - 1)
@@ -118,14 +122,14 @@ void fullRead(NeuralNetwork* network, char* filename)
             {
                 pixel_block caractere = arr->blocks[i].lines[j].chrs[k];
 
-                char c = readLetter(network, caractere, image);                
+                char c = readLetter(network, caractere, image);
 
                 arr->blocks[i].lines[j].chrs[k].letter = c;
 
                 printf("%c", c);
                 
                 if (k != arr->blocks[i].lines[j].nb_char - 1 
-                    && arr->blocks[i].lines[j].chrs[k + 1].left_top.x - caractere.right_top.x > averageSpace * 4/3 )
+                    && arr->blocks[i].lines[j].chrs[k + 1].left_top.x - caractere.right_top.x > averageSpace * 2 )
                 {
                     printf(" ");
                 }
