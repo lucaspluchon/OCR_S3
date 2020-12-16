@@ -244,7 +244,7 @@ void testAllLetter(NeuralNetwork* network, size_t lowerBound, size_t upperBound)
 
 
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv[])
 {
     if (argc != 6)
     {
