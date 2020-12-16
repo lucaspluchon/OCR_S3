@@ -76,7 +76,7 @@ void learn(NeuralNetwork* network, int LowerBound, int UpperBound, double v, cha
 
         pixel_block caractere = text->blocks[0].lines[0].chrs[0];
 
-        int** chr_image = get_pixel_block(image, caractere.left_top.x, caractere.left_top.y,
+        int* chr_image = get_pixel_block(image, caractere.left_top.x, caractere.left_top.y,
             caractere.right_bottom.x, caractere.right_bottom.y);
 
         int* chr_resized = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
@@ -155,16 +155,17 @@ NeuralNetwork* fullTrain(double v, size_t itteration, size_t hidenNumber, size_t
     NeuralNetwork* network = GenerateNetwork(Neural_Network_Entry_Size * Neural_Network_Entry_Size,
         hidenNumber, upperBound - lowerBound + 1);
 
+
     for (size_t i = 0; i < itteration; i++)
     {
         learn(network, (int)(lowerBound), (int)(upperBound), v, fileNames);
     }
-    
+    return network;
 }
 
 int main()
 {
-    NeuralNetwork * trainedNetwork = fullTrain(1, 1, 69, 65, 90);
+    NeuralNetwork * trainedNetwork = fullTrain(2, 100, 69, 65, 90);
     printNetwork(trainedNetwork);
 
     return 0;

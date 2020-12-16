@@ -22,12 +22,12 @@ text* apply_segmentation_for_training(char* path)
 
 void apply_segmentation(ocr_data* data)
 {
-    g_print("Segmentation started\n");
+    //g_print("Segmentation started\n");
     data->sdl.image_rlsa = Detect_RLSA_Block(data->sdl.image,7);
-    g_print("RLSA ended\n");
+    //g_print("RLSA ended\n");
     data->text_array = textArray_new();
     detect_text(data);
-    g_print("Segmentation ended\n");
+    //g_print("Segmentation ended\n");
 }
 
 void detect_text(ocr_data* data)
@@ -40,9 +40,9 @@ void detect_text(ocr_data* data)
     array_pos pos = {0,0,0};
 
     data->sdl.image_segmented = Image_Copy(image);
-    g_print("Detected block started\n");
+    //g_print("Detected block started\n");
     detect_verticalBlock(data, pblock, true, pos);
-    g_print("Detected block ended\n");
+    //g_print("Detected block ended\n");
 
     double average_size = size_averageFont(data->text_array);
     double average_spaceLine = size_averageSpaceLine(data->text_array);

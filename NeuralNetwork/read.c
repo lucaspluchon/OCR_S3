@@ -6,16 +6,13 @@
 #define Neural_Network_Entry_Size 32
 
 
-int** get_pixel_block(SDL_Surface* image, int x1, int y1, int x2, int y2)
+int* get_pixel_block(SDL_Surface* image, int x1, int y1, int x2, int y2)
 {
     int width = x2 - x1;
     int height = y2 - y1;
 
-    int** chr_image = malloc(width * sizeof(int));
-    for (int i = 0; i < width; i++)
-    {
-        chr_image[i] = malloc(height * sizeof(int));
-    }
+    int* chr_image = malloc(width * height *sizeof(int));
+
 
     for (int i = 0; i < width; i++)
     {
@@ -24,11 +21,11 @@ int** get_pixel_block(SDL_Surface* image, int x1, int y1, int x2, int y2)
             int pixelColor = Pixel_GetR(SDL_GetPixel32(image, x1 + i, y1 + j));
             if (pixelColor < 128) // cornercase idea : what if it's written white on black (block detection wouldn't work anyway)
             {
-                chr_image[i][j] = 1;
+                chr_image[i * height + j] = 1;
             }
             else
             {
-                chr_image[i][j] = 0;
+                chr_image[i * height + j] = 0;
             }
         }
     }
@@ -37,11 +34,11 @@ int** get_pixel_block(SDL_Surface* image, int x1, int y1, int x2, int y2)
 }
 
 
-int* resize(int** chr, int widthChr, int heightChr)
+int* resize(int* chr, int widthChr, int heightChr)
 {
     int* chr_resized = malloc(Neural_Network_Entry_Size * Neural_Network_Entry_Size * sizeof(int));
 
-    double newRatio = (double) ( widthChr < heightChr ? widthChr : heightChr ) / Neural_Network_Entry_Size;
+    double newRatio = (double) ( widthChr > heightChr ? widthChr : heightChr ) / Neural_Network_Entry_Size;
 
     for (int i = 0; i < Neural_Network_Entry_Size; i++)
     {
@@ -56,7 +53,7 @@ int* resize(int** chr, int widthChr, int heightChr)
             }
             else
             {
-                chr_resized[i * Neural_Network_Entry_Size + j] = chr[resX][resY];
+                chr_resized[i * Neural_Network_Entry_Size + j] = chr[resX * heightChr + resY];
             }
         }
     }
@@ -87,7 +84,7 @@ void parcours(SDL_Surface* image, text* arr)
             {
                 pixel_block caractere = arr->blocks[i].lines[j].chrs[k];
 
-                int** chr_image = get_pixel_block(image, caractere.left_top.x, caractere.left_top.y,
+                int* chr_image = get_pixel_block(image, caractere.left_top.x, caractere.left_top.y,
                     caractere.right_bottom.x, caractere.right_bottom.y);
 
                 int* chr_resized = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
