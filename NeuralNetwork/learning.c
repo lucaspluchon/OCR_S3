@@ -9,6 +9,7 @@
 #include"ForwardProp.h"
 #include"BackProp.h"
 #include<string.h>
+#include "FileManagment.h"
 
 #define Neural_Network_Entry_Size 32
 
@@ -66,8 +67,8 @@ void learn(NeuralNetwork* network, int LowerBound, int UpperBound, double v, cha
 
     for (int i = LowerBound; i <= UpperBound; i++)
     {  
-        //int randPolice = (int)((randd() + 1 ) * 7 / 2);
-        int randPolice = 0;
+        int randPolice = (int)((randd() + 1 ) * 7 / 2);
+        //int randPolice = 0;
 
         char* filename = fileNames[(i - LowerBound) * 7 + randPolice];
 
@@ -164,7 +165,7 @@ NeuralNetwork* fullTrain(double v, size_t itteration, size_t hidenNumber, size_t
     return network;
 }
 
-int testOnLetter(NeuralNetwork* network, int letter, size_t lowerBound)
+int testOnLetter(NeuralNetwork* network, int letter, size_t lowerBound, int randPolice)
 {
     char filename[] = "data/letters/**/*.bmp";
 
@@ -172,7 +173,7 @@ int testOnLetter(NeuralNetwork* network, int letter, size_t lowerBound)
     sprintf(dirNum, "%i", letter);
 
     //int randPolice = (int)((randd() + 1 ) * 7 / 2);
-    int randPolice = 0;
+    //int randPolice = 0;
     char fileNum[25];
     sprintf(fileNum, "%i", randPolice);
 
@@ -213,10 +214,10 @@ int testOnLetter(NeuralNetwork* network, int letter, size_t lowerBound)
     }
     int found = letter == (int)(lowerBound) + maxI;
 
-    printf("%c - The network was given a %c and gessed it was a %c", letter, letter, (char)((int)(lowerBound) + maxI));
+    printf("%c - The network was given a %c and guessed it was a %c (police %i)", letter, letter, (char)((int)(lowerBound) + maxI), randPolice);
     if (found)
     {
-        printf("            (gessed right)");
+        printf("            (guessed right)");
     }
     
     printf("\nthe outputs were :");
@@ -234,39 +235,52 @@ void testAllLetter(NeuralNetwork* network, size_t lowerBound, size_t upperBound)
 
     int founds = 0;
 
-    for (size_t i = lowerBound; i < upperBound; i++)
+    for (size_t i = lowerBound; i <= upperBound; i++)
     {
-        founds += testOnLetter(network, i, lowerBound);
+        for(int police = 0; police < 7; police++)
+        {
+            founds += testOnLetter(network, i, lowerBound, police);
+        }
     }
     
-    printf("\nHe gessed %i / %i right... Not bad !", founds, (int)(upperBound - lowerBound + 1));
+    printf("\nHe guessed %i / %i right... Not bad !", founds, (int)(upperBound - lowerBound + 1) * 7);
 }
 
 
 
-int main(int argc, char **argv[])
+int main()
 {
+    /*
     if (argc != 6)
     {
         printf("Usage : \nmain double v  size_t itteration  size_t hidenNumber  size_t lowerBound  size_t upperBound");
         return 1;
     }
-    
+
     double v = (double)(strtol(argv[1], NULL, 10));
     size_t itteration = (size_t)(strtol(argv[2], NULL, 10));
     size_t hidenNumber = (size_t)(strtol(argv[3], NULL, 10));
     size_t testLen = (size_t)(strtol(argv[4], NULL, 10));
     size_t lowerBound = (size_t)(strtol(argv[5], NULL, 10));
+    */
 
+    double v = 0.1;
+    size_t itteration = 3000;
+    size_t hidenNumber = 26;
+    size_t testLen = 26;
+    size_t lowerBound = 65;
 
-
-
-    size_t upperBound = lowerBound + testLen;
+    size_t upperBound = lowerBound + testLen - 1;
 
     NeuralNetwork * trainedNetwork = fullTrain(v, itteration, hidenNumber, lowerBound, upperBound);
 
+    /*NeuralNetwork * trainedNetwork = readNetwork();
+    if (trainedNetwork == NULL)
+            printf("FEZN");*/
     testAllLetter(trainedNetwork, lowerBound, upperBound);
-
+    /*
+    if (writeNetwork(trainedNetwork) == 1)
+        printf("FAIL\n");*/
     //printNetwork(trainedNetwork);
 
     return 0;
