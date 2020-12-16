@@ -211,17 +211,17 @@ int testOnLetter(NeuralNetwork* network, int letter, size_t lowerBound)
         }
         
     }
-    int found = Letter == (int)(lowerBound) + maxI;
+    int found = letter == (int)(lowerBound) + maxI;
 
-    printf("%c - The network was given a %c and gessed it was a %c", Letter, letter, (char)((int)(lowerBound) + maxI));
+    printf("%c - The network was given a %c and gessed it was a %c", letter, letter, (char)((int)(lowerBound) + maxI));
     if (found)
     {
-        printf("            (gessed right)")
+        printf("            (gessed right)");
     }
     
     printf("\nthe outputs were :");
     printList(output, network->outputNumber);
-    printf("\n\n")
+    printf("\n\n");
 
 
     return found;
