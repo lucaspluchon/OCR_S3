@@ -126,4 +126,19 @@ int min(int a, int b)
 }
 
 
+void save_result(char* path, char* str)
+{
+    FILE *file;
+    file = fopen(path, "w");
+    fprintf(file, "%s", str);
+    fclose(file);
+}
+
+
+
+
+
+
+
+
 

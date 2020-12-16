@@ -1,7 +1,9 @@
 #include "headers/preprocessing.h"
+#include "../ui/ui.h"
 
 void Image_ApplyCorrection(ocr_data* data)
 {
+
     int blur[3][3] = {
             {1,2,1},
             {2,4,2},
@@ -17,7 +19,9 @@ void Image_ApplyCorrection(ocr_data* data)
     Image_GrayScale(data);
     Image_Convolution(data,blur,0.0625);
     Image_Convolution(data,sharpen,1);
+    Progress_Set(data->ui.progress_main,0.2);
     Image_Threshold(data,data->sdl.threshold);
+    Progress_Set(data->ui.progress_main,0.3);
     if (data->sdl.angle != -1.)
         Image_Rotate(data,data->sdl.angle);
     SDL_UnlockSurface(data->sdl.image);

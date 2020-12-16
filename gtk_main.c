@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "ui.h"
+#include "../useful/test_resize.h"
 
 // Main function.
 int main (int argc, char *argv[])
@@ -32,12 +33,12 @@ int main (int argc, char *argv[])
     g_signal_connect(data.ui.switch_auto, "state-set", G_CALLBACK(on_switch_auto), &data);
     g_signal_connect(data.ui.entry_threshold, "activate", G_CALLBACK(on_threshold), &data);
     g_signal_connect(data.ui.entry_angle, "activate", G_CALLBACK(on_rotate), &data);
+    g_signal_connect(data.ui.button_save, "pressed", G_CALLBACK(on_save), &data);
 
     // Runs the main loop.
     gtk_main();
 
     // Exits.
-
 
 
     return 0;

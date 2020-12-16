@@ -8,7 +8,7 @@
 #include "../type/data.h"
 #include "../useful/builtin.h"
 
-SDL_Surface* Detect_RLSA_Block(SDL_Surface* image, int n);
+SDL_Surface* Detect_RLSA_Block(SDL_Surface* image, int n, GtkProgressBar* progress);
 
 
 text* apply_segmentation_for_training(char* path);
