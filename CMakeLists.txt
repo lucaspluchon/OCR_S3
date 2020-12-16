@@ -58,6 +58,7 @@ add_executable(GTK_Test
                 image_preprocessing/rotation.c
                 ui/ui.c
                 useful/builtin.c
+                useful/test_resize.c
                 gtk_main.c
         character_detection/segmentation.c type/data.h type/pixel.c character_detection/correction.c character_detection/line_analyser.c)
 
