@@ -2,10 +2,13 @@
 #include<stdio.h>
 #include <SDL2/SDL.h>
 #include "../type/pixel.h"
-#include "reading/read.h"
+#include"../image_preprocessing/headers/preprocessing.h"
+#include"../character_detection/headers/segmentation.h"
+#include "read.h"
 #include "NeuralNetworkTools.h"
 #include"ForwardProp.h"
 #include"BackProp.h"
+#include<string.h>
 
 #define Neural_Network_Entry_Size 32
 
@@ -120,14 +123,6 @@ void learn(NeuralNetwork* network, int LowerBound, int UpperBound, double v, cha
 
 NeuralNetwork* fullTrain(double v, size_t itteration, size_t hidenNumber, size_t lowerBound, size_t upperBound)
 {
-    double v = 1;
-    size_t itteration = 1;
-
-    size_t hidenNumber = 69;
-
-
-    size_t lowerBound = 65;
-    size_t upperBound = 90;
 
 
     char** fileNames = malloc((upperBound - lowerBound + 1) * 7 * sizeof(char*));
@@ -138,21 +133,22 @@ NeuralNetwork* fullTrain(double v, size_t itteration, size_t hidenNumber, size_t
     {
         for (int j = 0; j < 7; j++)
         {
-        fileNames[i * 7 + j] = malloc(21 * sizeof(char));
-        for (size_t k = 0; k < 21; k++)
-        {
-            fileNames[i * 7 + j][k] = filenameBase[k];
+            fileNames[i * 7 + j] = malloc(21 * sizeof(char));
+            for (size_t k = 0; k < 21; k++)
+            {
+                fileNames[i * 7 + j][k] = filenameBase[k];
+            }
+            char dirNum[25];
+            sprintf(dirNum, "%i", (int)(i + lowerBound));
+
+
+            char fileNum[25];
+            sprintf(fileNum, "%i", (int)j);
+
+            fileNames[i * 7 + j][13] = dirNum[0];
+            fileNames[i * 7 + j][14] = dirNum[1];
+            fileNames[i * 7 + j][16] = fileNum[0];
         }
-        char dirNum[2];
-        itoa(i + lowerBound, dirNum, 10);
-
-
-        char fileNum[1];
-        itoa(j, fileNum, 10);
-
-        fileNames[i * 7 + j][13] = dirNum[0];
-        fileNames[i * 7 + j][14] = dirNum[1];
-        fileNames[i * 7 + j][16] = fileNum[0];
     }
 
 
@@ -169,7 +165,7 @@ NeuralNetwork* fullTrain(double v, size_t itteration, size_t hidenNumber, size_t
 int main()
 {
     NeuralNetwork * trainedNetwork = fullTrain(1, 1, 69, 65, 90);
-    printNetwork(trainNetwork);
+    printNetwork(trainedNetwork);
 
     return 0;
 }

@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include "../../type/pixel.h"
+#include "../type/pixel.h"
 #include <SDL2/SDL.h>
-#include"../../image_preprocessing/headers/preprocessing.h"
+#include"../image_preprocessing/headers/preprocessing.h"
 
 #define Neural_Network_Entry_Size 32
 
@@ -39,7 +39,7 @@ int** get_pixel_block(SDL_Surface* image, int x1, int y1, int x2, int y2)
 
 int* resize(int** chr, int widthChr, int heightChr)
 {
-    int** chr_resized = malloc(Neural_Network_Entry_Size * Neural_Network_Entry_Size * sizeof(int));
+    int* chr_resized = malloc(Neural_Network_Entry_Size * Neural_Network_Entry_Size * sizeof(int));
 
     double newRatio = (double) ( widthChr < heightChr ? widthChr : heightChr ) / Neural_Network_Entry_Size;
 
@@ -61,7 +61,7 @@ int* resize(int** chr, int widthChr, int heightChr)
         }
     }
 
-    return chr;
+    return chr_resized;
 }
 
 
