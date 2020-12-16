@@ -198,7 +198,6 @@ int ** loadAllResized(char** fileNames, size_t lowerBound, size_t upperBound)
     return allResized;
 }
 
-//char readLetter(NeuralNetwork* network, )
 
 int testOnLetter(NeuralNetwork* network, int letter, int randPolice)
 {
@@ -311,13 +310,16 @@ int main()
 
     /*NeuralNetwork * trainedNetwork = readNetwork();
     if (trainedNetwork == NULL)
-            printf("FEZN");*/
+            printf("FEZN");
+
     testAllLetter(trainedNetwork, lowerBound, upperBound);
     printNetwork(trainedNetwork);
 
     if (writeNetwork(trainedNetwork) == 1)
         printf("FAIL\n");
-    //printNetwork(trainedNetwork);
+    //printNetwork(trainedNetwork);*/
+
+    fullRead(trainedNetwork, filename);
 
     return 0;
 }

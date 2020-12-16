@@ -2,6 +2,8 @@
 #include "../type/pixel.h"
 #include <SDL2/SDL.h>
 #include"../image_preprocessing/headers/preprocessing.h"
+#include "NeuralNetworkTools.h"
+#include "ForwardProp.h"
 
 #define Neural_Network_Entry_Size 32
 
@@ -61,9 +63,41 @@ int* resize(int* chr, int widthChr, int heightChr)
     return chr_resized;
 }
 
-
-void parcours(SDL_Surface* image, text* arr)
+char readLetter(NeuralNetwork* network, pixel_block caractere, SDL_Surface* image)
 {
+    int* chr_image = get_pixel_block(image, caractere.left_top.x, caractere.left_top.y,
+        caractere.right_bottom.x, caractere.right_bottom.y);
+
+    int* chr_resized = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
+        caractere.right_bottom.y - caractere.left_top.y);
+
+    for (size_t i = 0; i < network->inputNumber; i++)
+    {
+        network->activations->data[i] = chr_resized[i];
+    }
+
+    forwardProp(network);
+
+    double *output = &(network->activations->data[network->inputNumber + network->hidenNumber]);
+    size_t maxI = 0;
+    for (size_t i = 0; i < network->outputNumber; i++)
+    {
+        if (output[i] > output[maxI])
+        {
+            maxI = i;
+        }
+        
+    }
+
+    return char(network->lowerBound + maxI);
+}
+
+void fullRead(NeuralNetwork* network, char* filename)
+{
+    SDL_Surface* image = Image_Load(filename);
+
+    struct text* text = apply_segmentation_for_training(filename);  
+
     for (size_t i = 0; i < arr->nb_block; i++)
     {
         for (size_t j = 0; j < arr->blocks[i].nb_line; j++)
@@ -84,14 +118,7 @@ void parcours(SDL_Surface* image, text* arr)
             {
                 pixel_block caractere = arr->blocks[i].lines[j].chrs[k];
 
-                int* chr_image = get_pixel_block(image, caractere.left_top.x, caractere.left_top.y,
-                    caractere.right_bottom.x, caractere.right_bottom.y);
-
-                int* chr_resized = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
-                    caractere.right_bottom.y - caractere.left_top.y);
-
-                // char c = networkSet(chr_resized)         send chr_resized to Neural network
-                char c = '$';
+                char c = readLetter(network, caractere, image);                
 
                 arr->blocks[i].lines[j].chrs[k].letter = c;
 
