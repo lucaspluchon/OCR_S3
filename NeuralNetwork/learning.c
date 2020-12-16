@@ -251,11 +251,12 @@ int main(int argc, char **argv[])
         printf("Usage : \nmain double v  size_t itteration  size_t hidenNumber  size_t lowerBound  size_t upperBound");
         return 1;
     }
-    double v = (double)(argv[1]);
-    size_t itteration = (size_t)(argv[2]);
-    size_t hidenNumber = (size_t)(argv[3]);
-    size_t testLen = (size_t)(argv[4]);
-    size_t lowerBound = (size_t)(argv[5]);
+    
+    double v = (double)(strtol(argv[1], NULL, 10));
+    size_t itteration = (size_t)(strtol(argv[2], NULL, 10));
+    size_t hidenNumber = (size_t)(strtol(argv[3], NULL, 10));
+    size_t testLen = (size_t)(strtol(argv[4], NULL, 10));
+    size_t lowerBound = (size_t)(strtol(argv[5], NULL, 10));
 
 
 
