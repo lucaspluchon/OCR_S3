@@ -164,7 +164,7 @@ NeuralNetwork* fullTrain(double v, size_t itteration, size_t hidenNumber, size_t
     return network;
 }
 
-void testOnLetter(NeuralNetwork* network, int letter, size_t lowerBound)
+int testOnLetter(NeuralNetwork* network, int letter, size_t lowerBound)
 {
     char filename[] = "data/letters/**/*.bmp";
 
@@ -211,24 +211,35 @@ void testOnLetter(NeuralNetwork* network, int letter, size_t lowerBound)
         }
         
     }
+    int found = Letter == (int)(lowerBound) + maxI;
 
-    printf("%c - The network was given a %c and gessed it was a %c\n", Letter, letter, (char)((int)(lowerBound) + maxI));
-
-    printf("the outputs were :");
+    printf("%c - The network was given a %c and gessed it was a %c", Letter, letter, (char)((int)(lowerBound) + maxI));
+    if (found)
+    {
+        printf("            (gessed right)")
+    }
+    
+    printf("\nthe outputs were :");
     printList(output, network->outputNumber);
     printf("\n\n")
 
+
+    return found;
+
 }
 
-void testAllLetter(NeuralNetwork network, size_t lowerBound, size_t upperBound)
+void testAllLetter(NeuralNetwork* network, size_t lowerBound, size_t upperBound)
 {
     printf("testOnAllLetter :\n\n");
 
+    int founds = 0;
+
     for (size_t i = lowerBound; i < upperBound; i++)
     {
-        testOnLetter(network, i, lowerBound)
+        founds += testOnLetter(network, i, lowerBound);
     }
     
+    printf("\nHe gessed %i / %i right... Not bad !", founds, (int)(upperBound - lowerBound + 1));
 }
 
 
