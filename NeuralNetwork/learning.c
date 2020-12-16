@@ -67,28 +67,31 @@ void learn(NeuralNetwork* network, int LowerBound, int UpperBound, double v, cha
 
     for (int i = LowerBound; i <= UpperBound; i++)
     {  
-        int randPolice = (int)((randd() + 1 ) * 7 / 2);
+
+        //int randPolice = (int)((randd() + 1 ) * 7 / 2);
         //int randPolice = 0;
+        for (int j = 0; j < 7; j++)
+        {
+            char* filename = fileNames[(i - LowerBound) * 7 + j];
 
-        char* filename = fileNames[(i - LowerBound) * 7 + randPolice];
+            SDL_Surface* image = Image_Load(filename);
 
-        SDL_Surface* image = Image_Load(filename);
+            struct text* text = apply_segmentation_for_training(filename);
 
-        struct text* text = apply_segmentation_for_training(filename);
+            pixel_block caractere = text->blocks[0].lines[0].chrs[0];
 
-        pixel_block caractere = text->blocks[0].lines[0].chrs[0];
+            int* chr_image = get_pixel_block(image, caractere.left_top.x, caractere.left_top.y,
+                caractere.right_bottom.x, caractere.right_bottom.y);
 
-        int* chr_image = get_pixel_block(image, caractere.left_top.x, caractere.left_top.y,
-            caractere.right_bottom.x, caractere.right_bottom.y);
+            int* chr_resized = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
+                caractere.right_bottom.y - caractere.left_top.y);
 
-        int* chr_resized = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
-            caractere.right_bottom.y - caractere.left_top.y);
+            double * expected = calloc((UpperBound - LowerBound + 1), sizeof(double));
 
-        double * expected = calloc((UpperBound - LowerBound + 1), sizeof(double));
+            expected[i-LowerBound] = 1;
 
-        expected[i-LowerBound] = 1;
-
-        findDelta(network, v, chr_resized, expected, biasDeltaHiden, biasDeltaOut, deltaHiden, deltaOut);
+            findDelta(network, v, chr_resized, expected, biasDeltaHiden, biasDeltaOut, deltaHiden, deltaOut);
+        }
         
     }
 
