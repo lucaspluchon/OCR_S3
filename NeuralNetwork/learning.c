@@ -66,7 +66,8 @@ void learn(NeuralNetwork* network, int LowerBound, int UpperBound, double v, cha
 
     for (int i = LowerBound; i <= UpperBound; i++)
     {  
-        int randPolice = (int)((randd() + 1 ) * 7 / 2);
+        //int randPolice = (int)((randd() + 1 ) * 7 / 2);
+        int randPolice = 0;
 
         char* filename = fileNames[(i - LowerBound) * 7 + randPolice];
 
@@ -163,14 +164,15 @@ NeuralNetwork* fullTrain(double v, size_t itteration, size_t hidenNumber, size_t
     return network;
 }
 
-NeuralNetwork *testOnLetter(NeuralNetwork network, int letter, int lowerBound)
+NeuralNetwork *testOnLetter(NeuralNetwork* network, int letter, int lowerBound)
 {
     char filename[] = "data/letters/**/*.bmp";
 
     char dirNum[25];
     sprintf(dirNum, "%i", letter);
 
-    int randPolice = (int)((randd() + 1 ) * 7 / 2);
+    //int randPolice = (int)((randd() + 1 ) * 7 / 2);
+    int randPolice = 0;
     char fileNum[25];
     sprintf(fileNum, "%i", randPolice);
 
@@ -194,13 +196,13 @@ NeuralNetwork *testOnLetter(NeuralNetwork network, int letter, int lowerBound)
 
     for (size_t i = 0; i < network->inputNumber; i++)
     {
-        network->activations->data[i] = inputs[i];
+        network->activations->data[i] = chr_resized[i];
     }
 
     forwardProp(network);
 
-    double *output = &(network->activation->data[network->inputNumber + network->hidenNumber]
-    double maxI = 0;
+    double *output = &(network->activations->data[network->inputNumber + network->hidenNumber]);
+    size_t maxI = 0;
     for (size_t i = 0; i < network->outputNumber; i++)
     {
         if (output[i] > output[maxI])
@@ -210,7 +212,7 @@ NeuralNetwork *testOnLetter(NeuralNetwork network, int letter, int lowerBound)
         
     }
 
-    printf("The network was given a %c and gessed it was a %c\n\n", letter, lowerBound + maxI);
+    printf("The network was given a %c and gessed it was a %c\n\n", letter, (char)(lowerBound + maxI));
 
     printf("the outputs were :\n");
     printList(output, network->outputNumber);
@@ -218,12 +220,20 @@ NeuralNetwork *testOnLetter(NeuralNetwork network, int letter, int lowerBound)
 
 }
 
+
+
 int main()
 {
     NeuralNetwork * trainedNetwork = fullTrain(2, 100, 69, 65, 70);
 
 
-    testOnLetter(trainedNetwork, 65, 65)
+    testOnLetter(trainedNetwork, 65, 65);
+    testOnLetter(trainedNetwork, 66, 65);
+    testOnLetter(trainedNetwork, 67, 65);
+    testOnLetter(trainedNetwork, 68, 65);
+    testOnLetter(trainedNetwork, 69, 65);
+    testOnLetter(trainedNetwork, 70, 65);
+
 
     //printNetwork(trainedNetwork);
 
