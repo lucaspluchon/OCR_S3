@@ -60,28 +60,28 @@ double* findDelta(NeuralNetwork* network, double v, int* inputs, double* expecte
 }
 
 
-void learn(NeuralNetwork* network, int LowerBound, int UpperBound, double v, int** allResized)
+void learn(NeuralNetwork* network, double v, int** allResized)
 {
     double* biasDeltaHiden = calloc(network->hidenNumber, sizeof(double));
     double* biasDeltaOut = calloc(network->outputNumber, sizeof(double));
     double* deltaOut = calloc(network->outputNumber * network->hidenNumber, sizeof(double));
     double* deltaHiden = calloc(network->hidenNumber * network->inputNumber, sizeof(double));
 
-    double * expected = calloc((UpperBound - LowerBound + 1), sizeof(double));
+    double * expected = calloc((network->outputNumber), sizeof(double));
 
 
-    for (int i = LowerBound; i <= UpperBound; i++)
+    for (int i = 0; i < network->outputNumber; i++)
     {
 
         int randPolice = (int)((randd() + 1 ) * 7 / 2);
 
-        int* chr_resized = allResized[(i - LowerBound) * 7 + randPolice];
+        int* chr_resized = allResized[i * 7 + randPolice];
 
-        for (size_t k = 0; k < (UpperBound - LowerBound + 1); k++)
+        for (size_t k = 0; k < network->outputNumber; k++)
         {
             expected[k] = 0;
         }
-        expected[i-LowerBound] = 1;
+        expected[i] = 1;
 
         findDelta(network, v, chr_resized, expected, biasDeltaHiden, biasDeltaOut, deltaHiden, deltaOut);
 
@@ -154,13 +154,13 @@ NeuralNetwork* fullTrain(double v, size_t itteration, size_t hidenNumber, size_t
 
 
     NeuralNetwork* network = GenerateNetwork(Neural_Network_Entry_Size * Neural_Network_Entry_Size,
-        hidenNumber, upperBound - lowerBound + 1);
+        hidenNumber, upperBound - lowerBound + 1, lowerBound);
 
     int** allResized = loadAllResized(fileNames, lowerBound, upperBound);
 
     for (size_t i = 0; i < itteration; i++)
     {
-        learn(network, (int)(lowerBound), (int)(upperBound), v, allResized);
+        learn(network, v, allResized);
     }
 
     return network;
@@ -198,8 +198,9 @@ int ** loadAllResized(char** fileNames, size_t lowerBound, size_t upperBound)
     return allResized;
 }
 
+//char readLetter(NeuralNetwork* network, )
 
-int testOnLetter(NeuralNetwork* network, int letter, size_t lowerBound, int randPolice)
+int testOnLetter(NeuralNetwork* network, int letter, int randPolice)
 {
     char filename[] = "data/letters/**/*.bmp";
 
@@ -246,9 +247,9 @@ int testOnLetter(NeuralNetwork* network, int letter, size_t lowerBound, int rand
         }
         
     }
-    int found = letter == (int)(lowerBound) + maxI;
+    int found = letter == (int)(network->lowerBound) + maxI;
 
-    printf("%c - The network was given a %c and guessed it was a %c (police %i)", letter, letter, (char)((int)(lowerBound) + maxI), randPolice);
+    printf("%c - The network was given a %c and guessed it was a %c (police %i)", letter, letter, (char)((int)(network->lowerBound) + maxI), randPolice);
     if (found)
     {
         printf("            (guessed right)");
