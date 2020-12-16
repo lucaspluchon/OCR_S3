@@ -15,6 +15,8 @@
 
 #define Neural_Network_Entry_Size 32
 
+int ** loadAllResized(char** fileNames, size_t lowerBound, size_t upperBound);
+
 double* findDelta(NeuralNetwork* network, double v, int* inputs, double* expected,
      double *biasDeltaHiden, double *biasDeltaOut, double *deltaHiden, double *deltaOut)
 {
@@ -69,24 +71,21 @@ void learn(NeuralNetwork* network, int LowerBound, int UpperBound, double v, int
 
 
     for (int i = LowerBound; i <= UpperBound; i++)
-    {  
+    {
 
-        //int randPolice = (int)((randd() + 1 ) * 7 / 2);
-        //int randPolice = 0;
-        for (int j = 0; j < 7; j++)
+        int randPolice = (int)((randd() + 1 ) * 7 / 2);
+
+        int* chr_resized = allResized[(i - LowerBound) * 7 + randPolice];
+
+        for (size_t k = 0; k < (UpperBound - LowerBound + 1); k++)
         {
-            int* chr_resized = allResized[i * 7 + j];
-
-            for (size_t k = 0; k < (UpperBound - LowerBound + 1); k++)
-            {
-                expected[k] = 0
-            }
-            expected[i-LowerBound] = 1;
-
-            findDelta(network, v, chr_resized, expected, biasDeltaHiden, biasDeltaOut, deltaHiden, deltaOut);
-
-
+            expected[k] = 0;
         }
+        expected[i-LowerBound] = 1;
+
+        findDelta(network, v, chr_resized, expected, biasDeltaHiden, biasDeltaOut, deltaHiden, deltaOut);
+
+
         
     }
 
@@ -157,7 +156,7 @@ NeuralNetwork* fullTrain(double v, size_t itteration, size_t hidenNumber, size_t
     NeuralNetwork* network = GenerateNetwork(Neural_Network_Entry_Size * Neural_Network_Entry_Size,
         hidenNumber, upperBound - lowerBound + 1);
 
-    int** allResized = loadAllResized(fileNames);
+    int** allResized = loadAllResized(fileNames, lowerBound, upperBound);
 
     for (size_t i = 0; i < itteration; i++)
     {
@@ -168,7 +167,7 @@ NeuralNetwork* fullTrain(double v, size_t itteration, size_t hidenNumber, size_t
 }
 
 
-int ** loadAllResized(char* fileNames)
+int ** loadAllResized(char** fileNames, size_t lowerBound, size_t upperBound)
 {
     int** allResized = malloc(sizeof(int*) * (upperBound - lowerBound + 1) * 7);
     for (size_t i = 0; i < (upperBound - lowerBound + 1) * 7; i++)
@@ -180,7 +179,7 @@ int ** loadAllResized(char* fileNames)
     {
         for (int j = 0; j < 7; j++)
         {
-            char* filename = fileNames[(i - LowerBound) * 7 + j];
+            char* filename = fileNames[i * 7 + j];
 
             SDL_Surface* image = Image_Load(filename);
 
@@ -300,7 +299,7 @@ int main()
     */
 
     double v = 0.1;
-    size_t itteration = 3000;
+    size_t itteration = 5000;
     size_t hidenNumber = 26;
     size_t testLen = 26;
     size_t lowerBound = 65;
