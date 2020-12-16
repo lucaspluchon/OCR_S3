@@ -34,6 +34,29 @@ text* textArray_new()
     return res;
 }
 
+void textArray_delete(text* txt)
+{
+    for (int i = 0; i < txt->nb_block; i++)
+    {
+        for (int j = 0; j < txt->blocks[i].nb_line; j++)
+        {
+            txt->blocks[i].lines[j].nb_char = 0;
+            txt->blocks[i].lines[j].capacity = 0;
+            txt->blocks[i].lines[j].bottom_y = 0;
+            txt->blocks[i].lines[j].top_y = 0;
+            free(txt->blocks[i].lines[j].chrs);
+        }
+        txt->blocks[i].nb_line = 0;
+        txt->blocks[i].capacity = 0;
+        txt->blocks[i].bottom_y = 0;
+        txt->blocks[i].top_y = 0;
+        free(txt->blocks[i].lines);
+    }
+    txt->blocks = 0;
+    txt->capacity = 0;
+    free(txt);
+}
+
 
 void block_add(text* arr)
 {
