@@ -4,7 +4,7 @@
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkTextBuffer" id="text_buffer"/>
   <object class="GtkWindow" id="window_image">
-    <property name="width_request">1000</property>
+    <property name="width_request">1050</property>
     <property name="height_request">600</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">OCR_S3 - Confirm image</property>
@@ -17,42 +17,31 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
-          <object class="GtkImage" id="image_viewer">
-            <property name="width_request">742</property>
-            <property name="height_request">600</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="xalign">0</property>
-            <property name="yalign">0</property>
-            <property name="icon_size">6</property>
-          </object>
-        </child>
-        <child>
           <object class="GtkButton" id="button_confirmAnalyse">
             <property name="label" translatable="yes">Analyse this image</property>
-            <property name="width_request">160</property>
-            <property name="height_request">153</property>
+            <property name="width_request">240</property>
+            <property name="height_request">101</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
           </object>
           <packing>
-            <property name="x">791</property>
-            <property name="y">54</property>
+            <property name="x">777</property>
+            <property name="y">30</property>
           </packing>
         </child>
         <child>
           <object class="GtkButton" id="button_quitAnalyse">
             <property name="label" translatable="yes">Quit</property>
-            <property name="width_request">100</property>
-            <property name="height_request">80</property>
+            <property name="width_request">148</property>
+            <property name="height_request">54</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
           </object>
           <packing>
-            <property name="x">820</property>
-            <property name="y">497</property>
+            <property name="x">825</property>
+            <property name="y">518</property>
           </packing>
         </child>
         <child>
@@ -64,8 +53,8 @@
             <property name="active">True</property>
           </object>
           <packing>
-            <property name="x">903</property>
-            <property name="y">214</property>
+            <property name="x">920</property>
+            <property name="y">184</property>
           </packing>
         </child>
         <child>
@@ -77,8 +66,8 @@
             <property name="label" translatable="yes">Auto-settings</property>
           </object>
           <packing>
-            <property name="x">786</property>
-            <property name="y">214</property>
+            <property name="x">810</property>
+            <property name="y">185</property>
           </packing>
         </child>
         <child>
@@ -92,8 +81,8 @@
             <property name="placeholder_text" translatable="yes">Treshold - Max 255</property>
           </object>
           <packing>
-            <property name="x">786</property>
-            <property name="y">270</property>
+            <property name="x">806</property>
+            <property name="y">251</property>
           </packing>
         </child>
         <child>
@@ -107,8 +96,65 @@
             <property name="placeholder_text" translatable="yes">Angle - Max 359°</property>
           </object>
           <packing>
-            <property name="x">784</property>
-            <property name="y">319</property>
+            <property name="x">808</property>
+            <property name="y">308</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="width_request">432</property>
+            <property name="height_request">587</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="label" translatable="yes">III</property>
+            <attributes>
+              <attribute name="background" value="#ffffffffffff"/>
+              <attribute name="size" value="410800"/>
+            </attributes>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="width_request">432</property>
+            <property name="height_request">601</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="label" translatable="yes">III</property>
+            <attributes>
+              <attribute name="background" value="#ffffffffffff"/>
+              <attribute name="size" value="410800"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="x">316</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkImage" id="image_viewer">
+            <property name="width_request">743</property>
+            <property name="height_request">601</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">0.5</property>
+            <property name="yalign">0.5</property>
+            <property name="xpad">1</property>
+            <property name="ypad">1</property>
+            <property name="icon_size">6</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkProgressBar" id="progress_neural">
+            <property name="width_request">240</property>
+            <property name="height_request">20</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="x">778</property>
+            <property name="y">133</property>
           </packing>
         </child>
       </object>
@@ -209,15 +255,18 @@
         <property name="can_focus">False</property>
         <child>
           <object class="GtkLabel">
-            <property name="width_request">100</property>
+            <property name="width_request">436</property>
             <property name="height_request">80</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Result : </property>
+            <property name="label" translatable="yes">Result of analysis</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+              <attribute name="size" value="30000"/>
+            </attributes>
           </object>
           <packing>
-            <property name="x">91</property>
-            <property name="y">109</property>
+            <property name="x">292</property>
           </packing>
         </child>
         <child>
@@ -245,6 +294,20 @@
           <packing>
             <property name="x">677</property>
             <property name="y">120</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="button_save">
+            <property name="label" translatable="yes">Save in file</property>
+            <property name="width_request">227</property>
+            <property name="height_request">39</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="x">115</property>
+            <property name="y">121</property>
           </packing>
         </child>
       </object>
