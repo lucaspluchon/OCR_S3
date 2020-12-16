@@ -10,6 +10,8 @@
 #include"BackProp.h"
 #include<string.h>
 #include "FileManagment.h"
+#include<err.h>
+
 
 #define Neural_Network_Entry_Size 32
 
@@ -56,13 +58,14 @@ double* findDelta(NeuralNetwork* network, double v, int* inputs, double* expecte
 }
 
 
-void learn(NeuralNetwork* network, int LowerBound, int UpperBound, double v, char** fileNames)
+void learn(NeuralNetwork* network, int LowerBound, int UpperBound, double v, int** allResized)
 {
     double* biasDeltaHiden = calloc(network->hidenNumber, sizeof(double));
     double* biasDeltaOut = calloc(network->outputNumber, sizeof(double));
     double* deltaOut = calloc(network->outputNumber * network->hidenNumber, sizeof(double));
     double* deltaHiden = calloc(network->hidenNumber * network->inputNumber, sizeof(double));
 
+    double * expected = calloc((UpperBound - LowerBound + 1), sizeof(double));
 
 
     for (int i = LowerBound; i <= UpperBound; i++)
@@ -72,25 +75,17 @@ void learn(NeuralNetwork* network, int LowerBound, int UpperBound, double v, cha
         //int randPolice = 0;
         for (int j = 0; j < 7; j++)
         {
-            char* filename = fileNames[(i - LowerBound) * 7 + j];
+            int* chr_resized = allResized[i * 7 + j];
 
-            SDL_Surface* image = Image_Load(filename);
-
-            struct text* text = apply_segmentation_for_training(filename);
-
-            pixel_block caractere = text->blocks[0].lines[0].chrs[0];
-
-            int* chr_image = get_pixel_block(image, caractere.left_top.x, caractere.left_top.y,
-                caractere.right_bottom.x, caractere.right_bottom.y);
-
-            int* chr_resized = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
-                caractere.right_bottom.y - caractere.left_top.y);
-
-            double * expected = calloc((UpperBound - LowerBound + 1), sizeof(double));
-
+            for (size_t k = 0; k < (UpperBound - LowerBound + 1); k++)
+            {
+                expected[k] = 0
+            }
             expected[i-LowerBound] = 1;
 
             findDelta(network, v, chr_resized, expected, biasDeltaHiden, biasDeltaOut, deltaHiden, deltaOut);
+
+
         }
         
     }
@@ -122,6 +117,8 @@ void learn(NeuralNetwork* network, int LowerBound, int UpperBound, double v, cha
     free(biasDeltaOut);
     free(deltaHiden);
     free(deltaOut);
+
+    free(expected);
 }
 
 
@@ -160,13 +157,48 @@ NeuralNetwork* fullTrain(double v, size_t itteration, size_t hidenNumber, size_t
     NeuralNetwork* network = GenerateNetwork(Neural_Network_Entry_Size * Neural_Network_Entry_Size,
         hidenNumber, upperBound - lowerBound + 1);
 
+    int** allResized = loadAllResized(fileNames);
 
     for (size_t i = 0; i < itteration; i++)
     {
-        learn(network, (int)(lowerBound), (int)(upperBound), v, fileNames);
+        learn(network, (int)(lowerBound), (int)(upperBound), v, allResized);
     }
+
     return network;
 }
+
+
+int ** loadAllResized(char* fileNames)
+{
+    int** allResized = malloc(sizeof(int*) * (upperBound - lowerBound + 1) * 7);
+    for (size_t i = 0; i < (upperBound - lowerBound + 1) * 7; i++)
+    {
+        allResized[i] = malloc(sizeof(int) * Neural_Network_Entry_Size * Neural_Network_Entry_Size);
+    }
+
+    for (int i = 0; i < (upperBound - lowerBound + 1); i++)
+    {
+        for (int j = 0; j < 7; j++)
+        {
+            char* filename = fileNames[(i - LowerBound) * 7 + j];
+
+            SDL_Surface* image = Image_Load(filename);
+
+            struct text* text = apply_segmentation_for_training(filename);
+
+            pixel_block caractere = text->blocks[0].lines[0].chrs[0];
+
+            int* chr_image = get_pixel_block(image, caractere.left_top.x, caractere.left_top.y,
+                caractere.right_bottom.x, caractere.right_bottom.y);
+
+            allResized[i * 7 + j] = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
+                caractere.right_bottom.y - caractere.left_top.y);
+        }
+    }
+
+    return allResized;
+}
+
 
 int testOnLetter(NeuralNetwork* network, int letter, size_t lowerBound, int randPolice)
 {
