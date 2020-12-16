@@ -22,7 +22,7 @@ double randd()
 }
 
 
-NeuralNetwork* GenerateNetwork(size_t inputNumber, size_t hidenNumber, size_t outputNumber)
+NeuralNetwork* GenerateNetwork(size_t inputNumber, size_t hidenNumber, size_t outputNumber, size_t lowerBound)
 {
     NeuralNetwork* network = malloc(sizeof(NeuralNetwork));
     if (network == NULL)
@@ -30,6 +30,7 @@ NeuralNetwork* GenerateNetwork(size_t inputNumber, size_t hidenNumber, size_t ou
     network->inputNumber = inputNumber;
     network->hidenNumber = hidenNumber;
     network->outputNumber = outputNumber;
+    network->lowerBound = lowerBound;
 
     network->activations = malloc(sizeof(ListSet));
     if (network->activations == NULL)
@@ -114,6 +115,7 @@ void printList(double* list, size_t len)
 void printNetwork(NeuralNetwork* network)
 {
     printf("=====Network=====\n");
+    printf("Lower bound %zu\n", network->lowerBound);
     printf("Input : \n   ");
     printList(network->activations->data, network->inputNumber);
 

@@ -313,9 +313,10 @@ int main()
     if (trainedNetwork == NULL)
             printf("FEZN");*/
     testAllLetter(trainedNetwork, lowerBound, upperBound);
-    /*
+    printNetwork(trainedNetwork);
+
     if (writeNetwork(trainedNetwork) == 1)
-        printf("FAIL\n");*/
+        printf("FAIL\n");
     //printNetwork(trainedNetwork);
 
     return 0;

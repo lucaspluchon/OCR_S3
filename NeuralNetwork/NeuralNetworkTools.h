@@ -17,6 +17,7 @@ double sigmoideDerivate(double x);
 typedef struct NeuralNetwork NeuralNetwork;
 struct NeuralNetwork
 {
+    size_t lowerBound;
     size_t inputNumber;
     size_t hidenNumber;
     size_t outputNumber;
@@ -29,7 +30,7 @@ struct NeuralNetwork
 double randd();
 
 void freeNetwork(NeuralNetwork* network);
-NeuralNetwork* GenerateNetwork(size_t inputNumber, size_t hidenNumber, size_t outputNumber);
+NeuralNetwork* GenerateNetwork(size_t inputNumber, size_t hidenNumber, size_t outputNumber, size_t lowerBound);
 void printList(double* list, size_t len);
 void printNetwork(NeuralNetwork* network);
 

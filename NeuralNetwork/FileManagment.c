@@ -85,7 +85,7 @@ int writeNetwork(NeuralNetwork* network)
     netFp = fopen("network.save", "w");
     if (netFp == NULL)
         return 1;
-    fwrite(network, sizeof(size_t) * 3, 1, netFp);
+    fwrite(network, sizeof(size_t) * 4, 1, netFp);
     fclose(netFp);
     if (writeList(network->activations, "activations.save", "activations_l.save") == 1)
         return 1;
@@ -107,7 +107,7 @@ NeuralNetwork* readNetwork()
     NeuralNetwork* network = malloc(sizeof(NeuralNetwork));
     if (network == NULL)
         errx(1, "Memory allocation failed");
-    fread(network, sizeof(size_t) * 3, 1, netFp);
+    fread(network, sizeof(size_t) * 4, 1, netFp);
 
     network->activations = readList("activations.save", "activations_l.save");
     network->hidenWeights = readList("hWeights.save", "hWeights_l.save");
