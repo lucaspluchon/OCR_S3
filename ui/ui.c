@@ -71,7 +71,7 @@ void on_image_choose(GtkFileChooserButton *widget, gpointer user_data)
     data->file_path = gtk_file_chooser_get_filename((GtkFileChooser *) widget);
 
     data->sdl.image_original = Image_Load(data->file_path);
-    Progress_Set(data->ui.progress_main,0.1);
+    Progress_Set(data->ui.progress_main,0.1,data);
 
     g_print("Image loaded\n");
 
@@ -85,7 +85,7 @@ void on_image_choose(GtkFileChooserButton *widget, gpointer user_data)
     gtk_widget_show(data->ui.window_image);
     gtk_widget_hide(data->ui.window_main);
     gtk_widget_set_visible(data->ui.progress_main, gtk_false());
-    Progress_Set(data->ui.progress_main,0);
+    Progress_Set(data->ui.progress_main,0,data);
     gdk_window_set_cursor(gtk_widget_get_window(data->ui.window_main), NULL);
 }
 

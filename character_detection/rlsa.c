@@ -1,7 +1,7 @@
 #include "headers/segmentation.h"
 #include "../ui/ui.h"
 
-SDL_Surface* Detect_RLSA_Block(SDL_Surface* image, int n, GtkProgressBar* progress)
+SDL_Surface* Detect_RLSA_Block(SDL_Surface* image, int n, ocr_data* data)
 {
     SDL_Surface* image_temp = Image_Copy(image);
     SDL_LockSurface(image);
@@ -14,11 +14,11 @@ SDL_Surface* Detect_RLSA_Block(SDL_Surface* image, int n, GtkProgressBar* progre
     for (int x = 0; x < image->w; x++)
     {
         if (x == image->w / 1.5)
-            Progress_Set(progress,0.5);
+            Progress_Set(data->ui.progress_main,0.5,data);
         if (x == image->w / 2)
-            Progress_Set(progress,0.40);
+            Progress_Set(data->ui.progress_main,0.40,data);
         if (x == image->w / 2.5)
-            Progress_Set(progress,0.35);
+            Progress_Set(data->ui.progress_main,0.35,data);
         for (int y = 0; y < image->h; y++)
         {
             c = Pixel_GetR(SDL_GetPixel32(image,x,y));
