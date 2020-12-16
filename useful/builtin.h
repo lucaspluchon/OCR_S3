@@ -13,5 +13,6 @@ size_t partition (int arr[], size_t low, size_t high);
 void quickSort(int arr[], size_t low, size_t high);
 int CalculMedian(int arr[],size_t size);
 size_t max_size(size_t a, size_t b);
-
+int max(int a, int b);
+int min(int a, int b);
 #endif // BUILTIN_H_INCLUDED

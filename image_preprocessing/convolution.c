@@ -25,19 +25,19 @@ Uint32 Pixel_Convolution(SDL_Surface* image,int matrix[3][3], int x, int y, doub
     return Pixel_RGBto32(255,Pixel_absRGB(r),Pixel_absRGB(r),Pixel_absRGB(r));
 }
 
-void Image_Convolution(SDL_Surface* image, int matrix[3][3], double factor)
+void Image_Convolution(ocr_data* data, int matrix[3][3], double factor)
 {
     Uint32 color = 0;
 
-    SDL_Surface* image_temp = Image_Copy(image);
+    SDL_Surface* image_temp = Image_Copy(data->sdl.image);
     SDL_LockSurface(image_temp);
 
-    for (int x = 0; x < image->w; x++)
+    for (int x = 0; x < data->sdl.image->w; x++)
     {
-        for (int y = 0; y < image->h; y++)
+        for (int y = 0; y < data->sdl.image->h; y++)
         {
             color = Pixel_Convolution(image_temp,matrix,x,y,factor);
-            SDL_PutPixel32(image,x,y,color);
+            SDL_PutPixel32(data->sdl.image,x,y,color);
         }
     }
 

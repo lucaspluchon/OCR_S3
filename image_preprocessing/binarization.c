@@ -66,24 +66,24 @@ int Image_GetThreshold(SDL_Surface* image)
     return threshold;
 }
 
-void Image_Threshold(SDL_Surface* image, int threshold)
+void Image_Threshold(ocr_data* data, int threshold)
 {
     Uint32 color;
     int threshold_temp = threshold;
 
-    SDL_Surface* image_temp = Image_Copy(image);
+    SDL_Surface* image_temp = Image_Copy(data->sdl.image);
     SDL_LockSurface(image_temp);
 
     if (threshold == -1)
-        threshold_temp = Image_GetThreshold(image);
+        threshold_temp = Image_GetThreshold(data->sdl.image);
 
-    for (int x = 0; x < image->w; x++)
+    for (int x = 0; x < data->sdl.image->w; x++)
     {
-        for (int y = 0; y < image->h; y++)
+        for (int y = 0; y < data->sdl.image->h; y++)
         {
-            color = SDL_GetPixel32(image,x,y);
+            color = SDL_GetPixel32(data->sdl.image,x,y);
             color = Pixel_Threshold(color,threshold_temp);
-            SDL_PutPixel32(image,x,y,color);
+            SDL_PutPixel32(data->sdl.image,x,y,color);
         }
     }
     SDL_UnlockSurface(image_temp);

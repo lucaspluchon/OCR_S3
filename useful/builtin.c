@@ -111,6 +111,19 @@ size_t max_size(size_t a, size_t b)
     return b;
 }
 
+int max(int a, int b)
+{
+    if (a >= b)
+        return a;
+    return b;
+}
+
+int min(int a, int b)
+{
+    if (a <= b)
+        return a;
+    return b;
+}
 
 
 

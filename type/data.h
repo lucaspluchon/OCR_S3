@@ -21,6 +21,7 @@ struct ui_data
     GtkEntry* entry_threshold;
     GdkPixbuf* image_pixbuf;
     GtkEntry* entry_angle;
+    GtkProgressBar* progress_main;
 };
 
 typedef struct sdl_data sdl_data;
@@ -41,6 +42,7 @@ struct ocr_data
     sdl_data sdl;
     char* file_path;
     text* text_array;
+    int draw_line;
 };
 
 #endif //OCR_S3_DATA_H

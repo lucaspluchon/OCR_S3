@@ -3,19 +3,21 @@
 
 #include <SDL2/SDL.h>
 #include <stdbool.h>
+#include "../type/data.h"
 
 
-void Image_Threshold(SDL_Surface* image, int threshold);
+void Image_Threshold(ocr_data* data, int threshold);
 
-void Image_Convolution(SDL_Surface* image, int matrix[3][3], double factor);
+void Image_Convolution(ocr_data* data, int matrix[3][3], double factor);
 
-void Image_GrayScale(SDL_Surface* image);
+void Image_GrayScale(ocr_data* data);
 
-void Image_Median(SDL_Surface* image);
+void Image_Median(ocr_data* data);
 void Image_ToRenderer(SDL_Surface * image, SDL_Renderer* renderer);
 
 SDL_Surface* Image_Copy(SDL_Surface* image);
 SDL_Surface* Image_Load(char* path);
+SDL_Surface* Image_Generate(int w, int h);
 
 void SDL_PutPixel32(SDL_Surface *surface, int x, int y, Uint32 pixel);
 Uint32 SDL_GetPixel32(SDL_Surface *surface, int x, int y);
@@ -27,9 +29,9 @@ int Pixel_absRGB(double c);
 bool Pixel_Exist(SDL_Surface* image, int x, int y);
 void SDL_DrawLine(SDL_Surface *image, int x0, int y0, int x1, int y1, Uint32 color);
 
-void Image_Rotate(SDL_Surface* image, double angle);
+void Image_Rotate(ocr_data* data, double angle);
 
-void Image_ApplyCorrection(SDL_Surface* image, int threshold, double angle);
+void Image_ApplyCorrection(ocr_data* data);
 
 
 #endif

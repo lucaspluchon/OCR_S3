@@ -1,6 +1,6 @@
 #include "headers/preprocessing.h"
 
-void Image_ApplyCorrection(SDL_Surface* image, int threshold, double angle)
+void Image_ApplyCorrection(ocr_data* data)
 {
     int blur[3][3] = {
             {1,2,1},
@@ -13,12 +13,12 @@ void Image_ApplyCorrection(SDL_Surface* image, int threshold, double angle)
             {-1,5,-1},
             {0,-1,0},
     };
-    SDL_LockSurface(image);
-    Image_GrayScale(image);
-    Image_Convolution(image,blur,0.0625);
-    Image_Convolution(image,sharpen,1);
-    Image_Threshold(image,threshold);
-    if (angle != -1.)
-        Image_Rotate(image,angle);
-    SDL_UnlockSurface(image);
+    SDL_LockSurface(data->sdl.image);
+    Image_GrayScale(data);
+    Image_Convolution(data,blur,0.0625);
+    Image_Convolution(data,sharpen,1);
+    Image_Threshold(data,data->sdl.threshold);
+    if (data->sdl.angle != -1.)
+        Image_Rotate(data,data->sdl.angle);
+    SDL_UnlockSurface(data->sdl.image);
 }

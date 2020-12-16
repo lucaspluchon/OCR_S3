@@ -9,16 +9,16 @@ Uint32 Pixel_Grayscale(Uint32 color)
     return Pixel_RGBto32(255,gray,gray,gray);
 }
 
-void Image_GrayScale(SDL_Surface* image)
+void Image_GrayScale(ocr_data* data)
 {
     Uint32 color = 0;
-    for (int x = 0; x < image->w; x++)
+    for (int x = 0; x < data->sdl.image->w; x++)
     {
-        for (int y = 0; y < image->h; y++)
+        for (int y = 0; y < data->sdl.image->h; y++)
         {
-            color = SDL_GetPixel32(image,x,y);
+            color = SDL_GetPixel32(data->sdl.image,x,y);
             color = Pixel_Grayscale(color);
-            SDL_PutPixel32(image,x,y,color);
+            SDL_PutPixel32(data->sdl.image,x,y,color);
         }
     }
 }

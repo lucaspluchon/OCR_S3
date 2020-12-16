@@ -10,11 +10,12 @@ text* apply_segmentation_for_training(char* path)
                             .threshold = -1,
                             .angle = -1,
                     },
+                    .draw_line = 0,
             };
 
     data.sdl.image_original = Image_Load(data.file_path);
     data.sdl.image = Image_Copy(data.sdl.image_original);
-    Image_ApplyCorrection(data.sdl.image, data.sdl.threshold, data.sdl.angle);
+    Image_ApplyCorrection(&data);
     apply_segmentation(&data);
 
     return data.text_array;
@@ -54,5 +55,6 @@ void detect_text(ocr_data* data)
         analyse_WrongLine(&data->text_array->blocks[block], average_size, average_spaceLine);
     }
 
-    char_draw(data);
+    if (data->draw_line)
+        char_draw(data);
 }

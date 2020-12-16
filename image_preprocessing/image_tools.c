@@ -26,6 +26,15 @@ SDL_Surface* Image_Copy(SDL_Surface* image)
     return SDL_ConvertSurface(image, format, 0);
 }
 
+SDL_Surface* Image_Generate(int w, int h)
+{
+    SDL_PixelFormat *format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA32);
+    SDL_Surface* image = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
+    Uint32 color = SDL_MapRGB(format, 255, 255 ,255);
+    SDL_FillRect(image, 0, color);
+
+    return image;
+}
 
 
 

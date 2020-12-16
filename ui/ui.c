@@ -30,7 +30,7 @@ void apply_sdl_on_gtk(ocr_data* data)
     int h = gtk_widget_get_allocated_height(data->ui.image_viewer);
 
     data->sdl.image = Image_Copy(data->sdl.image_original);
-    Image_ApplyCorrection(data->sdl.image, data->sdl.threshold, data->sdl.angle);
+    Image_ApplyCorrection(data);
     g_print("Image correction ended\n");
     apply_segmentation(data);
 
@@ -41,6 +41,7 @@ void apply_sdl_on_gtk(ocr_data* data)
 void on_image_choose(GtkFileChooserButton *widget, gpointer user_data)
 {
     ocr_data* data = user_data;
+    gtk_widget_set_visible((GtkWidget *) data->ui.progress_main, gtk_true());
     data->file_path = gtk_file_chooser_get_filename((GtkFileChooser *) widget);
 
     data->sdl.image_original = Image_Load(data->file_path);
@@ -51,10 +52,10 @@ void on_image_choose(GtkFileChooserButton *widget, gpointer user_data)
     gtk_window_get_position(data->ui.window_main,&x,&y);
     gtk_window_move(data->ui.window_image,x,y);
 
+    apply_sdl_on_gtk(data);
+
     gtk_widget_show(data->ui.window_image);
     gtk_widget_hide(data->ui.window_main);
-
-    apply_sdl_on_gtk(data);
 }
 
 void on_quitAnalyse(GtkFileChooserButton *widget, gpointer user_data)
@@ -153,6 +154,7 @@ ocr_data init_data(GtkBuilder* builder)
     GtkSwitch * switch_auto = GTK_SWITCH(gtk_builder_get_object(builder, "switch_auto"));
     GtkEntry * entry_threshold = GTK_ENTRY(gtk_builder_get_object(builder, "entry_threshold"));
     GtkEntry * entry_angle = GTK_ENTRY(gtk_builder_get_object(builder, "entry_angle"));
+    GtkProgressBar* progress_main = GTK_PROGRESS_BAR(gtk_builder_get_object(builder, "progress_main"));
     ocr_data data =
             {
                     .ui = {
@@ -170,12 +172,14 @@ ocr_data init_data(GtkBuilder* builder)
                             .switch_auto = switch_auto,
                             .entry_threshold = entry_threshold,
                             .entry_angle = entry_angle,
+                            .progress_main = progress_main,
                         },
                     .file_path = "",
                     .sdl = {
                             .threshold = -1,
                             .angle = -1,
                     },
+                    .draw_line = 1,
             };
 
     return data;
