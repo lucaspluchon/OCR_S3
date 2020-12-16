@@ -244,12 +244,25 @@ void testAllLetter(NeuralNetwork* network, size_t lowerBound, size_t upperBound)
 
 
 
-int main()
+int main(int argc, char *argv[])
 {
-    size_t lowerBound = 65;
-    size_t upperBound = 71;
+    if (argc != 6)
+    {
+        printf("Usage : \nmain double v  size_t itteration  size_t hidenNumber  size_t lowerBound  size_t upperBound");
+        return 1;
+    }
+    double v = argv[1];
+    size_t itteration = argv[2];
+    size_t hidenNumber = argv[3];
+    size_t testLen = argv[4];
+    size_t lowerBound = argv[5];
 
-    NeuralNetwork * trainedNetwork = fullTrain(2, 100, 69, 65, 70);
+
+
+
+    size_t upperBound = lowerBound + testLen;
+
+    NeuralNetwork * trainedNetwork = fullTrain(v, itteration, hidenNumber, lowerBound, upperBound);
 
     testAllLetter(trainedNetwork, lowerBound, upperBound);
 
