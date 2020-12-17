@@ -98,7 +98,8 @@ char readLetter(NeuralNetwork* network, pixel_block caractere, SDL_Surface* imag
 
 void fullRead(NeuralNetwork* network, char* filename)
 {
-    SDL_Surface* image = Image_Load(filename);
+    SDL_Surface* image_temp = Image_Load(filename);
+    SDL_Surface* image = Image_Copy(image_temp);
 
     struct text* arr = apply_segmentation_for_training(filename);
 
