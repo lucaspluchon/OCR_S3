@@ -6,29 +6,29 @@
 #include "NeuralNetwork/headers/learning.h"
 #include "NeuralNetwork/headers/FileManagment.h"
 #include "NeuralNetwork/headers/read.h"
-
+#include "NeuralNetwork/headers/LearningTest.h"
 
 void trainSaveTest()
 {
     double v = 0.05;
     size_t itteration = 10000;
     size_t gen = 15;
-    size_t hidenNumber = 35;
+    size_t hidenNumber = 55;
     size_t testLen = 26;
     size_t lowerBound = 65;
-    size_t upperBound = 94;
+    size_t upperBound = 200;
 
     size_t lenOut = 0;
-    int* asciiOutputs = malloc((upperBound - lowerBound + 1) * sizeof(int));
+    double* asciiOutputs = malloc((upperBound - lowerBound + 1) * sizeof(double));
 
     for (size_t i = lowerBound; i <= upperBound; i++)
     {
 
         if (i >= (size_t)('0') && i <= (size_t)('9') ||
              i >= (size_t)('A') && i <= (size_t)('Z') ||
-             i >= (size_t)('a') && i <= (size_t)('z'))
+             i >= (size_t)('a') && i <= (size_t)('z') && i != 105 && i != 106)
         {
-            asciiOutputs[lenOut] = i;
+            asciiOutputs[lenOut] = (double)i;
             lenOut++;
         }
         
@@ -67,7 +67,7 @@ void reloadTest()
     if (trainedNetwork == NULL)
         printf("No Network Saved");
 
-    char* filename = "../image/test3.bmp";
+    char* filename = "../image/testim.jpg";
     fullRead(trainedNetwork, filename);
     freeNetwork(trainedNetwork);
 }

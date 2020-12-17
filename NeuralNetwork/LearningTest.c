@@ -77,9 +77,9 @@ int testOnLetter(NeuralNetwork* network, int letter, int randPolice)
         }
 
     }
-    int found = letter == (int)network->asciiOutputs[maxI];
+    int found = letter == (int)(network->asciiOutputs->data[maxI]);
 
-    printf("%c - The network was given a %c and guessed it was a %c (police %i)", letter, letter, (char)((int)network->asciiOutputs[maxI]), randPolice);
+    printf("%c - The network was given a %c and guessed it was a %c (police %i)", letter, letter, (char)((int)network->asciiOutputs->data[maxI]), randPolice);
     if (found)
     {
         printf("            (guessed right)");
@@ -101,13 +101,12 @@ void testAllLetter(NeuralNetwork* network)
 
     int founds = 0;
 
-    for (size_t i = 0; i <= network->outputNumber; i++)
+    for (size_t i = 0; i < network->outputNumber; i++)
     {
         for(int police = 0; police < Number_Police; police++)
         {
-            founds += testOnLetter(network, network->asciiOutputs[i], police);
+            founds += testOnLetter(network, (int)(network->asciiOutputs->data[i]), police);
         }
     }
-
-    printf("\nHe guessed %i / %i right... Not bad !", founds, network->hidenNumber * Number_Police);
+    printf("\nHe guessed %i / %li right... Not bad !", founds, network->outputNumber * Number_Police);
 }
