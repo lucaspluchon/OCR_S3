@@ -129,7 +129,7 @@ void on_confirmAnalyse(GtkFileChooserButton *widget, gpointer user_data)
     gdk_window_set_cursor(gtk_widget_get_window(data->ui.window_main), data->ui.watch_cursor);
     while (g_main_context_iteration(NULL, FALSE));
 
-    gtk_text_buffer_set_text(data->ui.text_buffer,"HELLO WORLD !",-1);
+    gtk_text_buffer_set_text(data->ui.text_buffer,"j'adore la segmentation.",-1);
 
     gint x = 0;
     gint y = 0;

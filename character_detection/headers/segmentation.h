@@ -20,7 +20,7 @@ void detect_line(ocr_data* data, pixel_block block, array_pos pos);
 void detect_char_vertical(ocr_data* data, pixel_block block, array_pos pos);
 void detect_char_horizontal(ocr_data* data, pixel_block block, array_pos pos);
 double size_averageFont(text* arr);
-void analyse_WrongLine(text_block* arr, double average_size, double average_space);
+void analyse_WrongLine(text_block* arr, double average_size, double average_space,ocr_data* data);
 void char_draw(ocr_data* data);
 double size_averageSpaceLine(text* arr);
 double size_averageSpaceBlock(text* arr);

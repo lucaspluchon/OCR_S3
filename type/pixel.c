@@ -160,6 +160,59 @@ void chr_delete(text_line* arr, size_t pos)
     }
 }
 
+void line_delete(text_block* arr, size_t pos)
+{
+    if (pos < arr->nb_line && pos >= 0)
+    {
+        free(arr->lines[pos].chrs);
+        arr->lines[pos] = arr->lines[pos + 1];
+        for (size_t i = pos + 1; i < arr->nb_line - 1; i++)
+        {
+            arr->lines[i] = arr->lines[i + 1];
+        }
+        arr->nb_line--;
+    }
+}
+
+void block_delete(text* arr, size_t pos)
+{
+    if (pos < arr->nb_block && pos >= 0)
+    {
+        for (int i = 0; i < arr->blocks[pos].nb_line; i++)
+        {
+            free(arr->blocks[pos].lines[i].chrs);
+        }
+        free(arr->blocks[pos].lines);
+        arr->blocks[pos] = arr->blocks[pos + 1];
+        for (size_t i = pos + 1; i < arr->nb_block - 1; i++)
+        {
+            arr->blocks[i] = arr->blocks[i + 1];
+        }
+        arr->nb_block--;
+    }
+}
+
+
+void check_line(text* txt)
+{
+    for (int i = 0; i < txt->nb_block; i++)
+    {
+        for (int j = 0; j < txt->blocks[i].nb_line; j++)
+        {
+            if (txt->blocks[i].lines[j].nb_char == 0)
+                line_delete(&txt->blocks[i],j);
+        }
+    }
+}
+
+void check_block(text* txt)
+{
+    for (int i = 0; i < txt->nb_block; i++)
+    {
+        if (txt->blocks[i].nb_line == 0)
+            block_delete(txt,i);
+    }
+}
 void chr_merge_top(pixel_block* chr1, pixel_block* chr2)
 {
     chr1->left_top.y = chr2->left_top.y;

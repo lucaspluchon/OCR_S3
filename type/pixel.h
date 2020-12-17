@@ -64,6 +64,10 @@ void chr_delete(text_line* arr, size_t pos);
 void chr_merge_top(pixel_block* chr1, pixel_block* chr2);
 void chr_merge_bottom(pixel_block* chr1, pixel_block* chr2);
 void textArray_delete(text* txt);
+void line_delete(text_block* arr, size_t pos);
+void block_delete(text* arr, size_t pos);
+void check_line(text* txt);
+void check_block(text* txt);
 
 
 #endif // PIXEL_H_INCLUDED

@@ -54,7 +54,7 @@ void detect_text(ocr_data* data)
     analyse_WrongBlock(data->text_array,average_size,average_spaceBlock);
     for (size_t block = 0; block < data->text_array->nb_block; block++)
     {
-        analyse_WrongLine(&data->text_array->blocks[block], average_size, average_spaceLine);
+        analyse_WrongLine(&data->text_array->blocks[block], average_size, average_spaceLine,data);
     }
 
     if (!data->training)

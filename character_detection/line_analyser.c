@@ -61,7 +61,7 @@ double size_averageSpaceBlock(text* arr)
 }
 
 //Detect wrong line (like "é" or "â") due to error of segmentation
-void analyse_WrongLine(text_block* arr, double average_size, double average_space)
+void analyse_WrongLine(text_block* arr, double average_size, double average_space,ocr_data* data)
 {
     double chr2_size;
     double space_size;
@@ -91,6 +91,7 @@ void analyse_WrongLine(text_block* arr, double average_size, double average_spac
                         {
                             chr_merge_top(chr1,chr2);
                             chr_delete(&arr->lines[line - 1],chr2_pos);
+                            check_line(data->text_array);
                             chr2_pos--;
                         }
                         chr2_pos++;
@@ -162,6 +163,8 @@ void analyse_WrongBlock(text* arr, double average_size, double average_space)
                         {
                             chr_merge_top(chr1,chr2);
                             chr_delete(&block2->lines[block2->nb_line - 1],chr2_pos);
+                            check_line(arr);
+                            check_block(arr);
                             chr2_pos--;
                         }
                         chr2_pos++;
@@ -192,6 +195,8 @@ void analyse_WrongBlock(text* arr, double average_size, double average_space)
                         {
                             chr_merge_bottom(chr1,chr2);
                             chr_delete(&block2->lines[0],chr2_pos);
+                            check_line(arr);
+                            check_block(arr);
                             chr2_pos--;
                         }
                         chr2_pos++;
