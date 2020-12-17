@@ -22,8 +22,11 @@ int main(int argc, char** argv)
     size_t testLen = (size_t)(strtol(argv[4], NULL, 10));
     size_t lowerBound = (size_t)(strtol(argv[5], NULL, 10));
     */
-    //trainSaveTest();
-    reloadTest();
+    trainSaveTest();
+    //reloadTest();
+    //struct NeuralNetwork* network = readNetwork();
+    //printNetwork(network);
+    //testAllLetter(network);
 
     return 0;
 }

@@ -22,7 +22,7 @@ double randd()
 }
 
 
-NeuralNetwork* GenerateNetwork(size_t inputNumber, size_t hidenNumber, size_t outputNumber, int* asciiOutputs)
+NeuralNetwork* GenerateNetwork(size_t inputNumber, size_t hidenNumber, size_t outputNumber, double* asciiOutputs)
 {
     NeuralNetwork* network = malloc(sizeof(NeuralNetwork));
     if (network == NULL)
@@ -75,6 +75,18 @@ NeuralNetwork* GenerateNetwork(size_t inputNumber, size_t hidenNumber, size_t ou
         network->hidenWeights->data[i] = randd();
     }
 
+    network->asciiOutputs = malloc(sizeof(ListSet));
+    if(network->asciiOutputs == NULL)
+        errx(1, "Memory allocation failed");
+    network->asciiOutputs->size = outputNumber;
+    network->asciiOutputs->data = malloc(sizeof(double) * outputNumber);
+    if(network->asciiOutputs->data == NULL)
+        errx(1, "Memory allocation failed");
+    for(size_t i = 0; i < outputNumber; i++)
+    {
+        network->asciiOutputs->data[i] = asciiOutputs[i];
+    }
+
     return network;
 
 }
@@ -93,7 +105,8 @@ void freeNetwork(NeuralNetwork* network)
     free(network->hidenWeights->data);
     free(network->hidenWeights);
 
-    //free(network->asciiOutputs);
+    free(network->asciiOutputs->data);
+    free(network->asciiOutputs);
 
     free(network);
 
@@ -116,7 +129,6 @@ void printList(double* list, size_t len)
 void printNetwork(NeuralNetwork* network)
 {
     printf("=====Network=====\n");
-    printf("Lower bound %zu\n", network->lowerBound);
     printf("Input : \n   ");
     printList(network->activations->data, network->inputNumber);
 
@@ -138,6 +150,7 @@ void printNetwork(NeuralNetwork* network)
     printList(&(network->activations->data[network->inputNumber + network->hidenNumber]), network->outputNumber);
     printf("  Bias : \n    ");
     printList(&(network->bias->data[network->hidenNumber]), network->outputNumber);
-
+    printf("Ascii outputs : \n");
+    printList(network->asciiOutputs->data, network->outputNumber);
 
 }

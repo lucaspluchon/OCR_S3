@@ -18,7 +18,7 @@ int* get_pixel_block(SDL_Surface* image, int x1, int y1, int x2, int y2)
 
     int* chr_image = malloc(width * height *sizeof(int));
     if(chr_image == NULL)
-        errx(1, "Memory allocation failed");
+        errx(1, "Memory allocation failed get pixel");
 
     for (int i = 0; i < width; i++)
     {
@@ -45,7 +45,7 @@ int* resize(int* chr, int widthChr, int heightChr)
 {
     int* chr_resized = malloc(Neural_Network_Entry_Size * Neural_Network_Entry_Size * sizeof(int));
     if(chr_resized == NULL)
-        errx(1, "Memory allocation failed");
+        errx(1, "Memory allocation failed resize");
 
     //double newRatio = (double) ( widthChr > heightChr ? widthChr : heightChr ) / Neural_Network_Entry_Size;
     double newRatioX = (double) (widthChr) / Neural_Network_Entry_Size;
@@ -103,7 +103,7 @@ char readLetter(NeuralNetwork* network, pixel_block caractere, SDL_Surface* imag
     }
     free(chr_image);
     free(chr_resized);
-    return (char)(network->asciiOutputs[maxI]);
+    return (char)((int)(network->asciiOutputs->data[maxI]));
 }
 
 void fullRead(NeuralNetwork* network, char* filename)

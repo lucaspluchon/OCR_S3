@@ -5,33 +5,6 @@
 #include"NeuralNetwork/headers/NeuralNetworkTools.h"
 
 
-int writeData(NeuralNetwork* data)
-{
-    FILE *fp;
-    fp = fopen("value", "w");
-    if (fp != NULL)
-    {
-        fwrite(data->activations, sizeof(data->activations), 1, fp);
-        fclose(fp);
-        return 0;
-    }
-    return 1;
-}
-
-
-int readData(NeuralNetwork *data)
-{
-    FILE *fp;
-    fp = fopen("value", "r");
-    if (fp != NULL)
-    {
-        fread(data->activations, sizeof(data->activations), 1, fp);
-        fclose(fp);
-        return 0;
-    }
-    return 1;
-}
-
 
 int writeList(ListSet* l, char* name, char* listName)
 {
@@ -82,18 +55,20 @@ ListSet* readList(char* name, char* listName)
 int writeNetwork(NeuralNetwork* network)
 {
     FILE* netFp;
-    netFp = fopen("network.save", "w");
+    netFp = fopen("save/network.save", "w");
     if (netFp == NULL)
         return 1;
     fwrite(network, sizeof(size_t) * 4, 1, netFp);
     fclose(netFp);
-    if (writeList(network->activations, "activations.save", "activations_l.save") == 1)
+    if (writeList(network->activations, "save/activations.save", "save/activations_l.save") == 1)
         return 1;
-    if(writeList(network->bias, "bias.save", "bias_l.save") == 1)
+    if(writeList(network->bias, "save/bias.save", "save/bias_l.save") == 1)
         return 1;
-    if(writeList(network->hidenWeights, "hWeights.save", "hWeights_l.save") == 1)
+    if(writeList(network->hidenWeights, "save/hWeights.save", "save/hWeights_l.save") == 1)
         return 1;
-    if(writeList(network->inputWeights, "iWeights.save", "iWeights_l.save") == 1)
+    if(writeList(network->inputWeights, "save/iWeights.save", "save/iWeights_l.save") == 1)
+        return 1;
+    if(writeList(network->asciiOutputs, "save/outAscii.save", "save/outAscii_l.save") == 1)
         return 1;
     return 0;
 }
@@ -101,7 +76,7 @@ int writeNetwork(NeuralNetwork* network)
 NeuralNetwork* readNetwork()
 {
     FILE* netFp;
-    netFp = fopen("network.save", "r");
+    netFp = fopen("save/network.save", "r");
     if(netFp == NULL)
         return NULL;
     NeuralNetwork* network = malloc(sizeof(NeuralNetwork));
@@ -109,10 +84,11 @@ NeuralNetwork* readNetwork()
         errx(1, "Memory allocation failed");
     fread(network, sizeof(size_t) * 4, 1, netFp);
 
-    network->activations = readList("activations.save", "activations_l.save");
-    network->hidenWeights = readList("hWeights.save", "hWeights_l.save");
-    network->inputWeights = readList("iWeights.save", "iWeights_l.save");
-    network->bias = readList("bias.save", "bias_l.save");
+    network->activations = readList("save/activations.save", "save/activations_l.save");
+    network->hidenWeights = readList("save/hWeights.save", "save/hWeights_l.save");
+    network->inputWeights = readList("save/iWeights.save", "save/iWeights_l.save");
+    network->bias = readList("save/bias.save", "save/bias_l.save");
+    network->asciiOutputs = readList("save/outAscii.save", "save/outAscii_l.save");
 
     if (network->bias == NULL)
         printf("Unable to load bias\n");
@@ -125,6 +101,9 @@ NeuralNetwork* readNetwork()
 
     if (network->activations == NULL)
         printf("Unable to load activations\n");
+
+    if (network->asciiOutputs == NULL)
+        printf("Unable to load ascii output\n");
 
     return network;
 }

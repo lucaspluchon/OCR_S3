@@ -27,12 +27,12 @@ double* findDelta(NeuralNetwork* network, double v, int* inputs, double* expecte
 
     double* outError = calloc(network->outputNumber, sizeof(double));
     if(outError == NULL)
-        errx(1, "Memory allocation failed");
+        errx(1, "Memory allocation failed find delta 1");
     outputError(network, expected, outError);
 
     double* hidError = calloc(network->hidenNumber, sizeof(double));
     if(hidError == NULL)
-        errx(1, "Memory allocation failed");
+        errx(1, "Memory allocation failed find delta 2");
     hidenErrors(network, outError, hidError);
     // printf("Hiden error\n");
     // printf("%f, %f\n", hidError[0], hidError[1]);
@@ -69,7 +69,7 @@ void learn(NeuralNetwork* network, double v, int** allResized)
 
     double * expected = calloc((network->outputNumber), sizeof(double));
     if(biasDeltaHiden == NULL || biasDeltaOut == NULL || deltaOut == NULL || deltaHiden == NULL || expected == NULL)
-        errx(1, "Memory allocation failed");
+        errx(1, "Memory allocation failed learn");
 
     for (int i = 0; i < network->outputNumber; i++)
     {
@@ -124,12 +124,12 @@ int ** loadAllResized(char** fileNames, size_t outputNumber)
 {
     int** allResized = malloc(sizeof(int*) * outputNumber * Number_Police);
     if (allResized == NULL)
-        errx(1, "Memory allocation failed");
+        errx(1, "Memory allocation failed load all resized 1");
     for (size_t i = 0; i < outputNumber * Number_Police; i++)
     {
         allResized[i] = malloc(sizeof(int) * Neural_Network_Entry_Size * Neural_Network_Entry_Size);
         if (allResized[i] == NULL)
-            errx(1, "Memory allocation failed");
+            errx(1, "Memory allocation failed load all resized 2");
     }
 
     for (int i = 0; i < outputNumber; i++)
@@ -162,7 +162,7 @@ void fullTrain(NeuralNetwork * network, double v, size_t itteration)
 {
     char** fileNames = malloc(network->outputNumber * Number_Police * sizeof(char*));
     if (fileNames == NULL)
-        errx(1, "Memory allocation failed");
+        errx(1, "Memory allocation failed full train 1");
 
     char filenameBase[] = "data/letters/000/00.png";
 
@@ -172,19 +172,19 @@ void fullTrain(NeuralNetwork * network, double v, size_t itteration)
         {
             fileNames[i * Number_Police + j] = malloc(24 * sizeof(char));
             if (fileNames[i * Number_Police + j] == NULL)
-                errx(1, "Memory allocation failed");
+                errx(1, "Memory allocation failed full train");
             for (size_t k = 0; k < 24; k++)
             {
                 fileNames[i * Number_Police + j][k] = filenameBase[k];
             }
             char dirNum[25];
-            sprintf(dirNum, "%i", (int)(network->asciiOutputs[i]));
+            sprintf(dirNum, "%i", (int)(network->asciiOutputs->data[i]));
 
 
             char fileNum[25];
             sprintf(fileNum, "%i", (int)j);
 
-            if (network->asciiOutputs[i] < 100)
+            if (network->asciiOutputs->data[i] < 100)
             {
                 fileNames[i * Number_Police + j][14] = dirNum[0];
                 fileNames[i * Number_Police + j][15] = dirNum[1];
