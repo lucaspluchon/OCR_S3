@@ -3,6 +3,7 @@
 #include <string.h>
 #include <limits.h>
 #include <err.h>
+#include <ctype.h>
 
 #define MIN3(a, b, c) ((a) < (b) ? ((a) < (c) ? (a) : (c)) : ((b) < (c) ? (b) : (c)))
 
@@ -40,6 +41,8 @@ int levenshtein(char *s1, char *s2) {
     return column[s1len];
 }
 
+
+
 int distance(int a, int b)
 {
     return abs(a-b);
@@ -54,15 +57,32 @@ void clean_string(char* s)
         errx(1,"Unexpected error");
 }
 
+char* lower_string(char* s)
+{
+    char* res = malloc(sizeof (char) * (strlen_utf(s) + 1));
+    int i = 0;
+    while (s[i] != '\0')
+    {
+        res[i] = (char) tolower(s[i]);
+        i++;
+    }
+    res[i] = '\0';
+    return res;
+}
+
+
 char* correct_word(char* word)
 {
-    FILE * database = fopen("mot_francais.txt", "r");
+    FILE * database = fopen("mot_fr_lower.txt", "r");
     if (database == NULL)
         errx("1","File not found !");
     char* line = NULL;
+    word = lower_string(word);
     size_t len = 0;
     size_t size_res_string;
     size_t size_word = strlen_utf(word);
+    if (size_word <= 1)
+        return word;
     size_t size_corrected_word = INT_MAX;
 
     int min_levenshtein = INT_MAX;
@@ -89,6 +109,7 @@ char* correct_word(char* word)
     }
 
     free(line);
+    free(word);
     fclose(database);
     return corrected_word;
 }

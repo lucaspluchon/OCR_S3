@@ -18,6 +18,7 @@ struct ui_data
     GtkTextBuffer* text_buffer;
     GtkClipboard* clipboard;
     GtkSwitch* switch_auto;
+    GtkSwitch* switch_spell;
     GtkEntry* entry_threshold;
     GdkPixbuf* image_pixbuf;
     GtkEntry* entry_angle;
@@ -47,6 +48,7 @@ struct ocr_data
     char* file_path;
     text* text_array;
     int training;
+    int spell_check;
 };
 
 void Data_delete(ocr_data* data);

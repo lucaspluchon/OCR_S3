@@ -209,6 +209,13 @@ gboolean on_switch_auto(GtkSwitch *widget, gboolean state, gpointer user_data)
     return FALSE;
 }
 
+gboolean on_switch_spell(GtkSwitch *widget, gboolean state, gpointer user_data)
+{
+    ocr_data* data = user_data;
+    data->spell_check = (int) state;
+    return FALSE;
+}
+
 void gtk_build_from_glade(GtkBuilder* builder, GError* error)
 {
     if (gtk_builder_add_from_file(builder, "../ui_ocr.glade", &error) == 0)
@@ -238,6 +245,7 @@ ocr_data init_data(GtkBuilder* builder)
     GtkEntry * entry_angle = GTK_ENTRY(gtk_builder_get_object(builder, "entry_angle"));
     GtkProgressBar* progress_main = GTK_PROGRESS_BAR(gtk_builder_get_object(builder, "progress_main"));
     GtkProgressBar* progress_neural = GTK_PROGRESS_BAR(gtk_builder_get_object(builder, "progress_neural"));
+    GtkSwitch* switch_spell = GTK_SWITCH(gtk_builder_get_object(builder, "switch_spell"));
 
     ocr_data data =
             {
@@ -260,6 +268,7 @@ ocr_data init_data(GtkBuilder* builder)
                             .watch_cursor = gdk_cursor_new(GDK_WATCH),
                             .progress_neural = progress_neural,
                             .button_save = button_save,
+                            .switch_spell = switch_spell,
                             .filter1 = gtk_file_filter_new(),
                         },
                     .file_path = "",
@@ -268,6 +277,7 @@ ocr_data init_data(GtkBuilder* builder)
                             .angle = -1,
                     },
                     .training = 0,
+                    .spell_check = 1,
             };
 
     gtk_file_filter_set_name(data.ui.filter1, "Images");
