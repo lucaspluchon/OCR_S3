@@ -1,5 +1,6 @@
 #include<stdlib.h>
 #include<stdio.h>
+#include<err.h>
 #include <SDL2/SDL.h>
 #include "../type/pixel.h"
 #include"../image_preprocessing/headers/preprocessing.h"
@@ -10,10 +11,10 @@
 #include"BackProp.h"
 #include<string.h>
 #include "FileManagment.h"
-#include<err.h>
+#include "../useful/test_resize.h"
 
 
-#define Neural_Network_Entry_Size 32
+#define Neural_Network_Entry_Size 20
 
 int ** loadAllResized(char** fileNames, size_t lowerBound, size_t upperBound);
 
@@ -30,9 +31,13 @@ double* findDelta(NeuralNetwork* network, double v, int* inputs, double* expecte
 
 
     double* outError = calloc(network->outputNumber, sizeof(double));
+    if(outError == NULL)
+        errx(1, "Memory allocation failed");
     outputError(network, expected, outError);
 
     double* hidError = calloc(network->hidenNumber, sizeof(double));
+    if(hidError == NULL)
+        errx(1, "Memory allocation failed");
     hidenErrors(network, outError, hidError);
     // printf("Hiden error\n");
     // printf("%f, %f\n", hidError[0], hidError[1]);
@@ -68,7 +73,8 @@ void learn(NeuralNetwork* network, double v, int** allResized)
     double* deltaHiden = calloc(network->hidenNumber * network->inputNumber, sizeof(double));
 
     double * expected = calloc((network->outputNumber), sizeof(double));
-
+    if(biasDeltaHiden == NULL || biasDeltaOut == NULL || deltaOut == NULL || deltaHiden == NULL || expected == NULL)
+        errx(1, "Memory allocation failed");
 
     for (int i = 0; i < network->outputNumber; i++)
     {
@@ -122,11 +128,13 @@ void learn(NeuralNetwork* network, double v, int** allResized)
 
 
 
-NeuralNetwork* fullTrain(double v, size_t itteration, size_t hidenNumber, size_t lowerBound, size_t upperBound)
+void fullTrain(NeuralNetwork * network, double v, size_t itteration, size_t hidenNumber, size_t lowerBound, size_t upperBound)
 {
 
 
     char** fileNames = malloc((upperBound - lowerBound + 1) * 7 * sizeof(char*));
+    if (fileNames == NULL)
+        errx(1, "Memory allocation failed");
 
     char filenameBase[] = "data/letters/**/*.bmp";
 
@@ -134,8 +142,10 @@ NeuralNetwork* fullTrain(double v, size_t itteration, size_t hidenNumber, size_t
     {
         for (int j = 0; j < 7; j++)
         {
-            fileNames[i * 7 + j] = malloc(21 * sizeof(char));
-            for (size_t k = 0; k < 21; k++)
+            fileNames[i * 7 + j] = malloc(22 * sizeof(char));
+            if (fileNames[i * 7 + j] == NULL)
+                errx(1, "Memory allocation failed");
+            for (size_t k = 0; k < 22; k++)
             {
                 fileNames[i * 7 + j][k] = filenameBase[k];
             }
@@ -153,8 +163,7 @@ NeuralNetwork* fullTrain(double v, size_t itteration, size_t hidenNumber, size_t
     }
 
 
-    NeuralNetwork* network = GenerateNetwork(Neural_Network_Entry_Size * Neural_Network_Entry_Size,
-        hidenNumber, upperBound - lowerBound + 1, lowerBound);
+
 
     int** allResized = loadAllResized(fileNames, lowerBound, upperBound);
 
@@ -162,17 +171,28 @@ NeuralNetwork* fullTrain(double v, size_t itteration, size_t hidenNumber, size_t
     {
         learn(network, v, allResized);
     }
+    for(size_t k; k < (upperBound - lowerBound + 1) * 7; k++)
+    {
+        free(fileNames[k]);
+        free(allResized[k]);
+    }
+    free(fileNames);
+    free(allResized);
 
-    return network;
 }
 
 
 int ** loadAllResized(char** fileNames, size_t lowerBound, size_t upperBound)
 {
+
     int** allResized = malloc(sizeof(int*) * (upperBound - lowerBound + 1) * 7);
+    if (allResized == NULL)
+        errx(1, "Memory allocation failed");
     for (size_t i = 0; i < (upperBound - lowerBound + 1) * 7; i++)
     {
         allResized[i] = malloc(sizeof(int) * Neural_Network_Entry_Size * Neural_Network_Entry_Size);
+        if (allResized[i] == NULL)
+            errx(1, "Memory allocation failed");
     }
 
     for (int i = 0; i < (upperBound - lowerBound + 1); i++)
@@ -180,10 +200,13 @@ int ** loadAllResized(char** fileNames, size_t lowerBound, size_t upperBound)
         for (int j = 0; j < 7; j++)
         {
             char* filename = fileNames[i * 7 + j];
+//            filename[21] = '\0';
 
-            SDL_Surface* image = Image_Load(filename);
+            ocr_data data = apply_segmentation_for_training(filename);
+            struct text* text = data.text_array;
+            SDL_Surface* image = data.sdl.image;
 
-            struct text* text = apply_segmentation_for_training(filename);
+
 
             pixel_block caractere = text->blocks[0].lines[0].chrs[0];
 
@@ -192,6 +215,7 @@ int ** loadAllResized(char** fileNames, size_t lowerBound, size_t upperBound)
 
             allResized[i * 7 + j] = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
                 caractere.right_bottom.y - caractere.left_top.y);
+            free(chr_image);
         }
     }
 
@@ -217,9 +241,11 @@ int testOnLetter(NeuralNetwork* network, int letter, int randPolice)
 
 
 
-    SDL_Surface* image = Image_Load(filename);
+    ocr_data data = apply_segmentation_for_training(filename);
+    struct text* text = data.text_array;
+    SDL_Surface* image = data.sdl.image;
 
-    struct text* text = apply_segmentation_for_training(filename);
+
 
     pixel_block caractere = text->blocks[0].lines[0].chrs[0];
 
@@ -228,7 +254,7 @@ int testOnLetter(NeuralNetwork* network, int letter, int randPolice)
 
     int* chr_resized = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
         caractere.right_bottom.y - caractere.left_top.y);
-
+    //test_sdl_neural(chr_resized, Neural_Network_Entry_Size, Neural_Network_Entry_Size);
     for (size_t i = 0; i < network->inputNumber; i++)
     {
         network->activations->data[i] = chr_resized[i];
@@ -257,7 +283,8 @@ int testOnLetter(NeuralNetwork* network, int letter, int randPolice)
     printf("\nthe outputs were :");
     printList(output, network->outputNumber);
     printf("\n\n");
-
+    free(chr_image);
+    free(chr_resized);
 
     return found;
 
@@ -273,7 +300,7 @@ void testAllLetter(NeuralNetwork* network, size_t lowerBound, size_t upperBound)
     {
         for(int police = 0; police < 7; police++)
         {
-            founds += testOnLetter(network, i, lowerBound, police);
+            founds += testOnLetter(network, i, police);
         }
     }
     
@@ -281,9 +308,49 @@ void testAllLetter(NeuralNetwork* network, size_t lowerBound, size_t upperBound)
 }
 
 
-
-int main()
+void trainSaveTest()
 {
+    double v = 0.05;
+    size_t itteration = 1000;
+    size_t gen = 20;
+    size_t hidenNumber = 20;
+    size_t testLen = 26;
+    size_t lowerBound = 65;
+
+    size_t upperBound = lowerBound + testLen - 1;
+
+    NeuralNetwork* trainedNetwork = GenerateNetwork(Neural_Network_Entry_Size * Neural_Network_Entry_Size,
+                                             hidenNumber, upperBound - lowerBound + 1, lowerBound);
+    printf("Starting learning...\n");
+    for(size_t i = 0; i < gen; i++)
+    {
+        fullTrain(trainedNetwork, v, itteration, hidenNumber, lowerBound, upperBound);
+        if (writeNetwork(trainedNetwork) == 1)
+            printf("FAIL\n");
+        printf("Leanred %li / %li, (%.2f %%)\n", (i + 1) * itteration, gen * itteration, ((double)(i) + 1) * 100 / (double)(gen));
+    }
+
+    printf("Learning done\n");
+    testAllLetter(trainedNetwork, lowerBound, upperBound);
+    freeNetwork(trainedNetwork);
+
+}
+
+void reloadTest()
+{
+    NeuralNetwork * trainedNetwork = readNetwork();
+    if (trainedNetwork == NULL)
+            printf("No Network Saved");
+
+    char* filename = "../image/test42.png";
+    fullRead(trainedNetwork, filename);
+    freeNetwork(trainedNetwork);
+}
+
+
+int main(int argc, char** argv)
+{
+
     /*
     if (argc != 6)
     {
@@ -297,29 +364,8 @@ int main()
     size_t testLen = (size_t)(strtol(argv[4], NULL, 10));
     size_t lowerBound = (size_t)(strtol(argv[5], NULL, 10));
     */
-
-    double v = 0.1;
-    size_t itteration = 5000;
-    size_t hidenNumber = 26;
-    size_t testLen = 26;
-    size_t lowerBound = 65;
-
-    size_t upperBound = lowerBound + testLen - 1;
-
-    NeuralNetwork * trainedNetwork = fullTrain(v, itteration, hidenNumber, lowerBound, upperBound);
-
-    /*NeuralNetwork * trainedNetwork = readNetwork();
-    if (trainedNetwork == NULL)
-            printf("FEZN");
-
-    testAllLetter(trainedNetwork, lowerBound, upperBound);
-    printNetwork(trainedNetwork);
-
-    if (writeNetwork(trainedNetwork) == 1)
-        printf("FAIL\n");
-    //printNetwork(trainedNetwork);*/
-
-    fullRead(trainedNetwork, filename);
+    trainSaveTest();
+    reloadTest();
 
     return 0;
 }
