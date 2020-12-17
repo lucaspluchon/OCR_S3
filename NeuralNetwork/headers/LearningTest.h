@@ -6,6 +6,6 @@
 #define OCR_S3_LEARNINGTEST_H
 
 int testOnLetter(NeuralNetwork* network, int letter, int randPolice);
-void testAllLetter(NeuralNetwork* network, size_t lowerBound, size_t upperBound);
+void testAllLetter(NeuralNetwork* network);
 
 #endif //OCR_S3_LEARNINGTEST_H

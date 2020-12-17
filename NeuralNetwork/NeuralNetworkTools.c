@@ -22,7 +22,7 @@ double randd()
 }
 
 
-NeuralNetwork* GenerateNetwork(size_t inputNumber, size_t hidenNumber, size_t outputNumber, size_t lowerBound)
+NeuralNetwork* GenerateNetwork(size_t inputNumber, size_t hidenNumber, size_t outputNumber, int* asciiOutputs)
 {
     NeuralNetwork* network = malloc(sizeof(NeuralNetwork));
     if (network == NULL)
@@ -30,7 +30,6 @@ NeuralNetwork* GenerateNetwork(size_t inputNumber, size_t hidenNumber, size_t ou
     network->inputNumber = inputNumber;
     network->hidenNumber = hidenNumber;
     network->outputNumber = outputNumber;
-    network->lowerBound = lowerBound;
 
     network->activations = malloc(sizeof(ListSet));
     if (network->activations == NULL)
@@ -93,6 +92,8 @@ void freeNetwork(NeuralNetwork* network)
 
     free(network->hidenWeights->data);
     free(network->hidenWeights);
+
+    //free(network->asciiOutputs);
 
     free(network);
 

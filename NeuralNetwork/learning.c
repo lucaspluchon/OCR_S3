@@ -14,10 +14,6 @@
 #include "../useful/test_resize.h"
 
 
-
-
-int ** loadAllResized(char** fileNames, size_t lowerBound, size_t upperBound);
-
 double* findDelta(NeuralNetwork* network, double v, int* inputs, double* expected,
      double *biasDeltaHiden, double *biasDeltaOut, double *deltaHiden, double *deltaOut)
 {
@@ -27,7 +23,6 @@ double* findDelta(NeuralNetwork* network, double v, int* inputs, double* expecte
     }
 
     forwardProp(network);
-
 
 
     double* outError = calloc(network->outputNumber, sizeof(double));
@@ -95,7 +90,6 @@ void learn(NeuralNetwork* network, double v, int** allResized)
         
     }
 
-
     // application of deltas
     for (size_t i = 0; i < network->hidenNumber; i++)
     {
@@ -126,19 +120,53 @@ void learn(NeuralNetwork* network, double v, int** allResized)
     free(expected);
 }
 
-
-
-void fullTrain(NeuralNetwork * network, double v, size_t itteration, size_t hidenNumber, size_t lowerBound, size_t upperBound)
+int ** loadAllResized(char** fileNames, size_t outputNumber)
 {
+    int** allResized = malloc(sizeof(int*) * outputNumber * Number_Police);
+    if (allResized == NULL)
+        errx(1, "Memory allocation failed");
+    for (size_t i = 0; i < outputNumber * Number_Police; i++)
+    {
+        allResized[i] = malloc(sizeof(int) * Neural_Network_Entry_Size * Neural_Network_Entry_Size);
+        if (allResized[i] == NULL)
+            errx(1, "Memory allocation failed");
+    }
+
+    for (int i = 0; i < outputNumber; i++)
+    {
+        for (int j = 0; j < Number_Police; j++)
+        {
+            char* filename = fileNames[i * Number_Police + j];
+
+            ocr_data data = apply_segmentation_for_training(filename);
+            struct text* text = data.text_array;
+            SDL_Surface* image = data.sdl.image;
 
 
-    char** fileNames = malloc((upperBound - lowerBound + 1) * Number_Police * sizeof(char*));
+            pixel_block caractere = text->blocks[0].lines[0].chrs[0];
+
+            int* chr_image = get_pixel_block(image, caractere.left_top.x, caractere.left_top.y,
+                caractere.right_bottom.x, caractere.right_bottom.y);
+
+            allResized[i * Number_Police + j] = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
+                caractere.right_bottom.y - caractere.left_top.y);
+            free(chr_image);
+        }
+    }
+
+    return allResized;
+}
+
+
+void fullTrain(NeuralNetwork * network, double v, size_t itteration)
+{
+    char** fileNames = malloc(network->outputNumber * Number_Police * sizeof(char*));
     if (fileNames == NULL)
         errx(1, "Memory allocation failed");
 
     char filenameBase[] = "data/letters/000/00.png";
 
-    for (int i = 0; i < (upperBound - lowerBound + 1); i++)
+    for (int i = 0; i < network->outputNumber; i++)
     {
         for (int j = 0; j < Number_Police; j++)
         {
@@ -150,13 +178,13 @@ void fullTrain(NeuralNetwork * network, double v, size_t itteration, size_t hide
                 fileNames[i * Number_Police + j][k] = filenameBase[k];
             }
             char dirNum[25];
-            sprintf(dirNum, "%i", (int)(i + lowerBound));
+            sprintf(dirNum, "%i", (int)(network->asciiOutputs[i]));
 
 
             char fileNum[25];
             sprintf(fileNum, "%i", (int)j);
 
-            if (lowerBound + i < 100)
+            if (network->asciiOutputs[i] < 100)
             {
                 fileNames[i * Number_Police + j][14] = dirNum[0];
                 fileNames[i * Number_Police + j][15] = dirNum[1];
@@ -181,16 +209,13 @@ void fullTrain(NeuralNetwork * network, double v, size_t itteration, size_t hide
         }
     }
 
-
-
-
-    int** allResized = loadAllResized(fileNames, lowerBound, upperBound);
+    int** allResized = loadAllResized(fileNames, network->outputNumber);
 
     for (size_t i = 0; i < itteration; i++)
     {
         learn(network, v, allResized);
     }
-    for(size_t k; k < (upperBound - lowerBound + 1) * Number_Police; k++)
+    for(size_t k; k < network->outputNumber * Number_Police; k++)
     {
         free(fileNames[k]);
         free(allResized[k]);
@@ -199,50 +224,5 @@ void fullTrain(NeuralNetwork * network, double v, size_t itteration, size_t hide
     free(allResized);
 
 }
-
-
-int ** loadAllResized(char** fileNames, size_t lowerBound, size_t upperBound)
-{
-
-    int** allResized = malloc(sizeof(int*) * (upperBound - lowerBound + 1) * Number_Police);
-    if (allResized == NULL)
-        errx(1, "Memory allocation failed");
-    for (size_t i = 0; i < (upperBound - lowerBound + 1) * Number_Police; i++)
-    {
-        allResized[i] = malloc(sizeof(int) * Neural_Network_Entry_Size * Neural_Network_Entry_Size);
-        if (allResized[i] == NULL)
-            errx(1, "Memory allocation failed");
-    }
-
-    for (int i = 0; i < (upperBound - lowerBound + 1); i++)
-    {
-        for (int j = 0; j < Number_Police; j++)
-        {
-            char* filename = fileNames[i * Number_Police + j];
-//            filename[21] = '\0';
-
-            ocr_data data = apply_segmentation_for_training(filename);
-            struct text* text = data.text_array;
-            SDL_Surface* image = data.sdl.image;
-
-
-
-            pixel_block caractere = text->blocks[0].lines[0].chrs[0];
-
-            int* chr_image = get_pixel_block(image, caractere.left_top.x, caractere.left_top.y,
-                caractere.right_bottom.x, caractere.right_bottom.y);
-
-            allResized[i * Number_Police + j] = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
-                caractere.right_bottom.y - caractere.left_top.y);
-            free(chr_image);
-        }
-    }
-
-    return allResized;
-}
-
-
-
-
 
 
