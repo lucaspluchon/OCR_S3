@@ -47,14 +47,17 @@ int* resize(int* chr, int widthChr, int heightChr)
     if(chr_resized == NULL)
         errx(1, "Memory allocation failed");
 
-    double newRatio = (double) ( widthChr > heightChr ? widthChr : heightChr ) / Neural_Network_Entry_Size;
+    //double newRatio = (double) ( widthChr > heightChr ? widthChr : heightChr ) / Neural_Network_Entry_Size;
+    double newRatioX = (double) (widthChr / Neural_Network_Entry_Size);
+    double newRatioY = (double) (heightChr / Neural_Network_Entry_Size);
+    
 
     for (int i = 0; i < Neural_Network_Entry_Size; i++)
     {
         for (int j = 0; j < Neural_Network_Entry_Size; j++)
         {
-            int resX = i * newRatio;
-            int resY = j * newRatio;
+            int resX = i * newRatioX;
+            int resY = j * newRatioY;
 
             if(resX >= widthChr || resY >= heightChr)
             {
