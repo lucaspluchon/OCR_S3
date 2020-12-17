@@ -23,6 +23,7 @@ int* get_pixel_block(SDL_Surface* image, int x1, int y1, int x2, int y2)
         for (int j = 0; j < height; j++)
         {
             int pixelColor = Pixel_GetR(SDL_GetPixel32(image, x1 + i, y1 + j));
+            Uint32 pixel = SDL_GetPixel32(image, x1 + i, y1 + j);
             if (pixelColor < 128) // cornercase idea : what if it's written white on black (block detection wouldn't work anyway)
             {
                 chr_image[i * height + j] = 1;
@@ -33,7 +34,7 @@ int* get_pixel_block(SDL_Surface* image, int x1, int y1, int x2, int y2)
             }
         }
     }
-
+    //test_sdl_neural(chr_image, width, height);
     return chr_image;
 }
 
@@ -73,14 +74,14 @@ char readLetter(NeuralNetwork* network, pixel_block caractere, SDL_Surface* imag
     int* chr_resized = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
         caractere.right_bottom.y - caractere.left_top.y);
 
-    test_sdl_neural(chr_resized);
+    //test_sdl_neural(chr_resized, Neural_Network_Entry_Size, Neural_Network_Entry_Size);
     for (size_t i = 0; i < network->inputNumber; i++)
     {
         network->activations->data[i] = chr_resized[i];
     }
 
     forwardProp(network);
-    printList((&network->activations->data[network->inputNumber + network->hidenNumber]), network->outputNumber);
+    //printList((&network->activations->data[network->inputNumber + network->hidenNumber]), network->outputNumber);
 
     double *output = &(network->activations->data[network->inputNumber + network->hidenNumber]);
     size_t maxI = 0;
@@ -98,10 +99,10 @@ char readLetter(NeuralNetwork* network, pixel_block caractere, SDL_Surface* imag
 
 void fullRead(NeuralNetwork* network, char* filename)
 {
-    SDL_Surface* image_temp = Image_Load(filename);
-    SDL_Surface* image = Image_Copy(image_temp);
 
-    struct text* arr = apply_segmentation_for_training(filename);
+    ocr_data data = apply_segmentation_for_training(filename);
+    struct text* arr = data.text_array;
+    SDL_Surface* image = data.sdl.image;
 
     for (size_t i = 0; i < arr->nb_block; i++)
     {
