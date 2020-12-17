@@ -10,7 +10,7 @@
 #include"BackProp.h"
 #include<string.h>
 #include "FileManagment.h"
-#include<err.h>
+#include "../useful/test_resize.h"
 
 
 #define Neural_Network_Entry_Size 32
@@ -169,6 +169,7 @@ NeuralNetwork* fullTrain(double v, size_t itteration, size_t hidenNumber, size_t
 
 int ** loadAllResized(char** fileNames, size_t lowerBound, size_t upperBound)
 {
+
     int** allResized = malloc(sizeof(int*) * (upperBound - lowerBound + 1) * 7);
     for (size_t i = 0; i < (upperBound - lowerBound + 1) * 7; i++)
     {
@@ -180,10 +181,13 @@ int ** loadAllResized(char** fileNames, size_t lowerBound, size_t upperBound)
         for (int j = 0; j < 7; j++)
         {
             char* filename = fileNames[i * 7 + j];
+            filename[21] = '\0';
 
-            SDL_Surface* image = Image_Load(filename);
+            ocr_data data = apply_segmentation_for_training(filename);
+            struct text* text = data.text_array;
+            SDL_Surface* image = data.sdl.image;
 
-            struct text* text = apply_segmentation_for_training(filename);
+
 
             pixel_block caractere = text->blocks[0].lines[0].chrs[0];
 
@@ -217,9 +221,11 @@ int testOnLetter(NeuralNetwork* network, int letter, int randPolice)
 
 
 
-    SDL_Surface* image = Image_Load(filename);
+    ocr_data data = apply_segmentation_for_training(filename);
+    struct text* text = data.text_array;
+    SDL_Surface* image = data.sdl.image;
 
-    struct text* text = apply_segmentation_for_training(filename);
+
 
     pixel_block caractere = text->blocks[0].lines[0].chrs[0];
 
@@ -228,7 +234,7 @@ int testOnLetter(NeuralNetwork* network, int letter, int randPolice)
 
     int* chr_resized = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
         caractere.right_bottom.y - caractere.left_top.y);
-
+    //test_sdl_neural(chr_resized, Neural_Network_Entry_Size, Neural_Network_Entry_Size);
     for (size_t i = 0; i < network->inputNumber; i++)
     {
         network->activations->data[i] = chr_resized[i];
@@ -273,7 +279,7 @@ void testAllLetter(NeuralNetwork* network, size_t lowerBound, size_t upperBound)
     {
         for(int police = 0; police < 7; police++)
         {
-            founds += testOnLetter(network, i, lowerBound, police);
+            founds += testOnLetter(network, i, police);
         }
     }
     
@@ -297,29 +303,34 @@ int main()
     size_t testLen = (size_t)(strtol(argv[4], NULL, 10));
     size_t lowerBound = (size_t)(strtol(argv[5], NULL, 10));
     */
-
+/*
     double v = 0.1;
-    size_t itteration = 5000;
+    size_t itteration = 10000;
     size_t hidenNumber = 26;
     size_t testLen = 26;
     size_t lowerBound = 65;
+    //char* filename = "../image/gay.png";
 
     size_t upperBound = lowerBound + testLen - 1;
 
     NeuralNetwork * trainedNetwork = fullTrain(v, itteration, hidenNumber, lowerBound, upperBound);
+*/
 
-    /*NeuralNetwork * trainedNetwork = readNetwork();
+    NeuralNetwork * trainedNetwork = readNetwork();
     if (trainedNetwork == NULL)
             printf("FEZN");
 
-    testAllLetter(trainedNetwork, lowerBound, upperBound);
-    printNetwork(trainedNetwork);
-
+    //testOnLetter(trainedNetwork, 71, 0);
+    //testAllLetter(trainedNetwork, lowerBound, upperBound);
+    //printNetwork(trainedNetwork);
+/*
     if (writeNetwork(trainedNetwork) == 1)
         printf("FAIL\n");
     //printNetwork(trainedNetwork);*/
 
+    char* filename = "data/text/bigcaps.bmp";
     fullRead(trainedNetwork, filename);
+
 
     return 0;
 }
