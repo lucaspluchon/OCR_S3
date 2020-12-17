@@ -37,12 +37,20 @@ file(GLOB src_seg character_detection/*.c)
 file(GLOB src_image image_preprocessing/*.c)
 file(GLOB src_useful useful/*.c)
 file(GLOB src_ui ui/*.c)
+file(GLOB src_spell spell_checker/*.c)
 
 add_executable(Main
                 main.c
                 )
 
-add_executable(Neural_Test ${src_network} ${src_type} ${src_seg} ${src_image} ${src_useful} ${src_ui})
+add_executable(Neural_Test
+                ${src_network}
+                ${src_type}
+                ${src_seg}
+                ${src_image}
+                ${src_useful}
+                ${src_ui}
+                ${src_spell})
 
 add_executable(GTK_Test
                 character_detection/block.c
@@ -61,8 +69,12 @@ add_executable(GTK_Test
                 useful/builtin.c
                 useful/test_resize.c
                 gtk_main.c
-        character_detection/segmentation.c type/data.h type/pixel.c character_detection/line_analyser.c
-        type/data.c)
+                character_detection/segmentation.c
+                type/data.h type/pixel.c
+                character_detection/line_analyser.c
+                type/data.c
+                spell_checker/spell_checker.c
+                )
 
 if (UNIX AND NOT APPLE)
     TARGET_LINK_LIBRARIES(GTK_Test ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${GTK3_LIBRARIES} -lm ${LIBS})
