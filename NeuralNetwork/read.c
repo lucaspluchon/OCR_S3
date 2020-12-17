@@ -6,8 +6,9 @@
 #include "NeuralNetworkTools.h"
 #include "ForwardProp.h"
 #include "../useful/test_resize.h"
+#include <err.h>
 
-#define Neural_Network_Entry_Size 32
+#define Neural_Network_Entry_Size 20
 
 
 int* get_pixel_block(SDL_Surface* image, int x1, int y1, int x2, int y2)
@@ -16,7 +17,8 @@ int* get_pixel_block(SDL_Surface* image, int x1, int y1, int x2, int y2)
     int height = y2 - y1;
 
     int* chr_image = malloc(width * height *sizeof(int));
-
+    if(chr_image == NULL)
+        errx(1, "Memory allocation failed");
 
     for (int i = 0; i < width; i++)
     {
@@ -42,6 +44,8 @@ int* get_pixel_block(SDL_Surface* image, int x1, int y1, int x2, int y2)
 int* resize(int* chr, int widthChr, int heightChr)
 {
     int* chr_resized = malloc(Neural_Network_Entry_Size * Neural_Network_Entry_Size * sizeof(int));
+    if(chr_resized == NULL)
+        errx(1, "Memory allocation failed");
 
     double newRatio = (double) ( widthChr > heightChr ? widthChr : heightChr ) / Neural_Network_Entry_Size;
 
@@ -62,7 +66,7 @@ int* resize(int* chr, int widthChr, int heightChr)
             }
         }
     }
-
+    //test_sdl_neural(chr_resized, 32, 32);
     return chr_resized;
 }
 
@@ -73,6 +77,7 @@ char readLetter(NeuralNetwork* network, pixel_block caractere, SDL_Surface* imag
 
     int* chr_resized = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
         caractere.right_bottom.y - caractere.left_top.y);
+
 
     //test_sdl_neural(chr_resized, Neural_Network_Entry_Size, Neural_Network_Entry_Size);
     for (size_t i = 0; i < network->inputNumber; i++)
@@ -93,7 +98,8 @@ char readLetter(NeuralNetwork* network, pixel_block caractere, SDL_Surface* imag
         }
         
     }
-
+    free(chr_image);
+    free(chr_resized);
     return (char)(network->lowerBound + maxI);
 }
 
@@ -131,7 +137,7 @@ void fullRead(NeuralNetwork* network, char* filename)
                 printf("%c", c);
                 
                 if (k != arr->blocks[i].lines[j].nb_char - 1 
-                    && arr->blocks[i].lines[j].chrs[k + 1].left_top.x - caractere.right_top.x > averageSpace * 4 / 3 )
+                    && arr->blocks[i].lines[j].chrs[k + 1].left_top.x - caractere.right_top.x > averageSpace * 3 / 2)
                 {
                     printf(" ");
                 }
@@ -141,6 +147,7 @@ void fullRead(NeuralNetwork* network, char* filename)
         }
         printf("\n\n\n");
     }
+
 }
 
 
