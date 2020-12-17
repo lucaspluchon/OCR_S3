@@ -11,7 +11,7 @@
 SDL_Surface* Detect_RLSA_Block(SDL_Surface* image, int n, ocr_data* data);
 
 
-text* apply_segmentation_for_training(char* path);
+ocr_data apply_segmentation_for_training(char* path);
 void apply_segmentation(ocr_data* data);
 void detect_text(ocr_data* data);
 void detect_verticalBlock(ocr_data* data, pixel_block block, bool detected_whitebefore, array_pos pos);

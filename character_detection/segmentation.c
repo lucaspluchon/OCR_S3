@@ -1,7 +1,7 @@
 #include "headers/segmentation.h"
 #include "../ui/ui.h"
 
-text* apply_segmentation_for_training(char* path)
+ocr_data apply_segmentation_for_training(char* path)
 {
     ocr_data data =
             {
@@ -19,13 +19,13 @@ text* apply_segmentation_for_training(char* path)
     Image_ApplyCorrection(&data);
     apply_segmentation(&data);
 
-    return data.text_array;
+    return data;
 }
 
 void apply_segmentation(ocr_data* data)
 {
 
-    data->sdl.image_rlsa = Detect_RLSA_Block(data->sdl.image,7, data->ui.progress_main);
+    data->sdl.image_rlsa = Detect_RLSA_Block(data->sdl.image,7, data);
     //Progress_Set(data->ui.progress_main,0.6,data);
     data->text_array = textArray_new();
     detect_text(data);
@@ -58,5 +58,5 @@ void detect_text(ocr_data* data)
     if (!data->training)
         char_draw(data);
 
-    Progress_Set(data->ui.progress_main,1,data);
+    //Progress_Set(data->ui.progress_main,1,data);
 }
