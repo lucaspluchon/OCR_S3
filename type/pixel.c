@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <err.h>
-#include <stdbool.h>
 #include "pixel.h"
 
 text* textArray_new()
@@ -40,21 +39,26 @@ void textArray_delete(text* txt)
     {
         for (int j = 0; j < txt->blocks[i].nb_line; j++)
         {
+            free(txt->blocks[i].lines[j].chrs);
+            txt->blocks[i].lines[j].chrs = NULL;
             txt->blocks[i].lines[j].nb_char = 0;
             txt->blocks[i].lines[j].capacity = 0;
             txt->blocks[i].lines[j].bottom_y = 0;
             txt->blocks[i].lines[j].top_y = 0;
-            free(txt->blocks[i].lines[j].chrs);
         }
+        free(txt->blocks[i].lines);
+        txt->blocks[i].lines = NULL;
         txt->blocks[i].nb_line = 0;
         txt->blocks[i].capacity = 0;
         txt->blocks[i].bottom_y = 0;
         txt->blocks[i].top_y = 0;
-        free(txt->blocks[i].lines);
     }
+    free(txt->blocks);
+    txt->blocks = NULL;
     txt->blocks = 0;
     txt->capacity = 0;
     free(txt);
+    txt = NULL;
 }
 
 
@@ -65,9 +69,11 @@ void block_add(text* arr)
     if (arr->nb_block > arr->capacity)
     {
         arr->capacity *= 2;
-        arr->blocks = realloc(arr->blocks,sizeof (text_block) * arr->capacity);
-        if (arr->blocks == NULL)
+        text_block* tmp = realloc(arr->blocks,sizeof (text_block) * arr->capacity);
+        if (tmp == NULL)
             errx(1,"Not enough memory to add a new block!");
+        else
+            arr->blocks = tmp;
     }
 
     if(arr->nb_block > 1)
@@ -95,9 +101,12 @@ void line_add(text_block * arr)
     if (arr->nb_line > arr->capacity)
     {
         arr->capacity *= 2;
-        arr->lines = realloc(arr->lines,sizeof (text_line) * arr->capacity);
-        if (arr->lines == NULL)
+        text_line* tmp = realloc(arr->lines,sizeof (text_line) * arr->capacity);
+        if (tmp == NULL)
             errx(1,"Not enough memory to add a new line!");
+        else
+            arr->lines = tmp;
+
     }
 
     if (arr->nb_line > 1)
@@ -117,9 +126,11 @@ void chr_add(text_line * arr)
     if (arr->nb_char > arr->capacity)
     {
         arr->capacity *= 2;
-        arr->chrs = realloc(arr->chrs,sizeof (pixel_block) * arr->capacity);
-        if (arr->chrs == NULL)
+        pixel_block* tmp = realloc(arr->chrs,sizeof (pixel_block) * arr->capacity);
+        if (tmp == NULL)
             errx(1,"Not enough memory to add a new char!");
+        else
+            arr->chrs = tmp;
     }
 }
 
@@ -160,3 +171,4 @@ void chr_merge_bottom(pixel_block* chr1, pixel_block* chr2)
     chr1->left_bottom.y = chr2->left_bottom.y;
     chr1->right_bottom.y = chr2->right_bottom.y;
 }
+

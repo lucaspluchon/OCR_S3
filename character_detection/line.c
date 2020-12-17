@@ -1,6 +1,6 @@
 #include "headers/segmentation.h"
 
-
+//Detect all the line a block of text
 void detect_line(ocr_data* data, pixel_block block, array_pos pos)
 {
     bool detected_black = false;

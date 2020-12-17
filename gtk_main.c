@@ -39,7 +39,10 @@ int main (int argc, char *argv[])
     gtk_main();
 
     // Exits.
-
+    Data_delete(&data);
+    SDL_QuitSubSystem(SDL_INIT_VIDEO);
+    SDL_Quit();
+    g_object_unref(builder);
 
     return 0;
 }

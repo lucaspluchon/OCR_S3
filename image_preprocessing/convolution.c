@@ -1,5 +1,6 @@
 #include "headers/preprocessing.h"
 
+//General function for convolution
 Uint32 Pixel_Convolution(SDL_Surface* image,int matrix[3][3], int x, int y, double factor)
 {
     Uint32 color = 0;
@@ -25,12 +26,13 @@ Uint32 Pixel_Convolution(SDL_Surface* image,int matrix[3][3], int x, int y, doub
     return Pixel_RGBto32(255,Pixel_absRGB(r),Pixel_absRGB(r),Pixel_absRGB(r));
 }
 
+//Apply convolution for each pixels
 void Image_Convolution(ocr_data* data, int matrix[3][3], double factor)
 {
-    Uint32 color = 0;
-
+    Uint32 color;
     SDL_Surface* image_temp = Image_Copy(data->sdl.image);
-    SDL_LockSurface(image_temp);
+
+    Image_AutoLock(image_temp);
 
     for (int x = 0; x < data->sdl.image->w; x++)
     {
@@ -41,6 +43,6 @@ void Image_Convolution(ocr_data* data, int matrix[3][3], double factor)
         }
     }
 
-    SDL_UnlockSurface(image_temp);
+    Image_AutoLock(image_temp);
     SDL_FreeSurface(image_temp);
 }

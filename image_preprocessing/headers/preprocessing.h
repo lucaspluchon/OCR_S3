@@ -33,5 +33,7 @@ void Image_Rotate(ocr_data* data, double angle);
 
 void Image_ApplyCorrection(ocr_data* data);
 
+void Image_AutoLock(SDL_Surface* image);
+
 
 #endif

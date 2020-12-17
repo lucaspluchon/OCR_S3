@@ -1,5 +1,11 @@
 #include "headers/segmentation.h"
 
+/*
+    -These function are useful to detect and correct the errors
+    in segmentation
+*/
+
+
 double size_averageFont(text* arr)
 {
     double total_size = 0;
@@ -54,6 +60,7 @@ double size_averageSpaceBlock(text* arr)
     return total_size / nb_space;
 }
 
+//Detect wrong line (like "é" or "â") due to error of segmentation
 void analyse_WrongLine(text_block* arr, double average_size, double average_space)
 {
     double chr2_size;
@@ -71,7 +78,8 @@ void analyse_WrongLine(text_block* arr, double average_size, double average_spac
             space_size = arr->lines[line].top_y - arr->lines[line - 1].bottom_y;
             if (space_size < average_space / 1.5 || average_space == - 1)
             {
-                for (size_t chr1_pos = 0; chr1_pos < arr->lines[line].nb_char && chr2_pos < arr->lines[line - 1].nb_char; chr1_pos++)
+                for (size_t chr1_pos = 0; chr1_pos < arr->lines[line].nb_char && chr2_pos < arr->lines[line - 1].nb_char;
+                chr1_pos++)
                 {
                     chr1 = &arr->lines[line].chrs[chr1_pos];
                     chr2 = &arr->lines[line - 1].chrs[chr2_pos];
@@ -96,7 +104,8 @@ void analyse_WrongLine(text_block* arr, double average_size, double average_spac
             space_size = arr->lines[line + 1].top_y - arr->lines[line].bottom_y;
             if (space_size < average_space / 1.5 || average_space == - 1)
             {
-                for (size_t chr1_pos = 0; chr1_pos < arr->lines[line].nb_char && chr2_pos < arr->lines[line + 1].nb_char; chr1_pos++)
+                for (size_t chr1_pos = 0; chr1_pos < arr->lines[line].nb_char && chr2_pos < arr->lines[line + 1].nb_char;
+                chr1_pos++)
                 {
                     chr1 = &arr->lines[line].chrs[chr1_pos];
                     chr2 = &arr->lines[line + 1].chrs[chr2_pos];
@@ -118,6 +127,7 @@ void analyse_WrongLine(text_block* arr, double average_size, double average_spac
     }
 }
 
+//Detect wrong block (like "é" or "â") due to error of segmentation
 void analyse_WrongBlock(text* arr, double average_size, double average_space)
 {
     text_block* block1;

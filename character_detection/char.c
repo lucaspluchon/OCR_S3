@@ -1,5 +1,6 @@
 #include "headers/segmentation.h"
 
+//Detect char position in a line
 void detect_char_vertical(ocr_data* data, pixel_block block, array_pos pos)
 {
     bool detected_black = false;
@@ -38,6 +39,7 @@ void detect_char_vertical(ocr_data* data, pixel_block block, array_pos pos)
     }
 }
 
+//Restrict the height of the detected char
 void detect_char_horizontal(ocr_data* data, pixel_block block, array_pos pos)
 {
     bool detected_black = false;
@@ -74,6 +76,7 @@ void detect_char_horizontal(ocr_data* data, pixel_block block, array_pos pos)
     chr_append(block_temp,pos.block,pos.line,data->text_array);
 }
 
+//Draw all the detected char on image_segmented
 void char_draw(ocr_data* data)
 {
     text* arr = data->text_array;

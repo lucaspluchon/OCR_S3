@@ -1,6 +1,13 @@
 #include "headers/preprocessing.h"
 
 
+/*
+ This file contains :
+    - Threshold for a pixel
+    - Otsu automatic binarization
+    - Image binarization
+*/
+
 Uint32 Pixel_Threshold(Uint32 color, int threshold)
 {
     int gray = Pixel_GetR(color);
@@ -9,6 +16,8 @@ Uint32 Pixel_Threshold(Uint32 color, int threshold)
     return Pixel_RGBto32(255,255,255,255);
 }
 
+
+//Useful function for Otsu Binarization
 int* Image_GetHistogram(SDL_Surface* image)
 {
     int *histogram = calloc(256, sizeof(int));
@@ -24,6 +33,7 @@ int* Image_GetHistogram(SDL_Surface* image)
     return histogram;
 }
 
+//Return the Thresold to apply on the image
 int Image_GetThreshold(SDL_Surface* image)
 {
     int threshold = 0;
@@ -63,16 +73,18 @@ int Image_GetThreshold(SDL_Surface* image)
         }
     }
 
+    free(histogram);
     return threshold;
 }
 
+//General image Threshold
 void Image_Threshold(ocr_data* data, int threshold)
 {
     Uint32 color;
     int threshold_temp = threshold;
 
     SDL_Surface* image_temp = Image_Copy(data->sdl.image);
-    SDL_LockSurface(image_temp);
+    Image_AutoLock(image_temp);
 
     if (threshold == -1)
         threshold_temp = Image_GetThreshold(data->sdl.image);
@@ -86,6 +98,6 @@ void Image_Threshold(ocr_data* data, int threshold)
             SDL_PutPixel32(data->sdl.image,x,y,color);
         }
     }
-    SDL_UnlockSurface(image_temp);
+    Image_AutoLock(image_temp);
     SDL_FreeSurface(image_temp);
 }

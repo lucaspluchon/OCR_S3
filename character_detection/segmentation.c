@@ -1,6 +1,11 @@
 #include "headers/segmentation.h"
 #include "../ui/ui.h"
 
+/*
+    - Head function for segmentation
+ */
+
+//Apply segmentation for train the neural network
 ocr_data apply_segmentation_for_training(char* path)
 {
     ocr_data data =
@@ -24,26 +29,23 @@ ocr_data apply_segmentation_for_training(char* path)
 
 void apply_segmentation(ocr_data* data)
 {
-
     data->sdl.image_rlsa = Detect_RLSA_Block(data->sdl.image,7, data);
-    //Progress_Set(data->ui.progress_main,0.6,data);
+    Progress_Set(data->ui.progress_main,0.6,data);
     data->text_array = textArray_new();
     detect_text(data);
 }
 
 void detect_text(ocr_data* data)
 {
-
-    SDL_Surface* image = data->sdl.image;
-
-    pixel_block pblock = {{0,0},{image->w-1,0},{0,image->h-1},
-                         {image->w-1,image->h-1}};
+    pixel_block pblock = {{0,0},{data->sdl.image->w-1,0},
+                          {0,data->sdl.image->h-1},
+                         {data->sdl.image->w-1,data->sdl.image->h-1}};
     array_pos pos = {0,0,0};
 
-    data->sdl.image_segmented = Image_Copy(image);
+    data->sdl.image_segmented = Image_Copy(data->sdl.image);
     detect_verticalBlock(data, pblock, true, pos);
 
-    //Progress_Set(data->ui.progress_main,0.8,data);
+    Progress_Set(data->ui.progress_main,0.8,data);
 
     double average_size = size_averageFont(data->text_array);
     double average_spaceLine = size_averageSpaceLine(data->text_array);
@@ -58,5 +60,5 @@ void detect_text(ocr_data* data)
     if (!data->training)
         char_draw(data);
 
-    //Progress_Set(data->ui.progress_main,1,data);
+    Progress_Set(data->ui.progress_main,1,data);
 }

@@ -11,7 +11,7 @@ Uint32 Pixel_Grayscale(Uint32 color)
 
 void Image_GrayScale(ocr_data* data)
 {
-    Uint32 color = 0;
+    Uint32 color;
     for (int x = 0; x < data->sdl.image->w; x++)
     {
         for (int y = 0; y < data->sdl.image->h; y++)

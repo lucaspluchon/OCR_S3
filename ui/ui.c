@@ -1,11 +1,17 @@
 #include <SDL2/SDL.h>
 #include "ui.h"
+#include "err.h"
 #include "../image_preprocessing/headers/preprocessing.h"
 #include "../character_detection/headers/segmentation.h"
 
+/*
+    All the useful function for GTK and signal functions
+*/
+
+
 void Progress_Set(GtkProgressBar* progressBar, double value, ocr_data* data)
 {
-    if(!data->training)
+    if(data != NULL && progressBar != NULL && !data->training)
     {
         gtk_progress_bar_set_fraction(progressBar,value);
         while (g_main_context_iteration(NULL, FALSE));
@@ -34,14 +40,18 @@ GdkPixbuf* pixbuf_from_sdl_at_scale(SDL_Surface* image_sdl,int w, int h)
         ratio = (double) w / image_sdl->w;
         new_w = image_sdl->w * ratio;
         new_h = image_sdl->h * ratio;
-        return gdk_pixbuf_scale_simple(image_pixbuf,(int) new_w, (int) new_h,GDK_INTERP_BILINEAR);
+        GdkPixbuf* image_res = gdk_pixbuf_scale_simple(image_pixbuf,(int) new_w, (int) new_h,GDK_INTERP_BILINEAR);
+        g_object_unref(image_pixbuf);
+        return image_res;
     }
     else if (image_sdl->h > h)
     {
         ratio = (double) h / image_sdl->h;
         new_w = image_sdl->w * ratio;
         new_h = image_sdl->h * ratio;
-        return gdk_pixbuf_scale_simple(image_pixbuf,(int) new_w, (int) new_h,GDK_INTERP_BILINEAR);
+        GdkPixbuf* image_res = gdk_pixbuf_scale_simple(image_pixbuf,(int) new_w, (int) new_h,GDK_INTERP_BILINEAR);
+        g_object_unref(image_pixbuf);
+        return image_res;
     }
 
    return image_pixbuf;
@@ -50,9 +60,6 @@ GdkPixbuf* pixbuf_from_sdl_at_scale(SDL_Surface* image_sdl,int w, int h)
 
 void apply_sdl_on_gtk(ocr_data* data)
 {
-    int w = gtk_widget_get_allocated_width(data->ui.image_viewer);
-    int h = gtk_widget_get_allocated_height(data->ui.image_viewer);
-
     data->sdl.image = Image_Copy(data->sdl.image_original);
     Image_ApplyCorrection(data);
     g_print("Image correction ended\n");
@@ -69,6 +76,9 @@ void on_image_choose(GtkFileChooserButton *widget, gpointer user_data)
     while (g_main_context_iteration(NULL, FALSE));
     gdk_window_set_cursor(gtk_widget_get_window(data->ui.window_main), data->ui.watch_cursor);
     data->file_path = gtk_file_chooser_get_filename((GtkFileChooser *) widget);
+    if (data->file_path == NULL)
+        errx(1,"Not enough memory");
+
 
     data->sdl.image_original = Image_Load(data->file_path);
     Progress_Set(data->ui.progress_main,0.1,data);
@@ -92,6 +102,8 @@ void on_image_choose(GtkFileChooserButton *widget, gpointer user_data)
 void on_quitAnalyse(GtkFileChooserButton *widget, gpointer user_data)
 {
     ocr_data* data = user_data;
+    if (strcmp(data->file_path,"") != 0)
+        g_free(data->file_path);
     data->file_path = "";
     gtk_widget_set_sensitive((GtkWidget *) data->ui.entry_threshold, FALSE);
     gtk_switch_set_active(data->ui.switch_auto,TRUE);
@@ -109,6 +121,8 @@ void on_quitAnalyse(GtkFileChooserButton *widget, gpointer user_data)
 void on_confirmAnalyse(GtkFileChooserButton *widget, gpointer user_data)
 {
     ocr_data* data = user_data;
+    if (strcmp(data->file_path,"") != 0)
+        g_free(data->file_path);
     data->file_path = "";
 
     gtk_widget_set_visible(data->ui.progress_neural, gtk_true());
@@ -171,6 +185,8 @@ void on_save(GtkFileChooserButton *widget, gpointer user_data)
     {
         char *path;
         path = gtk_file_chooser_get_filename(save_file_choose);
+        if (data->file_path == NULL)
+            errx(1,"Not enough memory");
         save_result(path,"Hello World !");
         g_free(path);
     }
@@ -244,6 +260,7 @@ ocr_data init_data(GtkBuilder* builder)
                             .watch_cursor = gdk_cursor_new(GDK_WATCH),
                             .progress_neural = progress_neural,
                             .button_save = button_save,
+                            .filter1 = gtk_file_filter_new(),
                         },
                     .file_path = "",
                     .sdl = {
@@ -253,5 +270,11 @@ ocr_data init_data(GtkBuilder* builder)
                     .training = 0,
             };
 
+    gtk_file_filter_set_name(data.ui.filter1, "Images");
+    gtk_file_filter_add_pattern(data.ui.filter1, "*.jpg");
+    gtk_file_filter_add_pattern(data.ui.filter1, "*.png");
+    gtk_file_filter_add_pattern(data.ui.filter1, "*.bmp");
+
+    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(data.ui.button_imageChoose), data.ui.filter1);
     return data;
 }

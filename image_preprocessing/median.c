@@ -1,5 +1,6 @@
 #include "headers/preprocessing.h"
 #include "../useful/builtin.h"
+#include "err.h"
 
 Uint32 Pixel_Median(SDL_Surface* image, int x, int y)
 {
@@ -17,6 +18,8 @@ Uint32 Pixel_Median(SDL_Surface* image, int x, int y)
     }
 
     int* L = malloc(size*sizeof(int));
+    if (L == NULL)
+        errx(1,"Not enough memory !");
     int k = 0;
     Uint32 color = 0;
     for (int i = x - 1; i <= x + 1; i++)
@@ -44,7 +47,7 @@ void Image_Median(ocr_data* data)
     Uint32 color = 0;
 
     SDL_Surface* image_temp = Image_Copy(data->sdl.image);
-    SDL_LockSurface(image_temp);
+    Image_AutoLock(image_temp);
 
     for (int x = 0; x < data->sdl.image->w; x++)
     {
@@ -55,6 +58,6 @@ void Image_Median(ocr_data* data)
         }
     }
 
-    SDL_UnlockSurface(image_temp);
+    Image_AutoLock(image_temp);
     SDL_FreeSurface(image_temp);
 }

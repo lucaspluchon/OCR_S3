@@ -2,6 +2,10 @@
 #include "../image_preprocessing/headers/preprocessing.h"
 #include "builtin.h"
 
+/*
+ * Test function for neural network
+ */
+
 void test_sdl_neural(int* matrix, int w, int h)
 {
     SDL_Init(SDL_INIT_VIDEO);
@@ -28,4 +32,6 @@ void test_sdl_neural(int* matrix, int w, int h)
     SDL_RenderPresent(renderer);
 
     PauseSDL();
+
+    SDL_FreeSurface(image);
 }

@@ -25,6 +25,7 @@ struct ui_data
     GdkCursor* watch_cursor;
     GtkProgressBar* progress_neural;
     GtkButton* button_save;
+    GtkFileFilter* filter1;
 };
 
 typedef struct sdl_data sdl_data;
@@ -47,5 +48,7 @@ struct ocr_data
     text* text_array;
     int training;
 };
+
+void Data_delete(ocr_data* data);
 
 #endif //OCR_S3_DATA_H

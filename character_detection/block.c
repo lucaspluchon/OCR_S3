@@ -1,5 +1,11 @@
 #include "headers/segmentation.h"
 
+/*
+    2 recursive function which detects block of text in the image
+    and call the function to detects lines.
+    Theses function need to be apply on a RLSA Image
+ */
+
 void detect_verticalBlock(ocr_data* data, pixel_block block, bool detected_whitebefore, array_pos pos)
 {
     bool detected_black = false;
