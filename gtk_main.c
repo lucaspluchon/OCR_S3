@@ -2,6 +2,7 @@
 #include <SDL2/SDL_image.h>
 #include "ui.h"
 #include "../useful/test_resize.h"
+#include "spell_checker/spell_checker.h"
 
 // Main function.
 int main (int argc, char *argv[])
@@ -31,6 +32,7 @@ int main (int argc, char *argv[])
                      &data);
     g_signal_connect(data.ui.button_copy, "pressed", G_CALLBACK(on_copy), &data);
     g_signal_connect(data.ui.switch_auto, "state-set", G_CALLBACK(on_switch_auto), &data);
+    g_signal_connect(data.ui.switch_spell, "state-set", G_CALLBACK(on_switch_spell), &data);
     g_signal_connect(data.ui.entry_threshold, "activate", G_CALLBACK(on_threshold), &data);
     g_signal_connect(data.ui.entry_angle, "activate", G_CALLBACK(on_rotate), &data);
     g_signal_connect(data.ui.button_save, "pressed", G_CALLBACK(on_save), &data);

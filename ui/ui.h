@@ -15,5 +15,6 @@ void on_threshold (GtkEntry *entry, gpointer  user_data);
 void on_rotate(GtkEntry *entry, gpointer  user_data);
 void Progress_Set(GtkProgressBar* progressBar, double value, ocr_data* data);
 void on_save(GtkFileChooserButton *widget, gpointer user_data);
+gboolean on_switch_spell(GtkSwitch *widget, gboolean state, gpointer user_data);
 
 #endif //OCR_S3_UI_H
