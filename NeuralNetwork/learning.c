@@ -136,16 +136,16 @@ void fullTrain(NeuralNetwork * network, double v, size_t itteration, size_t hide
     if (fileNames == NULL)
         errx(1, "Memory allocation failed");
 
-    char filenameBase[] = "data/letters/**/*.bmp";
+    char filenameBase[] = "data/letters/000/00.bmp";
 
     for (int i = 0; i < (upperBound - lowerBound + 1); i++)
     {
         for (int j = 0; j < 7; j++)
         {
-            fileNames[i * 7 + j] = malloc(22 * sizeof(char));
+            fileNames[i * 7 + j] = malloc(24 * sizeof(char));
             if (fileNames[i * 7 + j] == NULL)
                 errx(1, "Memory allocation failed");
-            for (size_t k = 0; k < 22; k++)
+            for (size_t k = 0; k < 24; k++)
             {
                 fileNames[i * 7 + j][k] = filenameBase[k];
             }
@@ -156,9 +156,28 @@ void fullTrain(NeuralNetwork * network, double v, size_t itteration, size_t hide
             char fileNum[25];
             sprintf(fileNum, "%i", (int)j);
 
-            fileNames[i * 7 + j][13] = dirNum[0];
-            fileNames[i * 7 + j][14] = dirNum[1];
-            fileNames[i * 7 + j][16] = fileNum[0];
+            if (lowerBound + i < 100)
+            {
+                fileNames[i * 7 + j][14] = dirNum[0];
+                fileNames[i * 7 + j][15] = dirNum[1];
+            }
+            else
+            {
+                fileNames[i * 7 + j][13] = dirNum[0];
+                fileNames[i * 7 + j][14] = dirNum[1];
+                fileNames[i * 7 + j][15] = dirNum[2];
+            }
+
+            if (j < 10)
+            { 
+                fileNames[i * 7 + j][18] = fileNum[0];
+            }
+            else
+            {
+                fileNames[i * 7 + j][17] = fileNum[0];
+                fileNames[i * 7 + j][18] = fileNum[1];
+            }
+            
         }
     }
 

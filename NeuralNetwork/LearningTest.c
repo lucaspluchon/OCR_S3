@@ -12,7 +12,7 @@
 
 int testOnLetter(NeuralNetwork* network, int letter, int randPolice)
 {
-    char filename[] = "data/letters/**/*.bmp";
+    char filename[] = "data/letters/000/00.bmp";
 
     char dirNum[25];
     sprintf(dirNum, "%i", letter);
@@ -22,9 +22,27 @@ int testOnLetter(NeuralNetwork* network, int letter, int randPolice)
     char fileNum[25];
     sprintf(fileNum, "%i", randPolice);
 
-    filename[13] = dirNum[0];
-    filename[14] = dirNum[1];
-    filename[16] = fileNum[0];
+    if (lowerBound + i < 100)
+            {
+                filename[14] = dirNum[0];
+                filename[15] = dirNum[1];
+            }
+            else
+            {
+                filename[13] = dirNum[0];
+                filename[14] = dirNum[1];
+                filename[15] = dirNum[2];
+            }
+
+            if (j < 10)
+            { 
+                filename[18] = fileNum[0];
+            }
+            else
+            {
+                filename[17] = fileNum[0];
+                filename[18] = fileNum[1];
+            }
 
 
 
