@@ -111,13 +111,10 @@ void fullRead(NeuralNetwork* network, char* filename)
             for (size_t k = 0; k < arr->blocks[i].lines[j].nb_char - 1; k++)
             {
                 pixel_block caractere = arr->blocks[i].lines[j].chrs[k];
-                if (k != arr->blocks[i].lines[j].nb_char - 1)
-                {
-                    sumSpace += arr->blocks[i].lines[j].chrs[k + 1].left_top.x - caractere.right_top.x;
-                }
+                sumSpace += arr->blocks[i].lines[j].chrs[k + 1].left_top.x - caractere.right_top.x;
             }
 
-            int averageSpace = sumSpace / arr->blocks[i].lines[j].nb_char;
+            int averageSpace = sumSpace / arr->blocks[i].lines[j].nb_char -1;
 
             for (size_t k = 0; k < arr->blocks[i].lines[j].nb_char; k++)
             {
