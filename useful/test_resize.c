@@ -2,16 +2,16 @@
 #include "../image_preprocessing/headers/preprocessing.h"
 #include "builtin.h"
 
-void test_sdl_neural(int* matrix)
+void test_sdl_neural(int* matrix, int w, int h)
 {
     SDL_Init(SDL_INIT_VIDEO);
-    SDL_Surface* image = Image_Generate(32,32);
+    SDL_Surface* image = Image_Generate(w,h);
 
-    for (int i = 0; i < 32; i++)
+    for (int i = 0; i < w; i++)
     {
-        for (int j = 0; j < 32; j++)
+        for (int j = 0; j < h; j++)
         {
-            if (matrix[i * 32 + j] == 1)
+            if (matrix[i * h + j])
             {
                 SDL_PutPixel32(image,i,j,Pixel_RGBto32(255,0,0,0));
             }
