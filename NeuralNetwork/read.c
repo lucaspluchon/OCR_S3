@@ -3,12 +3,12 @@
 #include <SDL2/SDL.h>
 #include"../image_preprocessing/headers/preprocessing.h"
 #include"../character_detection/headers/segmentation.h"
-#include "NeuralNetworkTools.h"
-#include "ForwardProp.h"
+#include "NeuralNetwork/headers/NeuralNetworkTools.h"
+#include "NeuralNetwork/headers/ForwardProp.h"
 #include "../useful/test_resize.h"
 #include <err.h>
 
-#define Neural_Network_Entry_Size 20
+
 
 
 int* get_pixel_block(SDL_Surface* image, int x1, int y1, int x2, int y2)
@@ -69,7 +69,7 @@ int* resize(int* chr, int widthChr, int heightChr)
             }
         }
     }
-    //test_sdl_neural(chr_resized, 32, 32);
+    //test_sdl_neural(chr_resized, Neural_Network_Entry_Size, Neural_Network_Entry_Size);
     return chr_resized;
 }
 

@@ -3,7 +3,7 @@
 #include<stdio.h>
 #include<time.h>
 #include<err.h>
-#include"NeuralNetworkTools.h"
+#include"NeuralNetwork/headers/NeuralNetworkTools.h"
 
 double sigmoideDerivate(double x)
 {

@@ -1,0 +1,95 @@
+#include<stdlib.h>
+#include<stdio.h>
+#include <SDL2/SDL.h>
+#include "../type/pixel.h"
+#include"../image_preprocessing/headers/preprocessing.h"
+#include"../character_detection/headers/segmentation.h"
+#include "NeuralNetwork/headers/read.h"
+#include "NeuralNetwork/headers/NeuralNetworkTools.h"
+#include"NeuralNetwork/headers/ForwardProp.h"
+#include<string.h>
+
+
+int testOnLetter(NeuralNetwork* network, int letter, int randPolice)
+{
+    char filename[] = "data/letters/**/*.bmp";
+
+    char dirNum[25];
+    sprintf(dirNum, "%i", letter);
+
+    //int randPolice = (int)((randd() + 1 ) * 7 / 2);
+    //int randPolice = 0;
+    char fileNum[25];
+    sprintf(fileNum, "%i", randPolice);
+
+    filename[13] = dirNum[0];
+    filename[14] = dirNum[1];
+    filename[16] = fileNum[0];
+
+
+
+    ocr_data data = apply_segmentation_for_training(filename);
+    struct text* text = data.text_array;
+    SDL_Surface* image = data.sdl.image;
+
+
+
+    pixel_block caractere = text->blocks[0].lines[0].chrs[0];
+
+    int* chr_image = get_pixel_block(image, caractere.left_top.x, caractere.left_top.y,
+                                     caractere.right_bottom.x, caractere.right_bottom.y);
+
+    int* chr_resized = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
+                              caractere.right_bottom.y - caractere.left_top.y);
+    //test_sdl_neural(chr_resized, Neural_Network_Entry_Size, Neural_Network_Entry_Size);
+    for (size_t i = 0; i < network->inputNumber; i++)
+    {
+        network->activations->data[i] = chr_resized[i];
+    }
+
+    forwardProp(network);
+
+    double *output = &(network->activations->data[network->inputNumber + network->hidenNumber]);
+    size_t maxI = 0;
+    for (size_t i = 0; i < network->outputNumber; i++)
+    {
+        if (output[i] > output[maxI])
+        {
+            maxI = i;
+        }
+
+    }
+    int found = letter == (int)(network->lowerBound) + maxI;
+
+    printf("%c - The network was given a %c and guessed it was a %c (police %i)", letter, letter, (char)((int)(network->lowerBound) + maxI), randPolice);
+    if (found)
+    {
+        printf("            (guessed right)");
+    }
+
+    printf("\nthe outputs were :");
+    printList(output, network->outputNumber);
+    printf("\n\n");
+    free(chr_image);
+    free(chr_resized);
+
+    return found;
+
+}
+
+void testAllLetter(NeuralNetwork* network, size_t lowerBound, size_t upperBound)
+{
+    printf("testOnAllLetter :\n\n");
+
+    int founds = 0;
+
+    for (size_t i = lowerBound; i <= upperBound; i++)
+    {
+        for(int police = 0; police < 7; police++)
+        {
+            founds += testOnLetter(network, i, police);
+        }
+    }
+
+    printf("\nHe guessed %i / %i right... Not bad !", founds, (int)(upperBound - lowerBound + 1) * 7);
+}

@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<err.h>
 
-#include"NeuralNetworkTools.h"
+#include"NeuralNetwork/headers/NeuralNetworkTools.h"
 
 
 int writeData(NeuralNetwork* data)

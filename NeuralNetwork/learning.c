@@ -5,16 +5,16 @@
 #include "../type/pixel.h"
 #include"../image_preprocessing/headers/preprocessing.h"
 #include"../character_detection/headers/segmentation.h"
-#include "read.h"
-#include "NeuralNetworkTools.h"
-#include"ForwardProp.h"
-#include"BackProp.h"
+#include "NeuralNetwork/headers/read.h"
+#include "NeuralNetwork/headers/NeuralNetworkTools.h"
+#include"NeuralNetwork/headers/ForwardProp.h"
+#include"NeuralNetwork/headers/BackProp.h"
 #include<string.h>
-#include "FileManagment.h"
+#include "NeuralNetwork/headers/FileManagment.h"
 #include "../useful/test_resize.h"
 
 
-#define Neural_Network_Entry_Size 20
+
 
 int ** loadAllResized(char** fileNames, size_t lowerBound, size_t upperBound);
 
@@ -223,150 +223,7 @@ int ** loadAllResized(char** fileNames, size_t lowerBound, size_t upperBound)
 }
 
 
-int testOnLetter(NeuralNetwork* network, int letter, int randPolice)
-{
-    char filename[] = "data/letters/**/*.bmp";
-
-    char dirNum[25];
-    sprintf(dirNum, "%i", letter);
-
-    //int randPolice = (int)((randd() + 1 ) * 7 / 2);
-    //int randPolice = 0;
-    char fileNum[25];
-    sprintf(fileNum, "%i", randPolice);
-
-    filename[13] = dirNum[0];
-    filename[14] = dirNum[1];
-    filename[16] = fileNum[0];
 
 
 
-    ocr_data data = apply_segmentation_for_training(filename);
-    struct text* text = data.text_array;
-    SDL_Surface* image = data.sdl.image;
-
-
-
-    pixel_block caractere = text->blocks[0].lines[0].chrs[0];
-
-    int* chr_image = get_pixel_block(image, caractere.left_top.x, caractere.left_top.y,
-        caractere.right_bottom.x, caractere.right_bottom.y);
-
-    int* chr_resized = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
-        caractere.right_bottom.y - caractere.left_top.y);
-    //test_sdl_neural(chr_resized, Neural_Network_Entry_Size, Neural_Network_Entry_Size);
-    for (size_t i = 0; i < network->inputNumber; i++)
-    {
-        network->activations->data[i] = chr_resized[i];
-    }
-
-    forwardProp(network);
-
-    double *output = &(network->activations->data[network->inputNumber + network->hidenNumber]);
-    size_t maxI = 0;
-    for (size_t i = 0; i < network->outputNumber; i++)
-    {
-        if (output[i] > output[maxI])
-        {
-            maxI = i;
-        }
-        
-    }
-    int found = letter == (int)(network->lowerBound) + maxI;
-
-    printf("%c - The network was given a %c and guessed it was a %c (police %i)", letter, letter, (char)((int)(network->lowerBound) + maxI), randPolice);
-    if (found)
-    {
-        printf("            (guessed right)");
-    }
-    
-    printf("\nthe outputs were :");
-    printList(output, network->outputNumber);
-    printf("\n\n");
-    free(chr_image);
-    free(chr_resized);
-
-    return found;
-
-}
-
-void testAllLetter(NeuralNetwork* network, size_t lowerBound, size_t upperBound)
-{
-    printf("testOnAllLetter :\n\n");
-
-    int founds = 0;
-
-    for (size_t i = lowerBound; i <= upperBound; i++)
-    {
-        for(int police = 0; police < 7; police++)
-        {
-            founds += testOnLetter(network, i, police);
-        }
-    }
-    
-    printf("\nHe guessed %i / %i right... Not bad !", founds, (int)(upperBound - lowerBound + 1) * 7);
-}
-
-
-void trainSaveTest()
-{
-    double v = 0.05;
-    size_t itteration = 1000;
-    size_t gen = 20;
-    size_t hidenNumber = 20;
-    size_t testLen = 26;
-    size_t lowerBound = 65;
-
-    size_t upperBound = lowerBound + testLen - 1;
-
-    NeuralNetwork* trainedNetwork = GenerateNetwork(Neural_Network_Entry_Size * Neural_Network_Entry_Size,
-                                             hidenNumber, upperBound - lowerBound + 1, lowerBound);
-    printf("Starting learning...\n");
-    for(size_t i = 0; i < gen; i++)
-    {
-        fullTrain(trainedNetwork, v, itteration, hidenNumber, lowerBound, upperBound);
-        if (writeNetwork(trainedNetwork) == 1)
-            printf("FAIL\n");
-        printf("Leanred %li / %li, (%.2f %%)\n", (i + 1) * itteration, gen * itteration, ((double)(i) + 1) * 100 / (double)(gen));
-    }
-
-    printf("Learning done\n");
-    testAllLetter(trainedNetwork, lowerBound, upperBound);
-    freeNetwork(trainedNetwork);
-
-}
-
-void reloadTest()
-{
-    NeuralNetwork * trainedNetwork = readNetwork();
-    if (trainedNetwork == NULL)
-            printf("No Network Saved");
-
-    char* filename = "../image/test42.png";
-    fullRead(trainedNetwork, filename);
-    freeNetwork(trainedNetwork);
-}
-
-
-int main(int argc, char** argv)
-{
-
-    /*
-    if (argc != 6)
-    {
-        printf("Usage : \nmain double v  size_t itteration  size_t hidenNumber  size_t lowerBound  size_t upperBound");
-        return 1;
-    }
-
-    double v = (double)(strtol(argv[1], NULL, 10));
-    size_t itteration = (size_t)(strtol(argv[2], NULL, 10));
-    size_t hidenNumber = (size_t)(strtol(argv[3], NULL, 10));
-    size_t testLen = (size_t)(strtol(argv[4], NULL, 10));
-    size_t lowerBound = (size_t)(strtol(argv[5], NULL, 10));
-    */
-    trainSaveTest();
-    reloadTest();
-
-    return 0;
-}
 

@@ -1,7 +1,7 @@
 #include<err.h>
 #include<stdio.h>
 
-#include"NeuralNetworkTools.h"
+#include"NeuralNetwork/headers/NeuralNetworkTools.h"
 
 
 double delta(double error, double activation, double v)

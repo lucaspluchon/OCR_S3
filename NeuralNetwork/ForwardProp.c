@@ -2,7 +2,7 @@
 #include<stdio.h>
 #include<err.h>
 
-#include"NeuralNetworkTools.h"
+#include"NeuralNetwork/headers/NeuralNetworkTools.h"
 
 
 void updateNode(NeuralNetwork* network, size_t nodeIndex)
