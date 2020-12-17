@@ -1,5 +1,6 @@
 #include<stdlib.h>
 #include<stdio.h>
+#include<time.h>
 
 #include "NeuralNetwork/headers/NeuralNetworkTools.h"
 #include "NeuralNetwork/headers/learning.h"
@@ -10,8 +11,8 @@
 void trainSaveTest()
 {
     double v = 0.05;
-    size_t itteration = 1000;
-    size_t gen = 50;
+    size_t itteration = 10000;
+    size_t gen = 15;
     size_t hidenNumber = 35;
     size_t testLen = 26;
     size_t lowerBound = 65;
@@ -23,10 +24,15 @@ void trainSaveTest()
     printf("Starting learning...\n");
     for(size_t i = 0; i < gen; i++)
     {
+        time_t start;
+        time_t end;
+        time(&start);
         fullTrain(trainedNetwork, v, itteration, hidenNumber, lowerBound, upperBound);
         if (writeNetwork(trainedNetwork) == 1)
             printf("FAIL\n");
-        printf("Leanred %li / %li, (%.2f %%)\n", (i + 1) * itteration, gen * itteration, ((double)(i) + 1) * 100 / (double)(gen));
+        time(&end);
+        printf("Leanred %li / %li, (%.2f %%)------(in %ld sec   %ld sec remaining)\n", (i + 1) * itteration,
+               gen * itteration, ((double)(i) + 1) * 100 / (double)(gen), end - start, (gen - i - 1) * (end - start));
     }
 
     printf("Learning done\n");
@@ -41,7 +47,7 @@ void reloadTest()
     if (trainedNetwork == NULL)
         printf("No Network Saved");
 
-    char* filename = "../image/test42.png";
+    char* filename = "../image/test3.bmp";
     fullRead(trainedNetwork, filename);
     freeNetwork(trainedNetwork);
 }

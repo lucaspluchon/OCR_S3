@@ -4,6 +4,7 @@
 #define NEURAL_NETWORK_TOOLS_H
 
 #define Neural_Network_Entry_Size 20
+#define Number_Police 12
 
 typedef struct ListSet ListSet;
 struct ListSet

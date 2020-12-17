@@ -12,7 +12,7 @@
 
 int testOnLetter(NeuralNetwork* network, int letter, int randPolice)
 {
-    char filename[] = "data/letters/000/00.bmp";
+    char filename[] = "data/letters/000/00.png";
 
     char dirNum[25];
     sprintf(dirNum, "%i", letter);
@@ -22,27 +22,27 @@ int testOnLetter(NeuralNetwork* network, int letter, int randPolice)
     char fileNum[25];
     sprintf(fileNum, "%i", randPolice);
 
-    if (lowerBound + i < 100)
-            {
-                filename[14] = dirNum[0];
-                filename[15] = dirNum[1];
-            }
-            else
-            {
-                filename[13] = dirNum[0];
-                filename[14] = dirNum[1];
-                filename[15] = dirNum[2];
-            }
+    if (letter < 100)
+    {
+        filename[14] = dirNum[0];
+        filename[15] = dirNum[1];
+    }
+    else
+    {
+        filename[13] = dirNum[0];
+        filename[14] = dirNum[1];
+        filename[15] = dirNum[2];
+    }
 
-            if (j < 10)
-            { 
-                filename[18] = fileNum[0];
-            }
-            else
-            {
-                filename[17] = fileNum[0];
-                filename[18] = fileNum[1];
-            }
+    if (randPolice < 10)
+    {
+        filename[18] = fileNum[0];
+    }
+    else
+    {
+        filename[17] = fileNum[0];
+        filename[18] = fileNum[1];
+    }
 
 
 
@@ -103,11 +103,11 @@ void testAllLetter(NeuralNetwork* network, size_t lowerBound, size_t upperBound)
 
     for (size_t i = lowerBound; i <= upperBound; i++)
     {
-        for(int police = 0; police < 7; police++)
+        for(int police = 0; police < Number_Police; police++)
         {
             founds += testOnLetter(network, i, police);
         }
     }
 
-    printf("\nHe guessed %i / %i right... Not bad !", founds, (int)(upperBound - lowerBound + 1) * 7);
+    printf("\nHe guessed %i / %i right... Not bad !", founds, (int)(upperBound - lowerBound + 1) * Number_Police);
 }

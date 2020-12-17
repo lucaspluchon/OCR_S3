@@ -79,9 +79,9 @@ void learn(NeuralNetwork* network, double v, int** allResized)
     for (int i = 0; i < network->outputNumber; i++)
     {
 
-        int randPolice = (int)((randd() + 1 ) * 7 / 2);
+        int randPolice = (int)((randd() + 1 ) * Number_Police / 2);
 
-        int* chr_resized = allResized[i * 7 + randPolice];
+        int* chr_resized = allResized[i * Number_Police + randPolice];
 
         for (size_t k = 0; k < network->outputNumber; k++)
         {
@@ -132,22 +132,22 @@ void fullTrain(NeuralNetwork * network, double v, size_t itteration, size_t hide
 {
 
 
-    char** fileNames = malloc((upperBound - lowerBound + 1) * 7 * sizeof(char*));
+    char** fileNames = malloc((upperBound - lowerBound + 1) * Number_Police * sizeof(char*));
     if (fileNames == NULL)
         errx(1, "Memory allocation failed");
 
-    char filenameBase[] = "data/letters/000/00.bmp";
+    char filenameBase[] = "data/letters/000/00.png";
 
     for (int i = 0; i < (upperBound - lowerBound + 1); i++)
     {
-        for (int j = 0; j < 7; j++)
+        for (int j = 0; j < Number_Police; j++)
         {
-            fileNames[i * 7 + j] = malloc(24 * sizeof(char));
-            if (fileNames[i * 7 + j] == NULL)
+            fileNames[i * Number_Police + j] = malloc(24 * sizeof(char));
+            if (fileNames[i * Number_Police + j] == NULL)
                 errx(1, "Memory allocation failed");
             for (size_t k = 0; k < 24; k++)
             {
-                fileNames[i * 7 + j][k] = filenameBase[k];
+                fileNames[i * Number_Police + j][k] = filenameBase[k];
             }
             char dirNum[25];
             sprintf(dirNum, "%i", (int)(i + lowerBound));
@@ -158,24 +158,24 @@ void fullTrain(NeuralNetwork * network, double v, size_t itteration, size_t hide
 
             if (lowerBound + i < 100)
             {
-                fileNames[i * 7 + j][14] = dirNum[0];
-                fileNames[i * 7 + j][15] = dirNum[1];
+                fileNames[i * Number_Police + j][14] = dirNum[0];
+                fileNames[i * Number_Police + j][15] = dirNum[1];
             }
             else
             {
-                fileNames[i * 7 + j][13] = dirNum[0];
-                fileNames[i * 7 + j][14] = dirNum[1];
-                fileNames[i * 7 + j][15] = dirNum[2];
+                fileNames[i * Number_Police + j][13] = dirNum[0];
+                fileNames[i * Number_Police + j][14] = dirNum[1];
+                fileNames[i * Number_Police + j][15] = dirNum[2];
             }
 
             if (j < 10)
             { 
-                fileNames[i * 7 + j][18] = fileNum[0];
+                fileNames[i * Number_Police + j][18] = fileNum[0];
             }
             else
             {
-                fileNames[i * 7 + j][17] = fileNum[0];
-                fileNames[i * 7 + j][18] = fileNum[1];
+                fileNames[i * Number_Police + j][17] = fileNum[0];
+                fileNames[i * Number_Police + j][18] = fileNum[1];
             }
             
         }
@@ -190,7 +190,7 @@ void fullTrain(NeuralNetwork * network, double v, size_t itteration, size_t hide
     {
         learn(network, v, allResized);
     }
-    for(size_t k; k < (upperBound - lowerBound + 1) * 7; k++)
+    for(size_t k; k < (upperBound - lowerBound + 1) * Number_Police; k++)
     {
         free(fileNames[k]);
         free(allResized[k]);
@@ -204,10 +204,10 @@ void fullTrain(NeuralNetwork * network, double v, size_t itteration, size_t hide
 int ** loadAllResized(char** fileNames, size_t lowerBound, size_t upperBound)
 {
 
-    int** allResized = malloc(sizeof(int*) * (upperBound - lowerBound + 1) * 7);
+    int** allResized = malloc(sizeof(int*) * (upperBound - lowerBound + 1) * Number_Police);
     if (allResized == NULL)
         errx(1, "Memory allocation failed");
-    for (size_t i = 0; i < (upperBound - lowerBound + 1) * 7; i++)
+    for (size_t i = 0; i < (upperBound - lowerBound + 1) * Number_Police; i++)
     {
         allResized[i] = malloc(sizeof(int) * Neural_Network_Entry_Size * Neural_Network_Entry_Size);
         if (allResized[i] == NULL)
@@ -216,9 +216,9 @@ int ** loadAllResized(char** fileNames, size_t lowerBound, size_t upperBound)
 
     for (int i = 0; i < (upperBound - lowerBound + 1); i++)
     {
-        for (int j = 0; j < 7; j++)
+        for (int j = 0; j < Number_Police; j++)
         {
-            char* filename = fileNames[i * 7 + j];
+            char* filename = fileNames[i * Number_Police + j];
 //            filename[21] = '\0';
 
             ocr_data data = apply_segmentation_for_training(filename);
@@ -232,7 +232,7 @@ int ** loadAllResized(char** fileNames, size_t lowerBound, size_t upperBound)
             int* chr_image = get_pixel_block(image, caractere.left_top.x, caractere.left_top.y,
                 caractere.right_bottom.x, caractere.right_bottom.y);
 
-            allResized[i * 7 + j] = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
+            allResized[i * Number_Police + j] = resize(chr_image, caractere.right_bottom.x - caractere.left_top.x,
                 caractere.right_bottom.y - caractere.left_top.y);
             free(chr_image);
         }

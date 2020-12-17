@@ -22,7 +22,7 @@ int main(int argc, char** argv)
     size_t testLen = (size_t)(strtol(argv[4], NULL, 10));
     size_t lowerBound = (size_t)(strtol(argv[5], NULL, 10));
     */
-    trainSaveTest();
+    //trainSaveTest();
     reloadTest();
 
     return 0;
