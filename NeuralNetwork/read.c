@@ -48,8 +48,8 @@ int* resize(int* chr, int widthChr, int heightChr)
         errx(1, "Memory allocation failed");
 
     //double newRatio = (double) ( widthChr > heightChr ? widthChr : heightChr ) / Neural_Network_Entry_Size;
-    double newRatioX = (double) (widthChr / Neural_Network_Entry_Size);
-    double newRatioY = (double) (heightChr / Neural_Network_Entry_Size);
+    double newRatioX = (double) (widthChr) / Neural_Network_Entry_Size;
+    double newRatioY = (double) (heightChr) / Neural_Network_Entry_Size;
     
 
     for (int i = 0; i < Neural_Network_Entry_Size; i++)
