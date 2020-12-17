@@ -303,8 +303,8 @@ int main()
     size_t testLen = (size_t)(strtol(argv[4], NULL, 10));
     size_t lowerBound = (size_t)(strtol(argv[5], NULL, 10));
     */
-/*
-    double v = 0.1;
+
+    double v = 0.06;
     size_t itteration = 10000;
     size_t hidenNumber = 26;
     size_t testLen = 26;
@@ -314,22 +314,22 @@ int main()
     size_t upperBound = lowerBound + testLen - 1;
 
     NeuralNetwork * trainedNetwork = fullTrain(v, itteration, hidenNumber, lowerBound, upperBound);
-*/
 
-    NeuralNetwork * trainedNetwork = readNetwork();
+
+    /*NeuralNetwork * trainedNetwork = readNetwork();
     if (trainedNetwork == NULL)
             printf("FEZN");
-
+*/
     //testOnLetter(trainedNetwork, 71, 0);
-    //testAllLetter(trainedNetwork, lowerBound, upperBound);
+    testAllLetter(trainedNetwork, lowerBound, upperBound);
     //printNetwork(trainedNetwork);
-/*
+
     if (writeNetwork(trainedNetwork) == 1)
         printf("FAIL\n");
-    //printNetwork(trainedNetwork);*/
+    //printNetwork(trainedNetwork);
 
-    char* filename = "data/text/bigcaps.bmp";
-    fullRead(trainedNetwork, filename);
+    //char* filename = "../image/testfdp.png";
+    //fullRead(trainedNetwork, filename);
 
 
     return 0;
