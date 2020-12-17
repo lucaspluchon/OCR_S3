@@ -287,6 +287,34 @@ void testAllLetter(NeuralNetwork* network, size_t lowerBound, size_t upperBound)
 }
 
 
+void trainSaveTest()
+{
+    double v = 0.06;
+    size_t itteration = 10000;
+    size_t hidenNumber = 30;
+    size_t testLen = 26;
+    size_t lowerBound = 65;
+
+    size_t upperBound = lowerBound + testLen - 1;
+
+    NeuralNetwork * trainedNetwork = fullTrain(v, itteration, hidenNumber, lowerBound, upperBound);
+
+    testAllLetter(trainedNetwork, lowerBound, upperBound);
+
+    if (writeNetwork(trainedNetwork) == 1)
+        printf("FAIL\n");
+}
+
+void reloadTest()
+{
+    NeuralNetwork * trainedNetwork = readNetwork();
+    if (trainedNetwork == NULL)
+            printf("No Network Saved");
+
+    char* filename = "../image/testfdp.png";
+    fullRead(trainedNetwork, filename);
+}
+
 
 int main()
 {
@@ -304,33 +332,7 @@ int main()
     size_t lowerBound = (size_t)(strtol(argv[5], NULL, 10));
     */
 
-    double v = 0.06;
-    size_t itteration = 10000;
-    size_t hidenNumber = 26;
-    size_t testLen = 26;
-    size_t lowerBound = 65;
-    //char* filename = "../image/gay.png";
-
-    size_t upperBound = lowerBound + testLen - 1;
-
-    NeuralNetwork * trainedNetwork = fullTrain(v, itteration, hidenNumber, lowerBound, upperBound);
-
-
-    /*NeuralNetwork * trainedNetwork = readNetwork();
-    if (trainedNetwork == NULL)
-            printf("FEZN");
-*/
-    //testOnLetter(trainedNetwork, 71, 0);
-    testAllLetter(trainedNetwork, lowerBound, upperBound);
-    //printNetwork(trainedNetwork);
-
-    if (writeNetwork(trainedNetwork) == 1)
-        printf("FAIL\n");
-    //printNetwork(trainedNetwork);
-
-    //char* filename = "../image/testfdp.png";
-    //fullRead(trainedNetwork, filename);
-
+    reloadTest();
 
     return 0;
 }
