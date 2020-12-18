@@ -51,7 +51,7 @@ void string_append(ocr_string* string_vector, char c)
     string_vector->size++;
     if (string_vector->size >= string_vector->capacity)
         string_doubleCapacity(string_vector);
-    string_vector->string[string_vector->size] = c;
+    string_vector->string[string_vector->size - 1] = c;
 }
 
 void string_free(ocr_string* string_vector)
