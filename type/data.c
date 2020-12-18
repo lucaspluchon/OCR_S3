@@ -51,3 +51,11 @@ void string_append(ocr_string* string_vector, char c)
         string_doubleCapacity(string_vector);
     string_vector->string[string_vector->size] = c;
 }
+
+void string_free(ocr_string* string_vector)
+{
+    string_vector->size = 0;
+    string_vector->capacity = 0;
+    free(string_vector->string);
+    string_vector->string = NULL;
+}
