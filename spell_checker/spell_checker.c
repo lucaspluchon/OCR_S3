@@ -109,8 +109,15 @@ char* correct_word(char* word)
     }
 
     free(line);
-    free(word);
     fclose(database);
+
+    if (min_levenshtein == size_word || min_levenshtein >= 5)
+    {
+        free(corrected_word);
+        return word;
+    }
+
+    free(word);
     return corrected_word;
 }
 
