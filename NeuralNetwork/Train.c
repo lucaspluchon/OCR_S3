@@ -7,6 +7,7 @@
 #include "NeuralNetwork/headers/FileManagment.h"
 #include "NeuralNetwork/headers/read.h"
 #include "NeuralNetwork/headers/LearningTest.h"
+#include "../character_detection/headers/segmentation.h"
 
 void trainSaveTest()
 {
@@ -68,6 +69,7 @@ void reloadTest()
         printf("No Network Saved");
 
     char* filename = "../image/article.bmp";
-    fullRead(trainedNetwork, filename);
+    ocr_data data = apply_segmentation_for_training(filename);
+    fullRead(&data);
     freeNetwork(trainedNetwork);
 }

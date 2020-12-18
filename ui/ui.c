@@ -3,6 +3,8 @@
 #include "err.h"
 #include "../image_preprocessing/headers/preprocessing.h"
 #include "../character_detection/headers/segmentation.h"
+#include "../NeuralNetwork/headers/read.h"
+#include "../NeuralNetwork/headers/FileManagment.h"
 
 /*
     All the useful function for GTK and signal functions
@@ -121,15 +123,24 @@ void on_quitAnalyse(GtkFileChooserButton *widget, gpointer user_data)
 void on_confirmAnalyse(GtkFileChooserButton *widget, gpointer user_data)
 {
     ocr_data* data = user_data;
+    if (data->network == NULL)
+    {
+        GtkWidget* dialog = gtk_message_dialog_new(data->ui.window_image,GTK_RESPONSE_NONE,GTK_MESSAGE_INFO,
+                                                   GTK_BUTTONS_OK,"Neural network is not detected !");
+        gtk_dialog_run (GTK_DIALOG (dialog));
+        gtk_widget_destroy (dialog);
+        return;
+    }
     if (strcmp(data->file_path,"") != 0)
         g_free(data->file_path);
     data->file_path = "";
+    fullRead(data);
 
     gtk_widget_set_visible(data->ui.progress_neural, gtk_true());
     gdk_window_set_cursor(gtk_widget_get_window(data->ui.window_main), data->ui.watch_cursor);
     while (g_main_context_iteration(NULL, FALSE));
 
-    gtk_text_buffer_set_text(data->ui.text_buffer,"j'adore la segmentation.",-1);
+    gtk_text_buffer_set_text(data->ui.text_buffer,data->result->string,-1);
 
     gint x = 0;
     gint y = 0;
@@ -165,7 +176,7 @@ void on_rotate(GtkEntry *entry, gpointer  user_data)
 void on_copy(GtkFileChooserButton *widget, gpointer user_data)
 {
     ocr_data* data = user_data;
-    gtk_clipboard_set_text(data->ui.clipboard,"HELLO WORLD!",-1);
+    gtk_clipboard_set_text(data->ui.clipboard,data->result->string,-1);
 }
 
 void on_save(GtkFileChooserButton *widget, gpointer user_data)
@@ -187,7 +198,7 @@ void on_save(GtkFileChooserButton *widget, gpointer user_data)
         path = gtk_file_chooser_get_filename(save_file_choose);
         if (data->file_path == NULL)
             errx(1,"Not enough memory");
-        save_result(path,"Hello World !");
+        save_result(path,data->result->string);
         g_free(path);
     }
 
@@ -278,6 +289,8 @@ ocr_data init_data(GtkBuilder* builder)
                     },
                     .training = 0,
                     .spell_check = 1,
+                    .result = string_new(),
+                    .network = readNetwork(),
             };
 
     gtk_file_filter_set_name(data.ui.filter1, "Images");

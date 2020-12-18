@@ -114,12 +114,12 @@ char readLetter(NeuralNetwork* network, pixel_block caractere, SDL_Surface* imag
     return (char)(network->asciiOutputs->data[maxI]);
 }
 
-void fullRead(NeuralNetwork* network, char* filename)
+void fullRead(ocr_data* data)
 {
-
-    ocr_data data = apply_segmentation_for_training(filename);
-    struct text* arr = data.text_array;
-    SDL_Surface* image = data.sdl.image;
+    text* arr = data->text_array;
+    SDL_Surface* image = data->sdl.image;
+    NeuralNetwork* network = data->network;
+    ocr_string* totalText = data->result;
 
     size_t lenFullText = 0;
     for (size_t i = 0; i < arr->nb_block; i++)
@@ -131,8 +131,6 @@ void fullRead(NeuralNetwork* network, char* filename)
         lenFullText += 3;
     }
 
-    ocr_string* totalText = string_new();
-    int totalTextI = 0;
 
     for (size_t i = 0; i < arr->nb_block; i++)
     {
@@ -191,9 +189,6 @@ void fullRead(NeuralNetwork* network, char* filename)
         string_append(totalText, '\n');
         string_append(totalText, '\n');
     }
-
-
-    printf("%s", totalText->string);
 }
 
 

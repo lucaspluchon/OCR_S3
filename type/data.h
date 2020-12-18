@@ -2,6 +2,8 @@
 #define OCR_S3_DATA_H
 #include <gtk/gtk.h>
 #include "pixel.h"
+#include "../NeuralNetwork/headers/NeuralNetworkTools.h"
+#include <SDL2/SDL.h>
 
 typedef struct ui_data ui_data;
 struct ui_data
@@ -40,16 +42,6 @@ struct sdl_data
     double angle;
 };
 
-typedef struct ocr_data ocr_data;
-struct ocr_data
-{
-    ui_data ui;
-    sdl_data sdl;
-    char* file_path;
-    text* text_array;
-    int training;
-    int spell_check;
-};
 
 typedef struct ocr_string ocr_string;
 struct ocr_string
@@ -57,6 +49,19 @@ struct ocr_string
     char* string;
     size_t size;
     size_t capacity;
+};
+
+typedef struct ocr_data ocr_data;
+struct ocr_data
+{
+    ui_data ui;
+    sdl_data sdl;
+    char* file_path;
+    text* text_array;
+    ocr_string* result;
+    NeuralNetwork* network;
+    int training;
+    int spell_check;
 };
 
 
