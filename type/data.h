@@ -51,6 +51,18 @@ struct ocr_data
     int spell_check;
 };
 
+typedef struct ocr_string ocr_string;
+struct ocr_string
+{
+    char* string;
+    size_t size;
+    size_t capacity;
+};
+
+
 void Data_delete(ocr_data* data);
+void string_append(ocr_string* string_vector, char c);
+void string_doubleCapacity(ocr_string* string_vector);
+ocr_string* string_new();
 
 #endif //OCR_S3_DATA_H
