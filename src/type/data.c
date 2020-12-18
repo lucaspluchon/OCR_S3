@@ -20,10 +20,6 @@ void Data_delete(ocr_data* data)
             SDL_FreeSurface(data->sdl.image_original);
         if (data->ui.image_pixbuf != NULL)
             g_object_unref(data->ui.image_pixbuf);
-        if (strcmp(data->file_path,"") != 0)
-            g_free(data->file_path);
-        if (data->network != NULL)
-            freeNetwork(data->network);
     }
 }
 
