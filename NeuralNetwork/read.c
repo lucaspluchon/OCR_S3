@@ -151,7 +151,7 @@ void fullRead(NeuralNetwork* network, char* filename)
                 averageSpace = sumSpace / (arr->blocks[i].lines[j].nb_char -1);
 
 
-            char* word[arr->blocks[i].lines[j].nb_char];
+            char word[arr->blocks[i].lines[j].nb_char];
             int wordLen = 0;
 
 
@@ -181,18 +181,19 @@ void fullRead(NeuralNetwork* network, char* filename)
                     string_append(totalText, ' ');
 
                     free(wordCorrect);
+
                 }
-                
+
             }
             string_append(totalText, '\n');
+
         }
         string_append(totalText, '\n');
         string_append(totalText, '\n');
     }
 
-    free(word);
 
-    printf("%s", totalText);
+    printf("%s", totalText->string);
 }
 
 

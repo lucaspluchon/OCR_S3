@@ -77,13 +77,14 @@ int testOnLetter(NeuralNetwork* network, int letter, int randPolice)
         }
 
     }
-    if (network->asciiOutputs->data[maxI] >= int('A') && network->asciiOutputs->data[maxI] <= int('Z'))
+    char foundLetter;
+    if (network->asciiOutputs->data[maxI] >= (int)('A') && network->asciiOutputs->data[maxI] <= (int)('Z'))
     {
-        char* foundLetter = (char)(network->asciiOutputs->data[maxI] + (int)('a')  - (int)('A'))
+        foundLetter = (char)(network->asciiOutputs->data[maxI] + (int)('a')  - (int)('A'));
     }
     else
     {
-        char* foundLetter = (char)(network->asciiOutputs->data[maxI]
+        foundLetter = (char)(network->asciiOutputs->data[maxI]);
     }
     
     int found = letter == foundLetter || letter == foundLetter - ((int)('a')  - (int)('A'));
