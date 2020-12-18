@@ -24,9 +24,6 @@ void Data_delete(ocr_data* data)
             g_free(data->file_path);
         if (data->network != NULL)
             freeNetwork(data->network);
-        if (data->result != NULL)
-            string_free(data->result);
-
     }
 }
 

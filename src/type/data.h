@@ -29,6 +29,7 @@ struct ui_data
     GtkProgressBar* progress_neural;
     GtkButton* button_save;
     GtkFileFilter* filter1;
+    GtkButton* button_again;
 };
 
 typedef struct sdl_data sdl_data;

@@ -129,6 +129,24 @@ void on_quitAnalyse(GtkFileChooserButton *widget, gpointer user_data)
     gtk_widget_hide(GTK_WIDGET((data->ui.window_image)));
 }
 
+void on_again(GtkFileChooserButton *widget, gpointer user_data)
+{
+    ocr_data* data = user_data;
+    data->file_path = "";
+    gtk_text_buffer_set_text(data->ui.text_buffer,"",-1);
+    gtk_widget_set_sensitive((GtkWidget *) data->ui.entry_threshold, FALSE);
+    gtk_switch_set_active(data->ui.switch_auto,TRUE);
+    gtk_entry_set_text(data->ui.entry_threshold, "");
+
+    gint x = 0;
+    gint y = 0;
+    gtk_window_get_position(data->ui.window_image,&x,&y);
+    gtk_window_move(data->ui.window_main,x,y);
+
+    gtk_widget_show(GTK_WIDGET((data->ui.window_main)));
+    gtk_widget_hide(GTK_WIDGET((data->ui.window_result)));
+}
+
 void on_confirmAnalyse(GtkFileChooserButton *widget, gpointer user_data)
 {
     ocr_data* data = user_data;
@@ -244,6 +262,7 @@ void gtk_build_from_glade(GtkBuilder* builder, GError* error)
         errx(1,"Cannot load UI (glade file not found)");
     }
 }
+
 
 ocr_data init_data(GtkBuilder* builder)
 {

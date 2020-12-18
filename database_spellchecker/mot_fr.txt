@@ -110838,6 +110838,7 @@ dépassionnions
 dépassionnons
 dépassions
 dépassons
+josien
 dépatouilla
 dépatouillai
 dépatouillaient
@@ -110867,7 +110868,9 @@ dépatouillerait
 dépatouilleras
 dépatouillèrent
 dépatouillerez
+pluchon
 dépatouilleriez
+paumelle
 dépatouillerions
 dépatouillerons
 dépatouilleront
@@ -110954,6 +110957,7 @@ dépayserions
 dépayserons
 dépayseront
 dépayses
+ocr
 dépaysés
 dépaysez
 dépaysiez
