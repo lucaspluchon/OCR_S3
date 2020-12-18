@@ -32,6 +32,8 @@ ocr_string* string_new()
     res->string = malloc(sizeof(char));
     if (res->string == NULL)
         errx(1,"Not enough memory to add a new char!");
+
+    return res;
 }
 
 void string_doubleCapacity(ocr_string* string_vector)
