@@ -10,10 +10,10 @@
 
 void trainSaveTest()
 {
-    double v = 0.05;
-    size_t itteration = 10000;
-    size_t gen = 15;
-    size_t hidenNumber = 55;
+    double v = 0.02;
+    size_t itteration = 2000;
+    size_t gen = 3;
+    size_t hidenNumber = 52;
     size_t testLen = 26;
     size_t lowerBound = 65;
     size_t upperBound = 200;
@@ -26,7 +26,7 @@ void trainSaveTest()
 
         if (i >= (size_t)('0') && i <= (size_t)('9') ||
              i >= (size_t)('A') && i <= (size_t)('Z') ||
-             i >= (size_t)('a') && i <= (size_t)('z') && i != 105 && i != 106)
+             i >= (size_t)('a') && i <= (size_t)('z'))
         {
             asciiOutputs[lenOut] = (double)i;
             lenOut++;
@@ -67,7 +67,7 @@ void reloadTest()
     if (trainedNetwork == NULL)
         printf("No Network Saved");
 
-    char* filename = "../image/testim.jpg";
+    char* filename = "../image/article.bmp";
     fullRead(trainedNetwork, filename);
     freeNetwork(trainedNetwork);
 }
