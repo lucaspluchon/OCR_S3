@@ -166,8 +166,8 @@ void fullRead(NeuralNetwork* network, char* filename)
                 word[wordLen] = c;
                 wordLen++;
                 
-                if (k != arr->blocks[i].lines[j].nb_char - 1 
-                    && arr->blocks[i].lines[j].chrs[k + 1].left_top.x - caractere.right_top.x > averageSpace * 3 / 2)
+                if (k == arr->blocks[i].lines[j].nb_char - 1
+                    || arr->blocks[i].lines[j].chrs[k + 1].left_top.x - caractere.right_top.x > averageSpace * 3 / 2)
                 {
                     word[wordLen] = '\0';
                     char* wordCorrect = correct_word(word);
