@@ -2,15 +2,10 @@
 #include "../type/pixel.h"
 #include <SDL2/SDL.h>
 #include"../image_preprocessing/headers/preprocessing.h"
-#include"../character_detection/headers/segmentation.h"
 #include "NeuralNetwork/headers/NeuralNetworkTools.h"
 #include "NeuralNetwork/headers/ForwardProp.h"
-#include "../useful/test_resize.h"
 #include <err.h>
 #include "spell_checker/spell_checker.h"
-#include "../type/data.h"
-
-
 
 
 int* get_pixel_block(SDL_Surface* image, int x1, int y1, int x2, int y2)
@@ -168,7 +163,11 @@ void fullRead(ocr_data* data)
                     || arr->blocks[i].lines[j].chrs[k + 1].left_top.x - caractere.right_top.x > averageSpace * 3 / 2)
                 {
                     word[wordLen] = '\0';
-                    char* wordCorrect = correct_word(word);
+                    char* wordCorrect;
+                    if (data->spell_check)
+                        wordCorrect = correct_word(word);
+                    else
+                        wordCorrect = word;
                     wordLen = 0;
 
                     for (size_t l = 0; l < strlen(wordCorrect); l++)
@@ -178,8 +177,8 @@ void fullRead(ocr_data* data)
 
                     string_append(totalText, ' ');
 
-                    free(wordCorrect);
-
+                    if (data->spell_check)
+                        free(wordCorrect);
                 }
 
             }

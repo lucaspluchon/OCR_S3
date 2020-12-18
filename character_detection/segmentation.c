@@ -17,6 +17,7 @@ ocr_data apply_segmentation_for_training(char* path)
                             .angle = -1,
                     },
                     .training = 1,
+                    .spell_check = 1,
             };
 
     data.sdl.image_original = Image_Load(data.file_path);

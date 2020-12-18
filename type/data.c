@@ -2,6 +2,7 @@
 #include "data.h"
 #include "pixel.h"
 #include "err.h"
+#include "../NeuralNetwork/headers/NeuralNetworkTools.h"
 
 void Data_delete(ocr_data* data)
 {
@@ -21,6 +22,11 @@ void Data_delete(ocr_data* data)
             g_object_unref(data->ui.image_pixbuf);
         if (strcmp(data->file_path,"") != 0)
             g_free(data->file_path);
+        if (data->network != NULL)
+            freeNetwork(data->network);
+        if (data->result != NULL)
+            string_free(data->result);
+
     }
 }
 

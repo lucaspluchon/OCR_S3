@@ -229,7 +229,7 @@ gboolean on_switch_spell(GtkSwitch *widget, gboolean state, gpointer user_data)
 
 void gtk_build_from_glade(GtkBuilder* builder, GError* error)
 {
-    if (gtk_builder_add_from_file(builder, "../ui_ocr.glade", &error) == 0)
+    if (gtk_builder_add_from_file(builder, "ui_ocr.glade", &error) == 0)
     {
         g_printerr("Error loading file: %s\n", error->message);
         g_clear_error(&error);
