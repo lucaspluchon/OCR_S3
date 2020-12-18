@@ -106,10 +106,10 @@ char readLetter(NeuralNetwork* network, pixel_block caractere, SDL_Surface* imag
 
     if (network->asciiOutputs->data[maxI] >= int('A') && network->asciiOutputs->data[maxI] <= int('Z'))
     {
-        return (char)((int)(network->asciiOutputs->data[maxI]) + (int)('a')  - (int)('A'))
+        return (char)(network->asciiOutputs->data[maxI] + (int)('a')  - (int)('A'))
     }
     
-    return (char)((int)(network->asciiOutputs->data[maxI]));
+    return (char)(network->asciiOutputs->data[maxI]);
 }
 
 void fullRead(NeuralNetwork* network, char* filename)
