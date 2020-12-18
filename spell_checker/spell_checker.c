@@ -73,7 +73,7 @@ char* lower_string(char* s)
 
 char* correct_word(char* word)
 {
-    FILE * database = fopen("mot_fr_lower.txt", "r");
+    FILE * database = fopen("../mot_fr_lower.txt", "r");
     if (database == NULL)
         errx("1","File not found !");
     char* line = NULL;
