@@ -60,4 +60,5 @@ void string_free(ocr_string* string_vector)
     string_vector->capacity = 0;
     free(string_vector->string);
     string_vector->string = NULL;
+    free(string_vector);
 }
