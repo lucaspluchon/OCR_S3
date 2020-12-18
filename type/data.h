@@ -61,5 +61,8 @@ struct ocr_string
 
 
 void Data_delete(ocr_data* data);
+void string_append(ocr_string* string_vector, char c);
+void string_doubleCapacity(ocr_string* string_vector);
+ocr_string* string_new();
 
 #endif //OCR_S3_DATA_H
