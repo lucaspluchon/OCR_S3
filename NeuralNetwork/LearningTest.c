@@ -77,7 +77,16 @@ int testOnLetter(NeuralNetwork* network, int letter, int randPolice)
         }
 
     }
-    int found = letter == (int)(network->asciiOutputs->data[maxI]);
+    if (network->asciiOutputs->data[maxI] >= int('A') && network->asciiOutputs->data[maxI] <= int('Z'))
+    {
+        char* foundLetter = (char)(network->asciiOutputs->data[maxI] + (int)('a')  - (int)('A'))
+    }
+    else
+    {
+        char* foundLetter = (char)(network->asciiOutputs->data[maxI]
+    }
+    
+    int found = letter == foundLetter || letter == foundLetter - ((int)('a')  - (int)('A'));
 
     printf("%c - The network was given a %c and guessed it was a %c (police %i)", letter, letter, (char)((int)network->asciiOutputs->data[maxI]), randPolice);
     if (found)
