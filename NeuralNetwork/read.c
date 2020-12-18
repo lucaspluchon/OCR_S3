@@ -7,6 +7,8 @@
 #include "NeuralNetwork/headers/ForwardProp.h"
 #include "../useful/test_resize.h"
 #include <err.h>
+#include "spell_checker/spell_checker.h"
+#include "../type/data.h"
 
 
 
@@ -119,6 +121,19 @@ void fullRead(NeuralNetwork* network, char* filename)
     struct text* arr = data.text_array;
     SDL_Surface* image = data.sdl.image;
 
+    size_t lenFullText = 0;
+    for (size_t i = 0; i < arr->nb_block; i++)
+    {
+        for (size_t j = 0; j < arr->blocks[i].nb_line; j++)
+        {
+            lenFullText += arr->blocks[i].lines[j].nb_char + 1;
+        }
+        lenFullText += 3;
+    }
+
+    ocr_string* totalText = string_new();
+    int totalTextI = 0;
+
     for (size_t i = 0; i < arr->nb_block; i++)
     {
         for (size_t j = 0; j < arr->blocks[i].nb_line; j++)
@@ -135,6 +150,11 @@ void fullRead(NeuralNetwork* network, char* filename)
             else
                 averageSpace = sumSpace / (arr->blocks[i].lines[j].nb_char -1);
 
+
+            char* word[arr->blocks[i].lines[j].nb_char];
+            int wordLen = 0;
+
+
             for (size_t k = 0; k < arr->blocks[i].lines[j].nb_char; k++)
             {
                 pixel_block caractere = arr->blocks[i].lines[j].chrs[k];
@@ -143,20 +163,36 @@ void fullRead(NeuralNetwork* network, char* filename)
 
                 arr->blocks[i].lines[j].chrs[k].letter = c;
 
-                printf("%c", c);
+                word[wordLen] = c;
+                wordLen++;
                 
                 if (k != arr->blocks[i].lines[j].nb_char - 1 
                     && arr->blocks[i].lines[j].chrs[k + 1].left_top.x - caractere.right_top.x > averageSpace * 3 / 2)
                 {
-                    printf(" ");
+                    word[wordLen] = '\0';
+                    char* wordCorrect = correct_word(word);
+                    wordLen = 0;
+
+                    for (size_t l = 0; l < strlen(wordCorrect); l++)
+                    {
+                        string_append(totalText, wordCorrect[l]);
+                    }
+
+                    string_append(totalText, ' ');
+
+                    free(wordCorrect);
                 }
                 
             }
-            printf("\n");
+            string_append(totalText, '\n');
         }
-        printf("\n\n\n");
+        string_append(totalText, '\n');
+        string_append(totalText, '\n');
     }
 
+    free(word);
+
+    printf("%s", totalText);
 }
 
 
